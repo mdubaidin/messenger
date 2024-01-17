@@ -6,10 +6,12 @@ import Input from '@/src/components/inputs/input';
 import Button from '@/src/components/Button';
 import AuthSocialButton from './AuthSocialButton';
 import { BsGithub, BsGoogle } from 'react-icons/bs';
+import { authServer } from '@/src/utilities/axios';
+import { setCookie } from 'cookies-next';
 
 type Variant = 'LOGIN' | 'REGISTER';
 
-const AuthForm = () => {
+const Auth = () => {
     const [variant, setVariant] = useState<Variant>('LOGIN');
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -25,19 +27,39 @@ const AuthForm = () => {
     } = useForm<FieldValues>({
         defaultValues: {
             name: '',
+            username: '',
             email: '',
             password: '',
         },
     });
 
-    const onSubmit: SubmitHandler<FieldValues> = data => {
+    const onSubmit: SubmitHandler<FieldValues> = async data => {
         setIsLoading(true);
 
         if (variant === 'REGISTER') {
+            try {
+                const response = await authServer.post('/open/signup', data);
+
+                console.log(response.data.message);
+            } catch (e) {
+                console.log('Signup Failed', e);
+            }
         }
 
         if (variant === 'LOGIN') {
+            try {
+                const response = await authServer.post('/open/login', data);
+
+                const { success, message, token } = response.data;
+
+                if (!success) console.log('Something went wrong', message);
+
+                setCookie('accessToken', token);
+            } catch (e) {
+                console.log('Signup Failed', e);
+            }
         }
+        setIsLoading(false);
     };
 
     const socialAction = (action: string) => {
@@ -54,6 +76,7 @@ const AuthForm = () => {
                 disabled={isLoading}
             />
             <Input
+                type='password'
                 id='password'
                 label='Password'
                 register={register}
@@ -70,18 +93,43 @@ const AuthForm = () => {
         <React.Fragment>
             <Input
                 id='name'
-                label='Name'
+                label='Full Name'
                 register={register}
                 errors={errors}
                 disabled={isLoading}
             />
+            <Input
+                id='username'
+                label='Username'
+                register={register}
+                errors={errors}
+                disabled={isLoading}
+            />
+            <Input
+                id='email'
+                label='Email'
+                register={register}
+                errors={errors}
+                disabled={isLoading}
+            />
+            <Input
+                id='password'
+                label='Password'
+                type='password'
+                register={register}
+                errors={errors}
+                disabled={isLoading}
+            />
+            <Button disabled={isLoading} fullWidth type='submit'>
+                Sign up
+            </Button>
         </React.Fragment>
     );
 
     return (
         <div className='mt-8 sm:mx-auto sm:w-full sm:max-w-md mx-2'>
             <div className='bg-white px-4 py-8 shadow sm:rounded-lg sm:px-10'>
-                <form className='space-y-6' onSubmit={handleSubmit(onSubmit)}>
+                <form className='space-y-5' onSubmit={handleSubmit(onSubmit)} autoComplete='false'>
                     {variant === 'LOGIN' ? loginFields : registerFields}
                 </form>
                 <div className='mt-6'>
@@ -113,4 +161,4 @@ const AuthForm = () => {
     );
 };
 
-export default AuthForm;
+export default Auth;
