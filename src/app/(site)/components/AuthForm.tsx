@@ -2,8 +2,8 @@
 
 import React, { useCallback, useState } from 'react';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
-import Input from '@/app/components/inputs/input';
-import Button from '@/app/components/Button';
+import Input from '@/src/components/inputs/input';
+import Button from '@/src/components/Button';
 import AuthSocialButton from './AuthSocialButton';
 import { BsGithub, BsGoogle } from 'react-icons/bs';
 
@@ -79,7 +79,7 @@ const AuthForm = () => {
     );
 
     return (
-        <div className='mt-8 sm:mx-auto sm:w-full sm:max-w-md'>
+        <div className='mt-8 sm:mx-auto sm:w-full sm:max-w-md mx-2'>
             <div className='bg-white px-4 py-8 shadow sm:rounded-lg sm:px-10'>
                 <form className='space-y-6' onSubmit={handleSubmit(onSubmit)}>
                     {variant === 'LOGIN' ? loginFields : registerFields}
@@ -95,8 +95,8 @@ const AuthForm = () => {
                     </div>
 
                     <div className='mt-6 flex gap-2'>
-                        <AuthSocialButton icon={BsGithub} onClick={() => socialAction('github')} />
                         <AuthSocialButton icon={BsGoogle} onClick={() => socialAction('google')} />
+                        <AuthSocialButton icon={BsGithub} onClick={() => socialAction('github')} />
                     </div>
                 </div>
 
