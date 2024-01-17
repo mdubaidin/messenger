@@ -7,9 +7,9 @@ const accessToken = getCookie('accessToken');
 
 const authServer = axios.create({
     baseURL: 'http://localhost:8000',
-    headers: {
-        Authorization: `Bearer ${accessToken}`,
-    },
+    // headers: {
+    //     Authorization: `Bearer ${accessToken}`,
+    // },
 });
 
 export { authServer };

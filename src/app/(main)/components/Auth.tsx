@@ -48,7 +48,10 @@ const Auth = () => {
 
         if (variant === 'LOGIN') {
             try {
-                const response = await authServer.post('/open/login', data);
+                const response = await authServer.post('/open/login', {
+                    email: data.email,
+                    password: data.password,
+                });
 
                 const { success, message, token } = response.data;
 
@@ -56,7 +59,7 @@ const Auth = () => {
 
                 setCookie('accessToken', token);
             } catch (e) {
-                console.log('Signup Failed', e);
+                console.log('Login Failed', e);
             }
         }
         setIsLoading(false);
