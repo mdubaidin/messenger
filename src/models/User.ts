@@ -1,4 +1,4 @@
-import { model, Schema } from 'mongoose';
+import { model, models, Schema } from 'mongoose';
 import { emailValidator } from '@/src/utils/validators';
 
 const userSchema = new Schema({
@@ -24,4 +24,4 @@ const userSchema = new Schema({
     isVerified: { type: Boolean, default: false },
 });
 
-export default model('user', userSchema);
+export default models.user || model('user', userSchema);

@@ -10,9 +10,11 @@ import AuthSocialButton from '../components/AuthSocialButton';
 import Link from 'next/link';
 import { BsGithub, BsGoogle } from 'react-icons/bs';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
     const [loading, setLoading] = useState<boolean>(false);
+    const router = useRouter();
 
     const {
         register,
@@ -36,9 +38,10 @@ export default function Home() {
 
             const { success, message, token } = response.data;
 
-            if (!success) console.log('Something went wrong', message);
+            if (!success) return console.log('Something went wrong', message);
 
             setCookie('accessToken', token);
+            router.push('/');
         } catch (e) {
             console.log('Login Failed', e);
         } finally {

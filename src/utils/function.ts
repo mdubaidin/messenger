@@ -1,8 +1,8 @@
 import { ClassValue, clsx } from 'clsx';
-import jwt from 'jsonwebtoken';
+import * as jose from 'jose';
 import { Types } from 'mongoose';
 
-interface User {
+interface UserCredential {
     _id: Types.ObjectId;
     role: string;
 }
@@ -29,8 +29,15 @@ function generateRandomString(length: number) {
     return otp;
 }
 
-const signToken = (user: User) =>
-    jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET!);
+const signToken = async (user: UserCredential) => {
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+    return await new jose.SignJWT({ id: user._id, role: user.role }).sign(secret);
+};
+
+const verifyToken = async (token: string) => {
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+    return await jose.jwtVerify(token, secret);
+};
 
 const isEmptyObject = (obj: object) => {
     const ans = Object.keys(obj).length === 0;
@@ -52,5 +59,5 @@ const isEmptyObject = (obj: object) => {
 
 const isDefined = (v: string | number | object) => typeof v !== 'undefined' && v !== null;
 
-export { signToken, generateRandomString, isEmptyObject, isDefined, cn };
-export type { User };
+export { signToken, generateRandomString, isEmptyObject, isDefined, cn, verifyToken };
+export type { UserCredential };
