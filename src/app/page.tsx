@@ -1,7 +1,9 @@
-import React from 'react';
+import { Box, Typography } from '@mui/material';
 
-const page = () => {
-    return <div>page</div>;
-};
-
-export default page;
+export default function Home() {
+    return (
+        <Box>
+            <Typography variant='h6'>Next + Mui Boilerplate</Typography>
+        </Box>
+    );
+}
