@@ -28,11 +28,11 @@ import Image from '../components/Image';
 import { useMenu } from '@/hooks/useMenu';
 import { deleteCookie } from 'cookies-next';
 import Sidebar from './Sidebar';
-import { Links } from '../data/sidebar';
+import { Options } from '../data/sidebar';
 import { usePathname } from 'next/navigation';
 import NavLink from '../components/NavLink';
 
-const drawerWidth = 320;
+const drawerWidth = 370;
 
 export default function Navbar({ children }: { children: React.ReactNode }) {
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -136,72 +136,6 @@ export default function Navbar({ children }: { children: React.ReactNode }) {
                                 </Typography>
                             </Box>
                         </Grid>
-                        <Grid
-                            item
-                            xs
-                            display={{ xs: 'none', xm: 'flex' }}
-                            alignItems='center'
-                            gap={1}>
-                            {Links.map((link, i) => (
-                                <Stack direction='row' key={i} alignItems='center'>
-                                    <Button
-                                        variant='text'
-                                        startIcon={React.createElement(link.icon, {
-                                            fontSize: 'small',
-                                        })}
-                                        LinkComponent={NavLink}
-                                        href={link.to}
-                                        sx={{
-                                            color: 'text.primary',
-                                            py: 0.5,
-                                            px: 1,
-                                            '&:hover': { backgroundColor: 'dividerHover' },
-                                        }}>
-                                        <Typography variant='body2' lineHeight='12px' fontSize={12}>
-                                            {link.name}
-                                        </Typography>
-                                    </Button>
-
-                                    <Divider
-                                        orientation='vertical'
-                                        variant='middle'
-                                        flexItem
-                                        sx={{ mx: 1 }}
-                                    />
-                                </Stack>
-                            ))}
-                        </Grid>
-                        <Grid item xs>
-                            <Stack
-                                direction='row'
-                                alignItems='center'
-                                justifyContent='flex-end'
-                                spacing={0}
-                                display={{ xs: 'none', sm: 'flex' }}>
-                                <div style={{ textAlign: 'right', marginRight: 5 }}>
-                                    <Typography
-                                        variant='body2'
-                                        component='div'
-                                        sx={{
-                                            whiteSpace: 'nowrap',
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis',
-                                            fontSize: 12,
-                                            lineHeight: '14px',
-                                        }}>
-                                        {user.firstName + ' ' + user.lastName}
-                                    </Typography>
-                                    <Typography
-                                        variant='caption'
-                                        color='grey'
-                                        display='block'
-                                        fontSize={11}
-                                        lineHeight='1.2'>
-                                        {user.role} account
-                                    </Typography>
-                                </div>
-                            </Stack>
-                        </Grid>
                         <Grid item>
                             <IconButton
                                 onClick={openProfileMenu}
@@ -290,6 +224,67 @@ export default function Navbar({ children }: { children: React.ReactNode }) {
                                     </Button>
                                 </Stack>
                             </Menu>
+                        </Grid>
+                        <Grid item xs>
+                            <Stack
+                                direction='row'
+                                alignItems='center'
+                                spacing={0}
+                                display={{ xs: 'none', sm: 'flex' }}>
+                                <div style={{ marginLeft: 5 }}>
+                                    <Typography
+                                        variant='body2'
+                                        component='div'
+                                        sx={{
+                                            whiteSpace: 'nowrap',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            fontSize: 12,
+                                            lineHeight: '14px',
+                                        }}>
+                                        {user.firstName + ' ' + user.lastName}
+                                    </Typography>
+                                    <Typography
+                                        variant='caption'
+                                        color='grey'
+                                        display='block'
+                                        fontSize={11}
+                                        lineHeight='1.2'>
+                                        {user.role} account
+                                    </Typography>
+                                </div>
+                            </Stack>
+                        </Grid>
+
+                        <Grid item display={{ xs: 'none', xm: 'flex' }} alignItems='center' gap={1}>
+                            {Options.map((link, i) => (
+                                <Stack direction='row' key={i} alignItems='center'>
+                                    <Button
+                                        variant='text'
+                                        startIcon={React.createElement(link.icon, {
+                                            fontSize: 'small',
+                                        })}
+                                        LinkComponent={NavLink}
+                                        href={link.to}
+                                        sx={{
+                                            color: 'text.primary',
+                                            py: 0.5,
+                                            px: 1,
+                                            '&:hover': { backgroundColor: 'dividerHover' },
+                                        }}>
+                                        <Typography variant='body2' lineHeight='12px' fontSize={12}>
+                                            {link.name}
+                                        </Typography>
+                                    </Button>
+
+                                    <Divider
+                                        orientation='vertical'
+                                        variant='middle'
+                                        flexItem
+                                        sx={{ mx: 1 }}
+                                    />
+                                </Stack>
+                            ))}
                         </Grid>
                     </Grid>
                 </Toolbar>

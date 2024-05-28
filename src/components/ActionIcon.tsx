@@ -27,6 +27,7 @@ const ActionIcon: FC<ActionIconProps> = props => {
                             maxHeight: '30px',
                             ...imageSx,
                         }}
+                        alt='image'
                     />
                 )}
             </IconButton>

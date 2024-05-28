@@ -1,84 +1,69 @@
-import KeyIcon from '@mui/icons-material/KeyOutlined';
-import CreditCardIcon from '@mui/icons-material/CreditCardOutlined';
-import WorkspacesIcon from '@mui/icons-material/WorkspacesOutlined';
-import PeopleIcon from '@mui/icons-material/PeopleOutlined';
-import PersonIcon from '@mui/icons-material/PersonOutlined';
-import DataUsageIcon from '@mui/icons-material/DataUsageOutlined';
-import SettingsIcon from '@mui/icons-material/SettingsOutlined';
-import LayersIcon from '@mui/icons-material/LayersOutlined';
-import DeviceHubIcon from '@mui/icons-material/DeviceHubOutlined';
-import DiamondIcon from '@mui/icons-material/DiamondOutlined';
-import FavoriteIcon from '@mui/icons-material/FavoriteBorderOutlined';
-import { SvgIconComponent } from '@mui/icons-material';
+import { TbMessageCircle2Filled } from 'react-icons/tb';
+import { BsPeopleFill } from 'react-icons/bs';
+import { AiFillMessage } from 'react-icons/ai';
+import { RiArchiveFill } from 'react-icons/ri';
+import { IconType } from 'react-icons';
 
 interface Structure {
     name: string;
-    icon: SvgIconComponent;
+    icon: IconType;
     to: string;
 }
 
-const Dashboard: Structure[] = [
+const Options: Structure[] = [
     {
-        name: 'Overview',
-        icon: DataUsageIcon,
-        to: '/',
+        name: 'Chats',
+        icon: TbMessageCircle2Filled,
+        to: '/t',
     },
     {
-        name: 'Secret Keys',
-        icon: KeyIcon,
-        to: '/secret-keys',
+        name: 'People',
+        icon: BsPeopleFill,
+        to: '/active',
     },
     {
-        name: 'Cards',
-        icon: CreditCardIcon,
-        to: '/cards',
+        name: 'Requests',
+        icon: AiFillMessage,
+        to: '/requests',
     },
     {
-        name: 'Marketplace',
-        icon: WorkspacesIcon,
-        to: '/marketplace',
-    },
-];
-
-const Account: Structure[] = [
-    {
-        name: 'History',
-        icon: PeopleIcon,
-        to: '/history',
-    },
-    {
-        name: 'Messeges',
-        icon: PersonIcon,
-        to: '/messeges',
+        name: 'Archive',
+        icon: RiArchiveFill,
+        to: '/archived',
     },
 ];
 
-const Links: Structure[] = [
+const Contacts = [
     {
-        name: 'Marked',
-        icon: LayersIcon,
-        to: '/history',
+        id: 1,
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john@example.com',
+        avatar: 'https://i.pravatar.cc/150?img=1',
+        message: 'lorem ipsum',
+        time: '2024-05-28T01:50:00',
+        unreadMessage: 10,
     },
     {
-        name: 'New',
-        icon: DeviceHubIcon,
-        to: '/messeges',
+        id: 2,
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john@example.com',
+        avatar: 'https://i.pravatar.cc/150?img=2',
+        message: 'lorem ipsum',
+        time: '2024-05-28T01:50:00',
+        unreadMessage: 10,
     },
     {
-        name: 'Trends',
-        icon: DiamondIcon,
-        to: '/messeges',
-    },
-    {
-        name: 'Favorite',
-        icon: FavoriteIcon,
-        to: '/messeges',
-    },
-    {
-        name: 'Settings',
-        icon: SettingsIcon,
-        to: '/settings',
+        id: 3,
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john@example.com',
+        avatar: 'https://i.pravatar.cc/150?img=3',
+        message: 'lorem ipsum',
+        time: '2024-05-28T01:50:00',
+        unreadMessage: 10,
     },
 ];
 
-export { Dashboard, Account, Links };
+export { Options, Contacts };

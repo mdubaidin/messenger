@@ -1,6 +1,6 @@
 'use client';
 
-import { createTheme, PaletteMode, Theme, IconButtonProps } from '@mui/material';
+import { createTheme, PaletteMode, Theme } from '@mui/material';
 import React, { useMemo, useContext, useState, createContext, useLayoutEffect } from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { getCookie, setCookie } from 'cookies-next';
@@ -24,11 +24,38 @@ declare module '@mui/material/styles' {
         xl: true;
         xxl: true;
     }
+
+    interface TypeBackground {
+        highlight: string;
+        search: string;
+        icon: string;
+        sideStrip: string;
+    }
+
+    interface Palette {
+        contrastColor: string;
+        icon: string;
+    }
+}
+
+enum ListItemButtonVariants {
+    'sidebarButton',
+    'sidebarIconButton',
 }
 
 declare module '@mui/material/ListItemButton' {
     interface ListItemButtonBaseProps {
-        variant: 'sidebarButton';
+        variant?: keyof typeof ListItemButtonVariants;
+    }
+}
+
+enum IconButtonVariants {
+    'paper',
+}
+
+declare module '@mui/material/IconButton' {
+    interface IconButtonOwnProps {
+        variant?: keyof typeof IconButtonVariants;
     }
 }
 
@@ -62,8 +89,14 @@ const ThemeContextProvider = (props: ThemeContextProviderProps): React.JSX.Eleme
             background: {
                 paper: '#FFFFFF',
                 default: '#F7F9FC',
+                highlight: '#1ba2fa21s',
+                search: '#f5f5f5',
+                icon: '#cdcdcd',
+                sideStrip: '#121212',
             },
             divider: '#e7e3e3',
+            contrastColor: 'black',
+            icon: '#6a6a6a',
         }),
         []
     );
@@ -72,13 +105,19 @@ const ThemeContextProvider = (props: ThemeContextProviderProps): React.JSX.Eleme
         () => ({
             background: {
                 default: '#000000',
-                paper: '#010101',
+                paper: '#070707',
+                highlight: '#262626',
+                search: '#242424',
+                icon: '#323232',
+                sideStrip: '#121212',
             },
             text: {
-                secondary: '#818991',
+                secondary: '#787878',
             },
             divider: '#424242',
             dividerHover: '#42424266',
+            contrastColor: '#FFFFFF',
+            icon: '#6a6a6a',
         }),
         []
     );
@@ -148,26 +187,72 @@ const ThemeContextProvider = (props: ThemeContextProviderProps): React.JSX.Eleme
                             {
                                 props: { variant: 'sidebarButton' },
                                 style: ({ theme }) => ({
-                                    padding: '2px 15px',
+                                    borderRadius: '5px',
+                                    padding: '1px 8px',
+                                    paddingRight: '68px',
                                     cursor: 'pointer',
                                     color: theme.palette.text.secondary,
+                                    position: 'relative',
 
                                     '&:hover': {
-                                        backgroundColor: 'transparent',
+                                        backgroundColor: theme.palette.background.highlight,
                                     },
 
                                     '&.Mui-selected': {
-                                        backgroundColor: 'transparent',
+                                        backgroundColor: theme.palette.background.highlight,
+                                        color: theme.palette.contrastColor,
 
                                         '&:hover': {
-                                            backgroundColor: 'transparent',
+                                            backgroundColor: theme.palette.background.highlight,
                                         },
 
                                         '.MuiListItemIcon-root': {
                                             color: theme.palette.primary.main,
                                         },
                                         '.MuiListItemText-root': {
-                                            color: theme.palette.primary.main,
+                                            color: theme.palette.contrastColor,
+                                        },
+                                        '.MuiDivider-root': {
+                                            borderColor: 'white',
+                                        },
+                                    },
+                                    '.MuiListItemText-root': {
+                                        marginTop: '1px',
+                                    },
+                                }),
+                            },
+                            {
+                                props: { variant: 'sidebarIconButton' },
+                                style: ({ theme }) => ({
+                                    width: 54,
+                                    height: 42,
+                                    margin: 0,
+                                    padding: 0,
+                                    borderRadius: '8px',
+
+                                    '&:hover': {
+                                        backgroundColor: theme.palette.background.highlight,
+                                    },
+
+                                    '.MuiListItemIcon-root': {
+                                        width: '100%',
+                                        display: 'inline-flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        fontSize: 20,
+                                        color: theme.palette.icon,
+                                    },
+
+                                    '&.Mui-selected': {
+                                        backgroundColor: theme.palette.background.icon,
+                                        color: theme.palette.contrastColor,
+
+                                        '&:hover': {
+                                            backgroundColor: theme.palette.background.icon,
+                                        },
+
+                                        '.MuiListItemIcon-root': {
+                                            color: theme.palette.contrastColor,
                                         },
                                     },
                                 }),

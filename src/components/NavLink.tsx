@@ -21,11 +21,7 @@ export default function NavLink({ children, className, href, style, ...props }: 
         typeof className === 'function' ? className(isActive) : className || '';
 
     return (
-        <Link
-            href={href}
-            style={{ ...getStyle(), display: 'flex', marginBottom: '5px' }}
-            className={getClassName()}
-            {...props}>
+        <Link href={href} style={{ ...getStyle() }} className={getClassName()} {...props}>
             {typeof children === 'function' ? children(isActive) : children}
         </Link>
     );

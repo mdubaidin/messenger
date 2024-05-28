@@ -1,3 +1,5 @@
+import { DateTime } from 'luxon';
+
 function env(name) {
     const nodeENV = process.env.NODE_ENV.toUpperCase();
 
@@ -29,4 +31,21 @@ const handleAxiosError = (e, showError) => {
 
 const isDefined = v => typeof v !== 'undefined';
 
-export { env, getSessionData, setSessionData, handleAxiosError, isDefined };
+const generateDate = d => {
+    const date = DateTime.fromISO(d);
+    const today = DateTime.now();
+
+    const dateWeekNumber = date.weekNumber;
+    const todayWeekNumber = today.weekNumber;
+    const Yesterday = today.minus({ days: 1 });
+
+    if (todayWeekNumber === dateWeekNumber) {
+        if (date.hasSame(today, 'day')) return 'Today';
+        else if (date.hasSame(Yesterday, 'day')) return 'Yesterday';
+        return date.weekdayLong;
+    } else {
+        return date.toFormat('dd-MM-yyyy');
+    }
+};
+
+export { env, getSessionData, setSessionData, handleAxiosError, isDefined, generateDate };
