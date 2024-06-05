@@ -10,8 +10,8 @@ interface LoaderProps {
     color?: string;
 }
 
-const useLoader = (props: LoaderProps) => {
-    const { size, color } = props || {};
+const useLoader = (props: LoaderProps = {}) => {
+    const { size, color } = props;
     const [loading, setLoading] = useState(false);
 
     const start = useCallback(() => setLoading(true), [setLoading]);

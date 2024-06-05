@@ -7,29 +7,29 @@ import { IconType } from 'react-icons';
 interface Structure {
     name: string;
     icon: IconType;
-    to: string;
+    href: string;
 }
 
 const Options: Structure[] = [
     {
         name: 'Chats',
         icon: TbMessageCircle2Filled,
-        to: '/t',
+        href: '/c',
     },
     {
         name: 'People',
         icon: BsPeopleFill,
-        to: '/active',
+        href: '/active',
     },
     {
         name: 'Requests',
         icon: AiFillMessage,
-        to: '/requests',
+        href: '/requests',
     },
     {
         name: 'Archive',
         icon: RiArchiveFill,
-        to: '/archived',
+        href: '/archived',
     },
 ];
 

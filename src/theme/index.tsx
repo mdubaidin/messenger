@@ -63,7 +63,7 @@ const ThemeContext = createContext<ThemeContextProps>({ toggleTheme: () => {}, m
 
 const ThemeContextProvider = (props: ThemeContextProviderProps): React.JSX.Element => {
     // const preferTheme = systemPreferTheme();
-    const [mode, setMode] = useState<string>('dark');
+    const [mode, setMode] = useState<string>(getCookie('P13N') || 'light');
 
     function toggleTheme(): void {
         setMode(prevMode => {
@@ -89,7 +89,7 @@ const ThemeContextProvider = (props: ThemeContextProviderProps): React.JSX.Eleme
             background: {
                 paper: '#FFFFFF',
                 default: '#F7F9FC',
-                highlight: '#1ba2fa21s',
+                highlight: '#1ba2fa3d',
                 search: '#f5f5f5',
                 icon: '#cdcdcd',
                 sideStrip: '#121212',
@@ -128,7 +128,7 @@ const ThemeContextProvider = (props: ThemeContextProviderProps): React.JSX.Eleme
                 palette: {
                     mode: mode as PaletteMode,
                     primary: {
-                        main: '#1ba2fa',
+                        main: '#0da4e8',
                     },
 
                     ...(mode === 'light' ? light : dark),
@@ -231,7 +231,7 @@ const ThemeContextProvider = (props: ThemeContextProviderProps): React.JSX.Eleme
                                     borderRadius: '8px',
 
                                     '&:hover': {
-                                        backgroundColor: theme.palette.background.highlight,
+                                        backgroundColor: theme.palette.background.icon,
                                     },
 
                                     '.MuiListItemIcon-root': {

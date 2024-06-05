@@ -2,10 +2,14 @@
 
 import { useCallback, useState } from 'react';
 
+export type OpenMenu = {
+    (e: React.MouseEvent<HTMLElement>): void;
+};
+
 function useMenu() {
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
-    const openMenu = useCallback(function (e: React.MouseEvent<HTMLButtonElement>) {
+    const openMenu = useCallback(function (e: React.MouseEvent<HTMLElement>) {
         setAnchorEl(e.currentTarget);
     }, []);
 

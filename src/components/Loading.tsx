@@ -6,7 +6,7 @@ export default function Loading({
     redirectTo = null,
 }: {
     message: string;
-    redirectTo: string | null;
+    redirectTo?: string | null;
 }) {
     useEffect(() => {
         if (redirectTo) window.location.replace(redirectTo);
