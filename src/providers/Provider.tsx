@@ -3,7 +3,6 @@
 import React, { Dispatch, createContext, useCallback, useContext } from 'react';
 import useSnack, { SnackAction } from '@/hooks/useSnack';
 import ThemeProvider from '@/theme';
-import { ThemeProvider as NextThemeProvider } from 'next-themes';
 import { CacheProvider } from '@emotion/react';
 import createEmotionCache from '@/theme/createEmotionCache';
 
@@ -19,16 +18,14 @@ const Provider = ({ children }: { children: React.ReactNode }) => {
     const { SnackBar, showMessage } = useSnack();
 
     return (
-        <NextThemeProvider>
-            <CacheProvider value={clientSideEmotionCache}>
-                <ThemeProvider>
-                    <HeaderContext.Provider value={{ showMessage }}>
-                        {children}
-                        {SnackBar}
-                    </HeaderContext.Provider>
-                </ThemeProvider>
-            </CacheProvider>
-        </NextThemeProvider>
+        <CacheProvider value={clientSideEmotionCache}>
+            <ThemeProvider>
+                <HeaderContext.Provider value={{ showMessage }}>
+                    {children}
+                    {SnackBar}
+                </HeaderContext.Provider>
+            </ThemeProvider>
+        </CacheProvider>
     );
 };
 

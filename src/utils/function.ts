@@ -20,9 +20,10 @@ function parseKB(KB: number) {
 const getSessionData = (name: string) => sessionStorage[name];
 const setSessionData = (name: string, value: string) => (sessionStorage[name] = value);
 
-const getLocalStorage = (key: string) => localStorage.getItem(key);
-const setLocalStorage = (key: string, value: string) => localStorage.setItem(key, value);
-const removeLocalStorage = (key: string) => localStorage.removeItem(key);
+const getLocalStorage = (key: string) => globalThis.localStorage?.getItem(key);
+const setLocalStorage = (key: string, value: string) =>
+    globalThis.localStorage?.setItem(key, value);
+const removeLocalStorage = (key: string) => globalThis.localStorage?.removeItem(key);
 
 const isDefined = (v: unknown) => typeof v !== 'undefined' && v !== null;
 const isEmpty = (obj: object) => Object.keys(obj).length === 0;

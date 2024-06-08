@@ -1,14 +1,21 @@
 'use client';
 
-import { createTheme, css, GlobalStyles, PaletteMode, Theme } from '@mui/material';
-import React, { useMemo, useContext, useState, createContext, useLayoutEffect } from 'react';
+import { createTheme, css, GlobalStyles, PaletteMode, Theme, useMediaQuery } from '@mui/material';
+import React, {
+    useMemo,
+    useContext,
+    useState,
+    createContext,
+    useLayoutEffect,
+    Dispatch,
+    SetStateAction,
+} from 'react';
 import { CssBaseline, ThemeProvider as MuiThemeProvider } from '@mui/material';
-import { getCookie, setCookie } from 'cookies-next';
-import { useTheme as useNextTheme } from 'next-themes';
+import { getLocalStorage, setLocalStorage } from '@/utils/function';
 
 interface ThemeContextProps {
-    toggleTheme: () => void;
-    mode: PaletteMode;
+    setTheme: Dispatch<SetStateAction<ThemeOptions>>;
+    theme: ThemeOptions;
 }
 
 interface ThemeContextProviderProps {
@@ -60,19 +67,18 @@ declare module '@mui/material/IconButton' {
     }
 }
 
-const ThemeContext = createContext<ThemeContextProps>({ toggleTheme: () => {}, mode: 'dark' });
+const availableThemes = ['light', 'dark', 'system'] as const;
+
+export type ThemeOptions = (typeof availableThemes)[number];
+
+const ThemeContext = createContext<ThemeContextProps>({ setTheme: () => {}, theme: 'system' });
 
 const ThemeProvider = (props: ThemeContextProviderProps): React.JSX.Element => {
-    const { resolvedTheme } = useNextTheme();
-    const [mode, setMode] = useState<PaletteMode>('light');
+    const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+    const preferTheme = getLocalStorage('theme') as ThemeOptions;
 
-    function toggleTheme() {
-        setMode(prevMode => {
-            const theme = prevMode === 'light' ? 'dark' : 'light';
-            setCookie('P13N', theme);
-            return theme;
-        });
-    }
+    const [mode, setMode] = useState<PaletteMode>('dark');
+    const [theme, setTheme] = useState<ThemeOptions>(preferTheme || 'system');
 
     // function systemPreferTheme(): string {
     //     if (window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
@@ -85,10 +91,15 @@ const ThemeProvider = (props: ThemeContextProviderProps): React.JSX.Element => {
     //     if (theme) setMode(theme as PaletteMode);
     // }, [mode]);
     useLayoutEffect(() => {
-        console.log(resolvedTheme);
-        const mode = resolvedTheme === 'light' ? 'light' : 'dark';
-        if (mode) setMode(mode);
-    }, [resolvedTheme]);
+        if (theme === 'system') {
+            const preferTheme = prefersDarkMode ? 'dark' : 'light';
+            setLocalStorage('theme', theme);
+            return setMode(preferTheme);
+        }
+
+        setLocalStorage('theme', theme);
+        setMode(theme);
+    }, [prefersDarkMode, theme]);
 
     const light = useMemo(
         () => ({
@@ -128,7 +139,7 @@ const ThemeProvider = (props: ThemeContextProviderProps): React.JSX.Element => {
         []
     );
 
-    const theme = useMemo(
+    const baseTheme = useMemo(
         () =>
             createTheme({
                 palette: {
@@ -328,26 +339,9 @@ const ThemeProvider = (props: ThemeContextProviderProps): React.JSX.Element => {
     );
 
     return (
-        <ThemeContext.Provider value={{ toggleTheme, mode }}>
-            <MuiThemeProvider theme={theme}>
+        <ThemeContext.Provider value={{ setTheme, theme }}>
+            <MuiThemeProvider theme={baseTheme}>
                 <CssBaseline />
-                {/* <GlobalStyles
-                    styles={css`
-                        :root {
-                            body {
-                                background-color: #fff;
-                                color: #121212;
-                            }
-                        }
-
-                        [data-theme='dark'] {
-                            body {
-                                background-color: #121212;
-                                color: #fff;
-                            }
-                        }
-                    `}
-                /> */}
                 {props.children}
             </MuiThemeProvider>
         </ThemeContext.Provider>
@@ -355,9 +349,9 @@ const ThemeProvider = (props: ThemeContextProviderProps): React.JSX.Element => {
 };
 
 const useTheme = (): ThemeContextProps => {
-    const toggleTheme = useContext(ThemeContext).toggleTheme;
-    const mode = useContext(ThemeContext).mode;
-    return { toggleTheme, mode };
+    const { setTheme, theme } = useContext(ThemeContext);
+
+    return { setTheme, theme };
 };
 
 export default ThemeProvider;

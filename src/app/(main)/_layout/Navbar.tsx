@@ -300,7 +300,7 @@ export default function Navbar({ children }: { children: React.ReactNode }) {
                         xm: `calc(100% - ${drawerWidth}px)`,
                     },
                     ml: { xm: `${drawerWidth}px` },
-                    height: { xs: 'calc(50dvh)' },
+                    height: { xs: 'calc(100dvh)' },
                     backgroundColor: 'background.default',
                 }}>
                 {children}

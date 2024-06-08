@@ -1,12 +1,12 @@
 import React from 'react';
 import { OptionType } from '.';
 import { Box, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
-import { useTheme } from 'next-themes';
+import { ThemeOptions, useTheme } from '@/theme';
 
 const Appearance = (props: OptionType) => {
     const { theme, setTheme } = useTheme();
     const selectChange = (e: SelectChangeEvent) => {
-        setTheme(e.target.value);
+        setTheme(e.target.value as ThemeOptions);
     };
 
     const { name } = props;
