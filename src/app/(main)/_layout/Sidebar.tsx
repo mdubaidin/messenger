@@ -17,7 +17,7 @@ import {
     Modal,
 } from '@mui/material';
 import React from 'react';
-import NavLink from '../../../components/NavLink';
+import NavLink from '@/components/NavLink';
 import { generateDate } from '@/utils/function';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -25,16 +25,18 @@ import { Contacts, Options } from '@/data/sidebar';
 import SearchBar from '@/components/SearchBar';
 import { PiNotePencil } from 'react-icons/pi';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { usePathname } from 'next/navigation';
 import { useMenu } from '@/hooks/useMenu';
 import useModal from '@/hooks/useModal';
 import Settings from './Settings';
+import { deleteCookie } from 'cookies-next';
 
 const Sidebar = () => {
-    const pathname = usePathname();
-
     const { anchorEl, openMenu, closeMenu } = useMenu();
     const { modalState, openModal, closeModal } = useModal();
+
+    const signOut = () => {
+        deleteCookie('accessToken');
+    };
 
     return (
         <>
@@ -45,7 +47,7 @@ const Sidebar = () => {
                     flexDirection='column'
                     bgcolor='background.search'
                     alignItems='center'
-                    my={1}>
+                    py={1}>
                     <List disablePadding sx={{ flexGrow: 1 }}>
                         {Options.map((option, i) => (
                             <NavLink
@@ -224,20 +226,20 @@ const Sidebar = () => {
                             width: 'min(100%, 348px)',
                             boxShadow:
                                 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
-                            border: '1px solid',
-                            borderColor: 'common.white',
-                            backdropFilter: 'blur(6px)',
-                            bgcolor: 'rgba(255, 255, 255, 0.7)',
                             borderRadius: '8px',
                             p: 0.2,
                             overflowY: 'unset',
                             color: 'contrastColor',
                         },
-                        '& .MuiButtonBase-root:hover': {
-                            bgcolor: '#f5f5f5',
-                        },
+                        // '& .MuiButtonBase-root:hover': {
+                        //     bgcolor: '#f5f5f5',
+                        // },
                     }}>
-                    <MenuItem onClick={openModal}>
+                    <MenuItem
+                        onClick={() => {
+                            closeMenu();
+                            openModal();
+                        }}>
                         <ListItemIcon>
                             <SettingsIcon fontSize='small' sx={{ color: 'inherit' }} />
                         </ListItemIcon>
@@ -245,7 +247,11 @@ const Sidebar = () => {
                             Preference
                         </ListItemText>
                     </MenuItem>
-                    <MenuItem>
+                    <MenuItem
+                        onClick={() => {
+                            closeMenu();
+                            signOut();
+                        }}>
                         <ListItemIcon>
                             <LogoutIcon fontSize='small' sx={{ color: 'inherit' }} />
                         </ListItemIcon>

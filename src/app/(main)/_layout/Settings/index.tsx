@@ -24,12 +24,14 @@ import Notifications from './Notifications';
 import Appearance from './Appearance';
 import Language from './Language';
 import Privacy from './Privacy';
+import { getCookie } from 'cookies-next';
 
 export type OptionType = {
     name: string;
     icon: React.ReactNode;
     background: string;
     component: React.ElementType;
+    setting: string | undefined;
 };
 
 const Preferences: OptionType[] = [
@@ -38,30 +40,35 @@ const Preferences: OptionType[] = [
         icon: <MarkChatUnreadIcon fontSize='small' sx={{ color: 'white' }} />,
         background: '#31cc46',
         component: ActiveStatus,
+        setting: 'On',
     },
     {
         name: 'Notifications',
         icon: <NotificationsIcon fontSize='small' sx={{ color: 'white' }} />,
         background: '#a033ff',
         component: Notifications,
+        setting: 'On',
     },
     {
         name: 'Appearance',
         icon: <DarkModeIcon fontSize='small' sx={{ color: 'white' }} />,
         background: '#1e2227',
         component: Appearance,
+        setting: getCookie('P13N'),
     },
     {
         name: 'Language',
         icon: <PublicIcon fontSize='small' sx={{ color: 'white' }} />,
         background: '#0a7cff',
         component: Language,
+        setting: 'English',
     },
     {
         name: 'Privacy & safety',
         icon: <GppGoodIcon fontSize='small' sx={{ color: 'white' }} />,
         background: '#0a7cff',
         component: Privacy,
+        setting: 'On',
     },
 ];
 
@@ -71,18 +78,21 @@ const Account: OptionType[] = [
         icon: <ManageAccountsIcon fontSize='small' sx={{ color: 'white' }} />,
         background: '#19baff',
         component: ActiveStatus,
+        setting: 'On',
     },
     {
         name: 'Report a problem',
         icon: <WarningIcon fontSize='small' sx={{ color: 'white' }} />,
         background: '#ff7057',
         component: Notifications,
+        setting: 'On',
     },
     {
         name: 'Log Out',
         icon: <LogoutIcon fontSize='small' sx={{ color: 'white' }} />,
         background: '#a033ff',
         component: Appearance,
+        setting: 'On',
     },
 ];
 
@@ -96,10 +106,10 @@ const Index = () => {
                 maxHeight: '80vh',
                 boxShadow:
                     'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
+                bgcolor: 'background.default',
                 border: '1px solid',
-                borderColor: 'white',
-                bgcolor: 'background.paper',
                 borderRadius: '8px',
+                borderColor: 'divider',
                 p: 1.4,
                 overflow: 'auto',
             }}>
@@ -133,7 +143,10 @@ const Index = () => {
                                         }}>
                                         {setting.icon}
                                     </ListItemIcon>
-                                    <ListItemText primary={setting.name} secondary={'On'} />
+                                    <ListItemText
+                                        primary={setting.name}
+                                        secondary={setting.setting}
+                                    />
                                 </ListItemButton>
                             </ListItem>
                         ))}

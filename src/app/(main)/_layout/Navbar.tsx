@@ -1,58 +1,20 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 //mui component
-import {
-    AppBar,
-    Box,
-    Stack,
-    Drawer,
-    IconButton,
-    Divider,
-    Avatar,
-    Button,
-    Grid,
-    Toolbar,
-    Typography,
-    Menu,
-} from '@mui/material';
-
-//mui icons
-import MenuIcon from '@mui/icons-material/Menu';
-
-//react component
-import Image from '../../../components/Image';
+import { AppBar, Box, Drawer } from '@mui/material';
 
 //services
-import { useMenu } from '@/hooks/useMenu';
 import { deleteCookie } from 'cookies-next';
 import Sidebar from './Sidebar';
-import { Options } from '../../../data/sidebar';
 import { usePathname } from 'next/navigation';
-import NavLink from '../../../components/NavLink';
 
 const drawerWidth = 370;
 
 export default function Navbar({ children }: { children: React.ReactNode }) {
     const [mobileOpen, setMobileOpen] = useState(false);
     const pathname = usePathname();
-    const user = useMemo(
-        () => ({
-            firstName: 'Boilerplate',
-            lastName: 'User',
-            email: 'boilerplate@user.com',
-            role: 'user',
-        }),
-        []
-    );
-
-    // useMenu
-    const {
-        anchorEl: anchorElProfile,
-        openMenu: openProfileMenu,
-        closeMenu: closeProfileMenu,
-    } = useMenu();
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
@@ -70,7 +32,7 @@ export default function Navbar({ children }: { children: React.ReactNode }) {
     return (
         <Box
             sx={{
-                bgcolor: 'background.default',
+                // bgcolor: 'background.default',
                 height: '100dvh',
                 position: 'relative',
             }}>
@@ -338,9 +300,8 @@ export default function Navbar({ children }: { children: React.ReactNode }) {
                         xm: `calc(100% - ${drawerWidth}px)`,
                     },
                     ml: { xm: `${drawerWidth}px` },
-                    height: { xs: 'calc(100dvh - 100px)' },
+                    height: { xs: 'calc(50dvh)' },
                     backgroundColor: 'background.default',
-                    borderRadius: '12px',
                 }}>
                 {children}
             </Box>

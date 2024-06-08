@@ -405,16 +405,7 @@ const Chat = ({ params }: { params: { slug: string } }) => {
     return (
         <Box height='100%' display='flex' flexDirection='column' position='relative'>
             <Box bgcolor='background.paper' borderBottom='1px solid' borderColor='divider'>
-                <Grid
-                    container
-                    px={1}
-                    py={1.6}
-                    gap={1.5}
-                    borderTop='1px solid'
-                    borderBottom='1px solid'
-                    borderColor='common.white'
-                    borderRight='none'
-                    alignItems='center'>
+                <Grid container px={1} py={1.6} gap={1.5} alignItems='center'>
                     <Grid item>
                         <Avatar
                             alt='Remy Sharp'

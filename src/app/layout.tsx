@@ -1,9 +1,10 @@
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 import type { Metadata } from 'next';
-import Header from './(main)/_layout/Header';
+import Provider from '@/providers/Provider';
 // import StoreProvider from './StoreProvider';
 // import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import StoreProvider from './StoreProvider';
+import { EmotionCache } from '@emotion/react';
 
 export const metadata: Metadata = {
     title: 'Messenger',
@@ -29,11 +30,11 @@ export default function RootLayout({
     return (
         <html lang='en'>
             <body>
-                <StoreProvider>
-                    <AppRouterCacheProvider>
-                        <Header>{children}</Header>
-                    </AppRouterCacheProvider>
-                </StoreProvider>
+                <Provider>
+                    <StoreProvider>
+                        <AppRouterCacheProvider>{children}</AppRouterCacheProvider>
+                    </StoreProvider>
+                </Provider>
             </body>
         </html>
     );

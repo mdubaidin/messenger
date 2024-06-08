@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useMessage } from '../app/(main)/_layout/Header';
+import { useMessage } from '@/providers/Provider';
 import { isEmpty, isObject, isString } from '../utils/function';
 import { deleteCookie } from 'cookies-next';
 import { AxiosError } from 'axios';

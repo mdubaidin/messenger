@@ -108,7 +108,7 @@ const AuthForm = () => {
                             variant='contained'
                             onClick={() => {
                                 console.log('access_token');
-                                setCookie('access_token', 'abcdefghijklmnopqrstuvwxyz', {
+                                setCookie('accessToken', 'abcdefghijklmnopqrstuvwxyz', {
                                     domain: 'localhost',
                                 });
                                 router.push('/c');

@@ -1,9 +1,11 @@
 'use client';
 
 import React, { Dispatch, createContext, useCallback, useContext } from 'react';
-import { CssBaseline } from '@mui/material';
 import useSnack, { SnackAction } from '@/hooks/useSnack';
-import ThemeContextProvider from '@/theme';
+import ThemeProvider from '@/theme';
+import { ThemeProvider as NextThemeProvider } from 'next-themes';
+import { CacheProvider } from '@emotion/react';
+import createEmotionCache from '@/theme/createEmotionCache';
 
 interface HeaderContextProps {
     showMessage: Dispatch<SnackAction>;
@@ -11,17 +13,22 @@ interface HeaderContextProps {
 
 const HeaderContext = createContext<HeaderContextProps>({ showMessage: () => {} });
 
-const Header = ({ children }: { children: React.ReactNode }) => {
+const clientSideEmotionCache = createEmotionCache();
+
+const Provider = ({ children }: { children: React.ReactNode }) => {
     const { SnackBar, showMessage } = useSnack();
 
     return (
-        <ThemeContextProvider>
-            <CssBaseline />
-            <HeaderContext.Provider value={{ showMessage }}>
-                {children}
-                {SnackBar}
-            </HeaderContext.Provider>
-        </ThemeContextProvider>
+        <NextThemeProvider>
+            <CacheProvider value={clientSideEmotionCache}>
+                <ThemeProvider>
+                    <HeaderContext.Provider value={{ showMessage }}>
+                        {children}
+                        {SnackBar}
+                    </HeaderContext.Provider>
+                </ThemeProvider>
+            </CacheProvider>
+        </NextThemeProvider>
     );
 };
 
@@ -58,6 +65,6 @@ const useMessage = () => {
     return { showError, showSuccess, showResponse };
 };
 
-export default Header;
+export default Provider;
 
 export { useMessage, HeaderContext };

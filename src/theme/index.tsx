@@ -1,13 +1,14 @@
 'use client';
 
-import { createTheme, PaletteMode, Theme } from '@mui/material';
+import { createTheme, css, GlobalStyles, PaletteMode, Theme } from '@mui/material';
 import React, { useMemo, useContext, useState, createContext, useLayoutEffect } from 'react';
-import { CssBaseline, ThemeProvider } from '@mui/material';
+import { CssBaseline, ThemeProvider as MuiThemeProvider } from '@mui/material';
 import { getCookie, setCookie } from 'cookies-next';
+import { useTheme as useNextTheme } from 'next-themes';
 
 interface ThemeContextProps {
     toggleTheme: () => void;
-    mode: string;
+    mode: PaletteMode;
 }
 
 interface ThemeContextProviderProps {
@@ -61,11 +62,11 @@ declare module '@mui/material/IconButton' {
 
 const ThemeContext = createContext<ThemeContextProps>({ toggleTheme: () => {}, mode: 'dark' });
 
-const ThemeContextProvider = (props: ThemeContextProviderProps): React.JSX.Element => {
-    // const preferTheme = systemPreferTheme();
-    const [mode, setMode] = useState<string>(getCookie('P13N') || 'light');
+const ThemeProvider = (props: ThemeContextProviderProps): React.JSX.Element => {
+    const { resolvedTheme } = useNextTheme();
+    const [mode, setMode] = useState<PaletteMode>('light');
 
-    function toggleTheme(): void {
+    function toggleTheme() {
         setMode(prevMode => {
             const theme = prevMode === 'light' ? 'dark' : 'light';
             setCookie('P13N', theme);
@@ -79,10 +80,15 @@ const ThemeContextProvider = (props: ThemeContextProviderProps): React.JSX.Eleme
     //     else return 'dark';
     // }
 
+    // useLayoutEffect(() => {
+    //     const theme = getCookie('P13N');
+    //     if (theme) setMode(theme as PaletteMode);
+    // }, [mode]);
     useLayoutEffect(() => {
-        const theme = getCookie('P13N');
-        if (theme) setMode(theme);
-    }, [mode]);
+        console.log(resolvedTheme);
+        const mode = resolvedTheme === 'light' ? 'light' : 'dark';
+        if (mode) setMode(mode);
+    }, [resolvedTheme]);
 
     const light = useMemo(
         () => ({
@@ -126,7 +132,7 @@ const ThemeContextProvider = (props: ThemeContextProviderProps): React.JSX.Eleme
         () =>
             createTheme({
                 palette: {
-                    mode: mode as PaletteMode,
+                    mode: mode,
                     primary: {
                         main: '#0da4e8',
                     },
@@ -322,12 +328,29 @@ const ThemeContextProvider = (props: ThemeContextProviderProps): React.JSX.Eleme
     );
 
     return (
-        <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <ThemeContext.Provider value={{ toggleTheme, mode }}>
+        <ThemeContext.Provider value={{ toggleTheme, mode }}>
+            <MuiThemeProvider theme={theme}>
+                <CssBaseline />
+                {/* <GlobalStyles
+                    styles={css`
+                        :root {
+                            body {
+                                background-color: #fff;
+                                color: #121212;
+                            }
+                        }
+
+                        [data-theme='dark'] {
+                            body {
+                                background-color: #121212;
+                                color: #fff;
+                            }
+                        }
+                    `}
+                /> */}
                 {props.children}
-            </ThemeContext.Provider>
-        </ThemeProvider>
+            </MuiThemeProvider>
+        </ThemeContext.Provider>
     );
 };
 
@@ -337,6 +360,6 @@ const useTheme = (): ThemeContextProps => {
     return { toggleTheme, mode };
 };
 
-export default ThemeContextProvider;
+export default ThemeProvider;
 
 export { useTheme, ThemeContext };
