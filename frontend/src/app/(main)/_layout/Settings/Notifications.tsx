@@ -22,10 +22,10 @@ const ActiveStatus = (props: OptionType) => {
             <AntSwitch checked={status} onChange={handleChange} sx={{ mt: 3, mb: 2 }} />
 
             <Typography variant='body2' color='text.secondary'>
-                Your friends and contacts will see when you're active or recently active. You'll
-                appear active or recently active unless you turn off the setting every place you •re
-                using Messenger or Facebook. You'll also see when your friends and contacts are
-                active or recently active.
+                Your friends and contacts will see when you&apos;re active or recently active.
+                You&apos;ll appear active or recently active unless you turn off the setting every
+                place you •re using Messenger or Facebook. You&apos;ll also see when your friends
+                and contacts are active or recently active.
             </Typography>
         </Box>
     );

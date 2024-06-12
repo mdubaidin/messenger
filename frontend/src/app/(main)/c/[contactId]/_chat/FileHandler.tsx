@@ -102,7 +102,11 @@ const FileHandler: FC<FileHandlerProps> = props => {
                 {files.length ? (
                     isImage(files[fileIndex]) ? (
                         <>
-                            <Image src={files[fileIndex].url} sx={{ maxHeight: '280px' }} />
+                            <Image
+                                src={files[fileIndex].url}
+                                alt='image-file'
+                                sx={{ maxHeight: '280px' }}
+                            />
                             <Typography
                                 variant='subtitle2'
                                 fontWeight={500}
@@ -126,7 +130,7 @@ const FileHandler: FC<FileHandlerProps> = props => {
                         </>
                     ) : (
                         <>
-                            <Image name='general.png' sx={{ height: '100px' }} />
+                            <Image name='general.png' alt='file-logo' sx={{ height: '100px' }} />
                             <Typography
                                 variant='subtitle2'
                                 fontWeight={500}
@@ -213,9 +217,17 @@ const FileHandler: FC<FileHandlerProps> = props => {
                                     }}
                                 />
                                 {isImage(files[fileIndex]) ? (
-                                    <Image src={file.url} sx={{ height: 50 }} />
+                                    <Image
+                                        src={file.url}
+                                        alt='Selected image'
+                                        sx={{ height: 50 }}
+                                    />
                                 ) : (
-                                    <Image name='general.png' sx={{ height: 50 }} />
+                                    <Image
+                                        name='general.png'
+                                        alt='general logo'
+                                        sx={{ height: 50 }}
+                                    />
                                 )}
                             </Box>
                         ))}

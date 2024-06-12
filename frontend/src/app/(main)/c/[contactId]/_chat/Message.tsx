@@ -4,7 +4,7 @@ import DoneIcon from '@mui/icons-material/Done';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 // import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined';
 import { DateTime } from 'luxon';
-import React, { forwardRef } from 'react';
+import React from 'react';
 import { IconButton, Stack, Typography, Box } from '@mui/material';
 import { escapeDanger } from '@/utils/function';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -36,7 +36,7 @@ type MessageProps = {
 
 type Ref = React.MutableRefObject<any>;
 
-const Message = forwardRef<Ref, MessageProps>((props, ref) => {
+const Message = (props: MessageProps) => {
     const {
         message,
         highlight,
@@ -80,7 +80,7 @@ const Message = forwardRef<Ref, MessageProps>((props, ref) => {
 
     const messageBox = (
         <Box
-            ref={ref}
+            // ref={ref}
             {...rest}
             sx={{
                 position: 'relative',
@@ -279,6 +279,6 @@ const Message = forwardRef<Ref, MessageProps>((props, ref) => {
     //     );
 
     return messageBox;
-});
+};
 
 export default Message;

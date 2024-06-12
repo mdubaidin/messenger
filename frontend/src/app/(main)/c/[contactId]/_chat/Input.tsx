@@ -25,7 +25,7 @@ import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
 import { useMenu } from '@/hooks/useMenu';
 import useModal from '@/hooks/useModal';
-import { useMessage } from '@/app/(main)/_layout/Header';
+import { useMessage } from '@/providers/Provider';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
