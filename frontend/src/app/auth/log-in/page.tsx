@@ -86,7 +86,7 @@ const AuthForm = () => {
                     onClick={() => {
                         console.log('access_token');
                         setCookie('accessToken', 'abcdefghijklmnopqrstuvwxyz', {
-                            domain: 'localhost',
+                            domain: process.env.DOMAIN,
                         });
                         router.push('/c');
                     }}
