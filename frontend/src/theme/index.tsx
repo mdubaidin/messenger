@@ -1,6 +1,6 @@
 'use client';
 
-import { createTheme, css, GlobalStyles, PaletteMode, Theme, useMediaQuery } from '@mui/material';
+import { createTheme, PaletteMode, Theme, useMediaQuery } from '@mui/material';
 import React, {
     useMemo,
     useContext,
@@ -51,6 +51,18 @@ enum ListItemButtonVariants {
     'sidebarIconButton',
 }
 
+declare module '@mui/material/TextField' {
+    interface BaseTextFieldProps {
+        variation?: string;
+    }
+}
+
+declare module '@mui/material/Select' {
+    interface SelectProps {
+        variation?: string;
+    }
+}
+
 declare module '@mui/material/ListItemButton' {
     interface ListItemButtonBaseProps {
         variant?: keyof typeof ListItemButtonVariants;
@@ -77,19 +89,9 @@ const ThemeProvider = (props: ThemeContextProviderProps): React.JSX.Element => {
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
     const preferTheme = getLocalStorage('theme') as ThemeOptions;
 
-    const [mode, setMode] = useState<PaletteMode>('dark');
+    const [mode, setMode] = useState<PaletteMode>('light');
     const [theme, setTheme] = useState<ThemeOptions>(preferTheme || 'system');
 
-    // function systemPreferTheme(): string {
-    //     if (window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
-    //     else if (window.matchMedia('(prefers-color-scheme: light)').matches) return 'light';
-    //     else return 'dark';
-    // }
-
-    // useLayoutEffect(() => {
-    //     const theme = getCookie('P13N');
-    //     if (theme) setMode(theme as PaletteMode);
-    // }, [mode]);
     useLayoutEffect(() => {
         if (theme === 'system') {
             const preferTheme = prefersDarkMode ? 'dark' : 'light';
@@ -145,10 +147,17 @@ const ThemeProvider = (props: ThemeContextProviderProps): React.JSX.Element => {
                 palette: {
                     mode: mode,
                     primary: {
-                        main: '#0da4e8',
+                        // main: '#4064fd',
+                        main: '#0080ff',
+                    },
+                    secondary: {
+                        main: '#ed499b',
                     },
 
                     ...(mode === 'light' ? light : dark),
+                },
+                typography: {
+                    fontFamily: 'Segoe UI, Helvetica, Arial, Lucida Grande, sans-serif',
                 },
                 breakpoints: {
                     keys: ['xs', 'sm', 'md', 'xm', 'lg', 'xl', 'xxl'],
@@ -304,12 +313,73 @@ const ThemeProvider = (props: ThemeContextProviderProps): React.JSX.Element => {
                         ],
                     },
                     MuiTextField: {
+                        variants: [
+                            {
+                                props: { variation: 'auth' },
+                                style: ({ theme }) => ({
+                                    background: theme.palette.background.search,
+                                    borderRadius: '10px',
+
+                                    '.MuiInputBase-root.MuiOutlinedInput-root': {
+                                        borderColor: 'transparent',
+
+                                        '&:focus-visible': {
+                                            outline: 'none',
+                                        },
+
+                                        '&.Mui-disabled .MuiOutlinedInput-notchedOutline': {
+                                            borderColor: 'transparent',
+                                        },
+
+                                        '& .MuiOutlinedInput-notchedOutline': {
+                                            borderColor: 'transparent',
+                                            borderWidth: '1px',
+                                            '&:hover': {
+                                                borderColor: 'transparent',
+                                            },
+                                        },
+                                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                            borderColor: theme.palette.primary.main,
+                                            borderRadius: '10px',
+                                        },
+                                    },
+                                }),
+                            },
+                        ],
                         styleOverrides: {
                             root: {
                                 marginBottom: '16px',
+                                'input::-webkit-outer-spin-button,\ninput::-webkit-inner-spin-button':
+                                    {
+                                        WebkitAppearance: 'none',
+                                        margin: '0',
+                                    },
                             },
                         },
                     },
+                    MuiSelect: {
+                        variants: [
+                            {
+                                props: { variation: 'auth' },
+                                style: ({ theme }) => ({
+                                    marginBottom: '16px',
+                                    background: theme.palette.background.search,
+                                    borderRadius: '10px',
+                                    '&, &:hover': {
+                                        '.MuiOutlinedInput-notchedOutline': {
+                                            borderColor: 'transparent',
+                                        },
+                                    },
+                                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                        borderColor: theme.palette.primary.main,
+                                        borderRadius: '10px',
+                                        borderWidth: '1px',
+                                    },
+                                }),
+                            },
+                        ],
+                    },
+
                     MuiMenu: {
                         styleOverrides: {
                             root: {

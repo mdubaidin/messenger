@@ -4,7 +4,6 @@ import Provider from '@/providers/Provider';
 // import StoreProvider from './StoreProvider';
 // import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import StoreProvider from './StoreProvider';
-import { EmotionCache } from '@emotion/react';
 
 export const metadata: Metadata = {
     title: 'Messenger',
@@ -29,6 +28,9 @@ export default function RootLayout({
 }>) {
     return (
         <html lang='en'>
+            <head>
+                <link href='https://fonts.cdnfonts.com/css/calibre-2' rel='stylesheet' />
+            </head>
             <body>
                 <Provider>
                     <StoreProvider>
