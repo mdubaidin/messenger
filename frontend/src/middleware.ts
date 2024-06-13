@@ -6,9 +6,10 @@ const authPath = ['/auth/log-in', '/auth/create'];
 export function middleware(request: NextRequest) {
     const accessToken: string | undefined = request.cookies.get('accessToken')?.value;
     const { pathname } = request.nextUrl;
+    console.log(pathname);
 
     if (accessToken) {
-        if (authPath.includes(pathname)) {
+        if (authPath.includes(pathname) || pathname === '/') {
             return NextResponse.redirect(new URL('/c', request.nextUrl));
         } else {
             return NextResponse.next();

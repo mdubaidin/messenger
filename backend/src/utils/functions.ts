@@ -2,6 +2,7 @@
 import fs from 'fs';
 import path from 'path';
 import { Types } from 'mongoose';
+import jwt from 'jsonwebtoken';
 
 type K = {
     [key: string]: string | number | boolean;
@@ -28,8 +29,10 @@ function generateOTP(length: number) {
     return otp;
 }
 
-// const signToken = (user: { _id: Types.ObjectId }) =>
-//     jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+const PRIVATE_KEY = fs.readFileSync('./certs/private.pem', 'utf8');
+
+const signToken = (user: { id: string }) =>
+    jwt.sign({ sub: user.id }, PRIVATE_KEY, { algorithm: 'RS256' });
 
 const acceptFiles = function (...fileNames: string[]) {
     const tempStoragePath = 'temp_uploads';
@@ -63,4 +66,4 @@ function isValidMongoId(id: string) {
     }
 }
 
-export { filterObject, generateOTP, acceptFiles, rejectFiles, isValidMongoId };
+export { filterObject, generateOTP, acceptFiles, rejectFiles, isValidMongoId, signToken };

@@ -266,7 +266,9 @@ const Sidebar = () => {
                 open={modalState}
                 onClose={closeModal}
                 sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Settings />
+                <>
+                    <Settings />
+                </>
             </Modal>
         </>
     );

@@ -15,8 +15,8 @@ export interface UserInput {
 }
 
 interface Methods {
-    isAuthorized(): string;
-    isUnauthorized(): boolean;
+    isAuthorized(password: string): Promise<string>;
+    isUnauthorized(password: string): Promise<boolean>;
     convertPasswordToHash(password: string): string;
     removeSensitiveInfo(): void;
     name?: string;
@@ -26,7 +26,7 @@ interface Methods {
 
 export interface UserDocument extends UserInput, Document, Methods {}
 
-const userSchema = new Schema<UserInput>(
+const userSchema = new Schema(
     {
         email: {
             type: String,
@@ -68,7 +68,7 @@ const userSchema = new Schema<UserInput>(
         // },
         gender: {
             type: String,
-            enum: ['male', 'female'],
+            enum: ['male', 'female', 'other'],
             required: true,
         },
         dob: {
@@ -118,4 +118,4 @@ userSchema.virtual('name').get(function () {
     return this.firstName + ' ' + this.lastName;
 });
 
-export default model<UserInput>('User', userSchema);
+export default model<UserDocument>('User', userSchema);

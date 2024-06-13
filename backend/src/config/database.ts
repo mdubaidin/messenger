@@ -4,7 +4,8 @@ async function connectDB() {
     try {
         const connectionString = process.env.MONGODB_CONNECTION_STRING;
 
-        if (!connectionString) return console.log('No connection string passed to connect');
+        if (!connectionString)
+            return console.log('Connection Failed: Connection string must be provided');
 
         await connect(connectionString);
 

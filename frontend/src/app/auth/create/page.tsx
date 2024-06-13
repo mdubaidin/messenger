@@ -1,36 +1,23 @@
 'use client';
 
-import {
-    Box,
-    Button,
-    ButtonBaseOwnProps,
-    Card,
-    Divider,
-    Grid,
-    Link,
-    MenuItem,
-    Select,
-    Stack,
-    TextField,
-    Typography,
-} from '@mui/material';
-import React, { useState } from 'react';
-import { BsGithub, BsGoogle } from 'react-icons/bs';
-import { IconType } from 'react-icons';
+import { Box, Button, Divider, Link, Stack, Typography } from '@mui/material';
+import React, { useEffect, useMemo } from 'react';
 import { useForm, SubmitHandler, FieldValues } from 'react-hook-form';
 import Form from '@/components/Form';
 import FacebookButton from '@/components/FacebookButton';
 import GoogleButton from '@/components/GoogleButton';
+import Input from '@/components/Input';
 
 const AuthForm = () => {
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isLoading },
     } = useForm<FieldValues>({
         defaultValues: {
-            firstName: '',
-            lastName: '',
+            name: '',
+            email: '',
+            password: '',
         },
     });
 
@@ -39,6 +26,7 @@ const AuthForm = () => {
     return (
         <Box
             sx={{
+                width: { xs: 'auto', xm: '400px' },
                 py: 5,
                 transition: '.2s',
                 display: 'flex',
@@ -56,78 +44,37 @@ const AuthForm = () => {
                     fontFamily:
                         'Calibre, Helvetica Neue, Segoe UI, Helvetica, Arial, Lucida Grande, sans-serif',
                 }}>
-                Get Started!
+                Let&apos;s <br />
+                get started!
             </Typography>
             <Typography variant='body1' mb={4} color='text.secondary'>
                 Messenger helps you connect and share with the people in your life.
             </Typography>
             <Form className='space-y-6' onSubmit={handleSubmit(onSubmit)}>
-                <Stack direction='row' spacing={2} mb={0.5}>
-                    <Box flexGrow={1}>
-                        <TextField
-                            variation='auth'
-                            size='small'
-                            placeholder='First name'
-                            fullWidth
-                            {...register('firstName')}
-                        />
-                    </Box>
-                    <Box flexGrow={1}>
-                        <TextField
-                            variation='auth'
-                            placeholder='Last name'
-                            size='small'
-                            fullWidth
-                            {...register('lastName')}
-                        />
-                    </Box>
-                </Stack>
-                <Grid container spacing={2} mb={0.5}>
-                    <Grid item xs={12} sm={6}>
-                        <TextField
-                            variation='auth'
-                            fullWidth
-                            size='small'
-                            type='date'
-                            placeholder='Date of birth'
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <Select
-                            variation='auth'
-                            name='gender'
-                            value=''
-                            fullWidth
-                            sx={{
-                                '.MuiSelect-select.MuiInputBase-input.MuiOutlinedInput-input': {
-                                    padding: '8.5px 14px',
-                                },
-                            }}>
-                            <MenuItem disabled value='' sx={{ color: 'text.secondary' }}>
-                                Gender
-                            </MenuItem>
-                            <MenuItem value={'male'}>Male</MenuItem>
-                            <MenuItem value={'female'}>Female</MenuItem>
-                        </Select>
-                    </Grid>
-                </Grid>
-
-                <TextField
+                <Input
                     variation='auth'
-                    size='small'
-                    placeholder='Email address'
-                    fullWidth
-                    {...register('email')}
-                    sx={{ mb: 2.5 }}
+                    fieldName='name'
+                    placeholder='Full name'
+                    register={register}
+                    registerOptions={{ required: 'Full name is required' }}
                 />
 
-                <TextField
+                <Input
+                    fieldName='email'
                     variation='auth'
-                    size='small'
+                    placeholder='Email address'
+                    register={register}
+                    registerOptions={{ required: 'Email address is required' }}
+                />
+
+                <Input
+                    fieldName='password'
+                    variation='auth'
                     placeholder='Password'
-                    fullWidth
+                    type='password'
+                    register={register}
+                    registerOptions={{ required: 'Password is required' }}
                     sx={{ mb: 2.5 }}
-                    {...register('password')}
                 />
                 <Button
                     fullWidth
@@ -139,7 +86,7 @@ const AuthForm = () => {
                         py: 1,
                         borderRadius: '10px',
                     }}>
-                    Create Account
+                    Sign Up
                 </Button>
             </Form>
 
@@ -149,7 +96,7 @@ const AuthForm = () => {
                 </Typography>
             </Divider>
 
-            <Stack mt={3} spacing={2} my={3} direction={{ xs: 'column', xm: 'row' }}>
+            <Stack mt={3} spacing={2} my={3}>
                 <GoogleButton name='Sign up with Google' />
                 <FacebookButton name='Sign up with Facebook' />
             </Stack>
