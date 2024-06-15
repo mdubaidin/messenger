@@ -1,19 +1,18 @@
-import './config/config';
+import './config/config.js';
 import { Request, Response } from 'express';
 import express from 'express';
 import cors from 'cors';
-import authRouter from './routes/auth';
-import errorHandler from './middleware/errorHandler';
+import authRouter from './routes/auth.js';
+import errorHandler from './middleware/errorHandler.js';
 import passport from 'passport';
-import passportJWT from './libs/passport/passport-jwt';
+import './libs/passport/passport-jwt.js';
+import './libs/openid-client/google.js';
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-passport.use(passportJWT);
 
 app.use(passport.initialize());
 

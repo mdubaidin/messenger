@@ -1,6 +1,7 @@
 import express from 'express';
-import { createAccount } from '../controllers/auth/createAccount';
-import { login } from '../controllers/auth/login';
+import { createAccount } from '../controllers/auth/createAccount.js';
+import { login } from '../controllers/auth/login.js';
+import { googleClient, googleClientCallback } from '../libs/openid-client/google.js';
 
 const authRouter = express.Router();
 
@@ -19,5 +20,17 @@ authRouter.post('/login', login);
 
 // PATCH
 // authRouter.patch('/create-password', createPassword);
+
+authRouter.get('/google', googleClient);
+
+authRouter.get('/google/callback', googleClientCallback);
+
+authRouter.get('/profile', (req, res) => {
+    console.log(req.user);
+    if (!req.user) {
+        return res.redirect('/auth/google');
+    }
+    res.json(req.user);
+});
 
 export default authRouter;

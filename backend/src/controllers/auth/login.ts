@@ -1,7 +1,7 @@
-import { signToken } from '../../utils/functions';
+import { signToken } from '../../utils/functions.js';
 import { Handler } from 'express';
-import User from '../../models/User';
-import CustomError from '../../classes/CustomError';
+import User from '../../models/User.js';
+import CustomError from '../../classes/CustomError.js';
 
 const login: Handler = async function (req, res, next) {
     const { email, password } = req.body;
@@ -26,7 +26,7 @@ const login: Handler = async function (req, res, next) {
         //     });
         // }
 
-        const token = signToken({ id: user._id as string });
+        const token = signToken(user);
 
         res.success({
             user,

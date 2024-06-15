@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { Error as MongooseError } from 'mongoose';
-import CustomError from '../classes/CustomError';
+import CustomError from '../classes/CustomError.js';
 
 // bug fix handle mongoose server error
 
@@ -20,7 +20,7 @@ export default function (err: any, req: Request, res: Response, next: NextFuncti
     }
 
     // Any Mongoose Error
-    if (err instanceof MongooseError.ValidationError) {
+    if (err instanceof MongooseError) {
         return handleMongooseError(err, req, res);
     }
 

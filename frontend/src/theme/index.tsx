@@ -89,7 +89,7 @@ const ThemeProvider = (props: ThemeContextProviderProps): React.JSX.Element => {
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
     const preferTheme = getLocalStorage('theme') as ThemeOptions;
 
-    const [mode, setMode] = useState<PaletteMode>('light');
+    const [mode, setMode] = useState<PaletteMode>('dark');
     const [theme, setTheme] = useState<ThemeOptions>(preferTheme || 'system');
 
     useLayoutEffect(() => {
@@ -156,6 +156,7 @@ const ThemeProvider = (props: ThemeContextProviderProps): React.JSX.Element => {
 
                     ...(mode === 'light' ? light : dark),
                 },
+
                 typography: {
                     fontFamily: 'Segoe UI, Helvetica, Arial, Lucida Grande, sans-serif',
                 },
@@ -290,6 +291,15 @@ const ThemeProvider = (props: ThemeContextProviderProps): React.JSX.Element => {
                             {
                                 props: { variant: 'contained' },
                                 style: ({ theme }) => ({ color: theme.palette.common.white }),
+                            },
+                            {
+                                props: { variant: 'contained', color: 'primary' },
+                                style: ({ theme }) => ({
+                                    '&.Mui-disabled': {
+                                        color: 'rgb(255 255 255 / 47%)',
+                                        backgroundColor: theme.palette.primary.light,
+                                    },
+                                }),
                             },
                         ],
                         styleOverrides: {

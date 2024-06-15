@@ -5,6 +5,7 @@ import useSnack, { SnackAction } from '@/hooks/useSnack';
 import ThemeProvider from '@/theme';
 import { CacheProvider } from '@emotion/react';
 import createEmotionCache from '@/theme/createEmotionCache';
+import '@/libs/axios';
 
 interface HeaderContextProps {
     showMessage: Dispatch<SnackAction>;

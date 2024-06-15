@@ -1,3 +1,4 @@
+import '@/libs/axios';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 import type { Metadata } from 'next';
 import Provider from '@/providers/Provider';

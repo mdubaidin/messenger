@@ -3,31 +3,33 @@
 import {
     Box,
     Button,
-    ButtonBaseOwnProps,
-    Card,
+    CircularProgress,
     Divider,
     Link,
     Stack,
     TextField,
     Typography,
 } from '@mui/material';
-import React, { useState } from 'react';
-import { BsGithub, BsGoogle } from 'react-icons/bs';
-import { IconType } from 'react-icons';
+import React from 'react';
 import { useForm, SubmitHandler, FieldValues } from 'react-hook-form';
 import Form from '@/components/Form';
 import { setCookie } from 'cookies-next';
 import { useRouter } from 'next/navigation';
 import GoogleButton from '@/components/GoogleButton';
 import FacebookButton from '@/components/FacebookButton';
+import { isEmpty } from '@/utils/function';
+import axios from 'axios';
+import useErrorHandler from '@/hooks/useErrorHandler';
+import Input from '@/components/Input';
 
 const AuthForm = () => {
     const router = useRouter();
+    const errorHandler = useErrorHandler();
 
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = useForm<FieldValues>({
         defaultValues: {
             email: '',
@@ -35,7 +37,17 @@ const AuthForm = () => {
         },
     });
 
-    const onSubmit: SubmitHandler<FieldValues> = data => console.log(data);
+    const onSubmit: SubmitHandler<FieldValues> = async data => {
+        try {
+            const response = await axios.post('/auth/login', data);
+            setCookie('accessToken', response.data.token, {
+                domain: process.env.DOMAIN,
+            });
+            router.push('/c');
+        } catch (err) {
+            errorHandler(err);
+        }
+    };
 
     return (
         <Box
@@ -61,35 +73,48 @@ const AuthForm = () => {
                 Hang out <br />
                 whenever, <br /> wherever
             </Typography>
-            <Typography variant='body1' mb={4} color='text.secondary'>
+            <Typography variant='body1' mb={isEmpty(errors) ? 5 : 1} color='text.secondary'>
                 Messenger makes it easy and fun to stay close to your favourite people.
             </Typography>
-            <Form className='space-y-6' onSubmit={handleSubmit(onSubmit)}>
-                <TextField
+
+            {isEmpty(errors) ? null : (
+                <Typography variant='body2' color='red' mb={1.5}>
+                    {Object.values(errors)[0]?.message as string}
+                </Typography>
+            )}
+            <Form onSubmit={handleSubmit(onSubmit)}>
+                <Input
+                    fieldName='email'
                     variation='auth'
                     placeholder='Email address'
-                    size='small'
-                    fullWidth
-                    {...register('email')}
+                    register={register}
+                    registerOptions={{
+                        required: 'Email address is required',
+                        pattern: {
+                            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                            message: 'Email address must be valid',
+                        },
+                    }}
                 />
 
-                <TextField
+                <Input
                     variation='auth'
+                    type='password'
                     placeholder='Password'
-                    size='small'
-                    fullWidth
-                    {...register('password')}
+                    fieldName='password'
+                    register={register}
+                    registerOptions={{ required: 'Password is required' }}
                 />
                 <Button
+                    type='submit'
                     fullWidth
                     variant='contained'
-                    onClick={() => {
-                        console.log('access_token');
-                        setCookie('accessToken', 'abcdefghijklmnopqrstuvwxyz', {
-                            domain: process.env.DOMAIN,
-                        });
-                        router.push('/c');
-                    }}
+                    disabled={isSubmitting}
+                    endIcon={
+                        isSubmitting && (
+                            <CircularProgress sx={{ color: 'contrastColor' }} size='small' />
+                        )
+                    }
                     sx={{ my: 2, py: 1, borderRadius: '10px' }}>
                     Log In
                 </Button>
@@ -102,7 +127,10 @@ const AuthForm = () => {
             </Divider>
 
             <Stack mt={3} spacing={2} my={3.5}>
-                <GoogleButton name='Continue with Google' />
+                <GoogleButton
+                    name='Continue with Google'
+                    href={`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/google`}
+                />
                 <FacebookButton name='Continue with Facebook' />
             </Stack>
 

@@ -1,18 +1,30 @@
 'use client';
 
-import { Box, Button, Divider, Link, Stack, Typography } from '@mui/material';
-import React, { useEffect, useMemo } from 'react';
+import { Box, Button, CircularProgress, Divider, Link, Stack, Typography } from '@mui/material';
+import React from 'react';
 import { useForm, SubmitHandler, FieldValues } from 'react-hook-form';
 import Form from '@/components/Form';
 import FacebookButton from '@/components/FacebookButton';
 import GoogleButton from '@/components/GoogleButton';
 import Input from '@/components/Input';
+import useErrorHandler from '@/hooks/useErrorHandler';
+import axios from 'axios';
+import { isEmpty } from '@/utils/function';
+import { useRouter } from 'next/navigation';
+
+// interface FormInput {
+//     name: string;
+//     email: string;
+//     password: string;
+// }
 
 const AuthForm = () => {
+    const errorHandler = useErrorHandler();
+    const router = useRouter();
     const {
         register,
         handleSubmit,
-        formState: { errors, isLoading },
+        formState: { errors, isSubmitting },
     } = useForm<FieldValues>({
         defaultValues: {
             name: '',
@@ -21,7 +33,15 @@ const AuthForm = () => {
         },
     });
 
-    const onSubmit: SubmitHandler<FieldValues> = data => console.log(data);
+    const onSubmit: SubmitHandler<FieldValues> = async data => {
+        try {
+            await axios.post('/auth/create', data);
+
+            router.push('/auth/log-in');
+        } catch (err) {
+            errorHandler(err);
+        }
+    };
 
     return (
         <Box
@@ -47,16 +67,31 @@ const AuthForm = () => {
                 Let&apos;s <br />
                 get started!
             </Typography>
-            <Typography variant='body1' mb={4} color='text.secondary'>
+
+            <Typography variant='body1' mb={isEmpty(errors) ? 5 : 1} color='text.secondary'>
                 Messenger helps you connect and share with the people in your life.
             </Typography>
-            <Form className='space-y-6' onSubmit={handleSubmit(onSubmit)}>
+
+            {isEmpty(errors) ? null : (
+                <Typography variant='body2' color='red' mb={1.5}>
+                    {Object.values(errors)[0]?.message as string}
+                </Typography>
+            )}
+
+            <Form onSubmit={handleSubmit(onSubmit)}>
                 <Input
                     variation='auth'
                     fieldName='name'
                     placeholder='Full name'
                     register={register}
-                    registerOptions={{ required: 'Full name is required' }}
+                    registerOptions={{
+                        required: 'Full name is required',
+                        minLength: { value: 3, message: 'Name must be at least 3 characters' },
+                        maxLength: {
+                            value: 40,
+                            message: 'Name exceeds the maximum character limit',
+                        },
+                    }}
                 />
 
                 <Input
@@ -64,7 +99,13 @@ const AuthForm = () => {
                     variation='auth'
                     placeholder='Email address'
                     register={register}
-                    registerOptions={{ required: 'Email address is required' }}
+                    registerOptions={{
+                        required: 'Email address is required',
+                        pattern: {
+                            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                            message: 'Email address must be valid',
+                        },
+                    }}
                 />
 
                 <Input
@@ -80,6 +121,8 @@ const AuthForm = () => {
                     fullWidth
                     type='submit'
                     variant='contained'
+                    disabled={isSubmitting}
+                    endIcon={isSubmitting && <CircularProgress color='inherit' size='small' />}
                     sx={{
                         mt: 2,
                         mb: 2.5,
@@ -97,7 +140,10 @@ const AuthForm = () => {
             </Divider>
 
             <Stack mt={3} spacing={2} my={3}>
-                <GoogleButton name='Sign up with Google' />
+                <GoogleButton
+                    name='Sign up with Google'
+                    href={`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/google`}
+                />
                 <FacebookButton name='Sign up with Facebook' />
             </Stack>
 

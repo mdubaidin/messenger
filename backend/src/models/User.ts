@@ -1,14 +1,16 @@
 import { CallbackWithoutResultAndOptionalError, Document, model, Schema } from 'mongoose';
 import bcrypt from 'bcrypt';
-import { emailValidator } from '../utils/validators';
+import { emailValidator } from '../utils/validators.js';
 
 export interface UserInput {
-    firstName: string;
-    lastName: string;
+    name: string;
     email: string;
     password: string;
     gender: string;
     dob: Date;
+    provider: 'Google' | 'Facebook';
+    providerId: string;
+    picture: string;
     otp: {
         email: string;
     };
@@ -19,7 +21,6 @@ interface Methods {
     isUnauthorized(password: string): Promise<boolean>;
     convertPasswordToHash(password: string): string;
     removeSensitiveInfo(): void;
-    name?: string;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -39,23 +40,33 @@ const userSchema = new Schema(
                 message: props => `${props.value} is not a valid email address!`,
             },
         },
-        firstName: {
+        name: {
             type: String,
             trim: true,
             minlength: 3,
             maxlength: 40,
             required: true,
         },
-        lastName: {
-            type: String,
-            trim: true,
-            maxlength: 40,
-        },
         password: {
             type: String,
             minlength: 8,
             required: true,
         },
+        provider: {
+            type: String,
+            enum: ['Google', 'Facebook'],
+            default: null,
+        },
+        providerId: {
+            default: null,
+            type: String,
+            sparse: true,
+            required: function (this: UserDocument) {
+                return this.provider === 'Google' || this.provider === 'Facebook';
+            },
+        },
+        picture: String,
+
         // phone: {
         //     type: String,
         //     sparse: true,
@@ -69,11 +80,9 @@ const userSchema = new Schema(
         gender: {
             type: String,
             enum: ['male', 'female', 'other'],
-            required: true,
         },
         dob: {
             type: Date,
-            required: true,
         },
         otp: {
             email: {
@@ -113,9 +122,5 @@ userSchema.methods = {
         this.otp = undefined;
     },
 };
-
-userSchema.virtual('name').get(function () {
-    return this.firstName + ' ' + this.lastName;
-});
 
 export default model<UserDocument>('User', userSchema);

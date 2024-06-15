@@ -1,5 +1,6 @@
 import { Strategy as JwtStrategy, ExtractJwt, StrategyOptions } from 'passport-jwt';
 import fs from 'fs';
+import passport from 'passport';
 
 const PUBLIC_KEY = fs.readFileSync('./certs/public.pem', 'utf8');
 
@@ -22,4 +23,4 @@ const passportJWT = new JwtStrategy(options, async function (payload, done) {
     }
 });
 
-export default passportJWT;
+passport.use(passportJWT);

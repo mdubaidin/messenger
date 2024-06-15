@@ -43,7 +43,7 @@ const useErrorHandler = () => {
     }, []);
 
     const errorHandler = useCallback(
-        (error: AxiosError) => {
+        (error: any) => {
             console.info(error);
             if (error.response) {
                 const data: any = error.response.data;
@@ -102,7 +102,8 @@ const useErrorHandler = () => {
                     );
                 }
 
-                if (status === 404) return showError(`We can't find what you are looking for.`);
+                if (status === 404)
+                    return showError(message || `We can't find what you are looking for.`);
 
                 if (status === 409)
                     return showError(

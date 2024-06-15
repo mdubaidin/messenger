@@ -29,13 +29,16 @@ import { useMenu } from '@/hooks/useMenu';
 import useModal from '@/hooks/useModal';
 import Settings from './Settings';
 import { deleteCookie } from 'cookies-next';
+import { useRouter } from 'next/navigation';
 
 const Sidebar = () => {
     const { anchorEl, openMenu, closeMenu } = useMenu();
     const { modalState, openModal, closeModal } = useModal();
+    const router = useRouter();
 
     const signOut = () => {
         deleteCookie('accessToken');
+        router.push('/auth/log-in');
     };
 
     return (

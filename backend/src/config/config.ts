@@ -1,5 +1,5 @@
-import './env';
-import './prototypes';
-import { connectDB } from './database';
+import './env.js';
+import './prototypes.js';
+import { connectDB } from './database.js';
 
 connectDB();

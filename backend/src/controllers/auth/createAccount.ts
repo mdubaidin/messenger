@@ -1,19 +1,15 @@
-import User from '../../models/User';
+import User from '../../models/User.js';
 import { Handler } from 'express';
-import { generateOTP } from '../../utils/functions';
+import { generateOTP } from '../../utils/functions.js';
 
 const createAccount: Handler = async function (req, res, next) {
     try {
-        const { firstName, lastName, dob, gender, email, password } = req.body;
+        const { name, email, password } = req.body;
 
         const user = new User({
-            firstName,
-            lastName,
-            email: email,
-            dob,
-            gender,
+            name,
+            email,
             password,
-            step: 1,
         });
 
         const otp = generateOTP(4);

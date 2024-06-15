@@ -1,8 +1,9 @@
+'use client';
+
 import axios from 'axios';
 import { getCookie } from 'cookies-next';
-import { env } from '../utils/function';
 
-axios.defaults.baseURL = env('AUTH_SERVER');
+axios.defaults.baseURL = process.env.NEXT_PUBLIC_SERVER_URL;
 // axios.defaults.withCredentials = true;
 
 axios.interceptors.request.use(function (config) {
