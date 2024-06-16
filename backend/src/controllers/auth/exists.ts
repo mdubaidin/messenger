@@ -1,15 +1,13 @@
-import User from '../../schema/User.js';
+import { Handler } from 'express';
+import User from '../../models/User.js';
 
-function exists(toFind) {
+function exists(toFind: string): Handler {
     return async function (req, res, next) {
         try {
             const user = await User.findOne({
-                [toFind]:
-                    req.body.value +
-                    (toFind === 'email' ? '@' + process.env.EMAIL_DOMAIN : ''),
+                [toFind]: req.body.value,
             });
 
-            console.log({ toFind, value: req.body.value, user });
             res.success({
                 exists: Boolean(user),
             });

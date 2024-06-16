@@ -1,6 +1,14 @@
 import { CallbackWithoutResultAndOptionalError, Document, model, Schema } from 'mongoose';
 import bcrypt from 'bcrypt';
 import { emailValidator } from '../utils/validators.js';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import fs from 'fs';
+
+const PRIVATE_KEY = fs.readFileSync('./certs/private.pem', 'utf8');
+
+export interface JwtUser extends JwtPayload {
+    id: string;
+}
 
 export interface UserInput {
     name: string;
@@ -11,6 +19,7 @@ export interface UserInput {
     provider: 'Google' | 'Facebook';
     providerId: string;
     picture: string;
+    refreshToken: string;
     otp: {
         email: string;
     };
@@ -21,6 +30,8 @@ interface Methods {
     isUnauthorized(password: string): Promise<boolean>;
     convertPasswordToHash(password: string): string;
     removeSensitiveInfo(): void;
+    signAccessToken(): string;
+    signRefreshToken(): string;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -66,17 +77,7 @@ const userSchema = new Schema(
             },
         },
         picture: String,
-
-        // phone: {
-        //     type: String,
-        //     sparse: true,
-        //     // validate: {
-        //     //     validator: function (v) {
-        //     //         return phoneValidator;
-        //     //     },
-        //     //     message: props => `${props.value} is not a valid number.`,
-        //     // }, bugfix
-        // },
+        refreshToken: String,
         gender: {
             type: String,
             enum: ['male', 'female', 'other'],
@@ -120,6 +121,22 @@ userSchema.methods = {
     removeSensitiveInfo: function () {
         this.password = undefined;
         this.otp = undefined;
+    },
+
+    signAccessToken: function () {
+        return jwt.sign({ id: this._id } as JwtUser, PRIVATE_KEY, {
+            algorithm: 'RS256',
+            expiresIn: process.env.EXPIRE_JWT_ACCESS_TOKEN,
+        });
+    },
+
+    signRefreshToken: function () {
+        const REFRESH_SECRET = process.env.JWT_SECRET;
+        if (!REFRESH_SECRET) throw new Error('REFRESH_SECRET is undefined');
+
+        return jwt.sign({ id: this._id } as JwtUser, REFRESH_SECRET, {
+            expiresIn: process.env.EXPIRE_JWT_REFRESH_TOKEN,
+        });
     },
 };
 

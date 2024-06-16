@@ -1,7 +1,9 @@
-import { signToken } from '../../utils/functions.js';
+// import { signAccessToken, signRefreshToken } from '../../utils/functions.js';
 import { Handler } from 'express';
 import User from '../../models/User.js';
 import CustomError from '../../classes/CustomError.js';
+import { generateJWT } from '../../utils/jwt.js';
+import { setCookie } from '../../utils/cookies.js';
 
 const login: Handler = async function (req, res, next) {
     const { email, password } = req.body;
@@ -10,12 +12,13 @@ const login: Handler = async function (req, res, next) {
         const query = { email };
         const user = await User.findOne(query);
 
-        if (!user) return CustomError.throw('This Account Does Not Exist', 404);
+        if (!user) return CustomError.throw(`We can't find account with ${email}`, 404);
 
         if (await user.isUnauthorized(password))
-            return CustomError.throw('Email or Password is invalid', 200);
-
-        user.removeSensitiveInfo();
+            return CustomError.throw(
+                'The password you entered is incorrect, Please try again',
+                200
+            );
 
         // if (user.step !== 0) {
         //     return res.error({
@@ -26,11 +29,16 @@ const login: Handler = async function (req, res, next) {
         //     });
         // }
 
-        const token = signToken(user);
+        const { accessToken, refreshToken } = await generateJWT(user);
+        // user.removeSensitiveInfo();
+
+        setCookie(res, 'access_token', accessToken);
+        setCookie(res, 'refresh_token', refreshToken);
 
         res.success({
             user,
-            token,
+            accessToken,
+            refreshToken,
         });
     } catch (e) {
         next(e);

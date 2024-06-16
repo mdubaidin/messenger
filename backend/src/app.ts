@@ -4,9 +4,8 @@ import express from 'express';
 import cors from 'cors';
 import authRouter from './routes/auth.js';
 import errorHandler from './middleware/errorHandler.js';
-import passport from 'passport';
-import './libs/passport/passport-jwt.js';
-import './libs/openid-client/google.js';
+import authenticate from './middleware/authenticate.js';
+import userRouter from './routes/users.js';
 
 const app = express();
 
@@ -14,16 +13,11 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(passport.initialize());
-
 app.use('/api/auth', authRouter);
 
-app.use('/api', passport.authenticate('jwt', { session: false }));
+app.use(authenticate);
 
-app.get('/api/', (req: Request, res: Response) => {
-    console.log(req.user);
-    res.success('Hello World');
-});
+app.use('/api/user', userRouter);
 
 app.use(errorHandler);
 

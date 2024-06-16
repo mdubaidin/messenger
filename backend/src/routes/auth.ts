@@ -2,6 +2,7 @@ import express from 'express';
 import { createAccount } from '../controllers/auth/createAccount.js';
 import { login } from '../controllers/auth/login.js';
 import { googleClient, googleClientCallback } from '../libs/openid-client/google.js';
+import refreshAccessToken from '../controllers/auth/refreshAccessToken.js';
 
 const authRouter = express.Router();
 
@@ -12,6 +13,7 @@ const authRouter = express.Router();
 // POST
 authRouter.post('/create', createAccount);
 authRouter.post('/login', login);
+authRouter.post('/refresh-token', refreshAccessToken);
 // authRouter.post('/users-info', getUsersInfo);
 // authRouter.post('/exists/email', exists('email'));
 // authRouter.post('/find', checkEmail);

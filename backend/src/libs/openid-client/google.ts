@@ -1,7 +1,8 @@
 import { Issuer } from 'openid-client';
 import { Handler } from 'express';
 import User from '../../models/User.js';
-import { signToken } from '../../utils/functions.js';
+import { generateJWT } from '../../utils/jwt.js';
+import { setCookie } from '../../utils/cookies.js';
 
 const googleIssuer = await Issuer.discover('https://accounts.google.com');
 
@@ -28,17 +29,13 @@ const googleClientCallback: Handler = async function (req, res, next) {
         tokenSet.claims();
 
         const userinfo = await client.userinfo(tokenSet);
-        req.user = userinfo;
 
-        const user = await User.findOne({ providerId: userinfo.sub });
+        let user = null;
 
-        if (user) {
-            const token = signToken(user);
+        user = await User.findOne({ providerId: userinfo.sub });
 
-            res.cookie('accessToken', token, { httpOnly: true });
-            res.redirect(process.env.MAIN_SITE_URL + '/c');
-        } else {
-            const newUser = new User({
+        if (!user) {
+            user = new User({
                 name: userinfo.name,
                 email: userinfo.email,
                 picture: userinfo.picture,
@@ -46,13 +43,23 @@ const googleClientCallback: Handler = async function (req, res, next) {
                 providerId: userinfo.sub,
                 password: userinfo.sub,
             });
-
-            await newUser.save();
-            const token = signToken(newUser);
-
-            res.cookie('accessToken', token, { httpOnly: true });
-            res.redirect(process.env.MAIN_SITE_URL + '/c');
         }
+
+        await user.save();
+
+        console.log(user);
+
+        const { accessToken, refreshToken } = await generateJWT(user);
+
+        setCookie(res, 'access_token', accessToken);
+        setCookie(res, 'refresh_token', refreshToken);
+
+        res.redirect(process.env.MAIN_SITE_URL + '/c');
+        res.success({
+            user,
+            accessToken,
+            refreshToken,
+        });
     } catch (err) {
         next(err);
     }
