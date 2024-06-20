@@ -5,32 +5,35 @@ import { generateJWT } from '../../utils/jwt/jwt.js';
 import { setCookie } from '../../utils/cookies.js';
 import { setTokenCookies } from '../../utils/jwt/token.js';
 
-const googleIssuer = await Issuer.discover('https://accounts.google.com');
+const facebookIssuer = await Issuer.discover(
+    'https://limited.facebook.com/.well-known/openid-configuration/'
+);
 
-const client = new googleIssuer.Client({
-    client_id: process.env.GOOGLE_CLIENT_ID as string,
-    client_secret: process.env.GOOGLE_CLIENT_SECRET,
-    redirect_uris: [process.env.GOOGLE_REDIRECT_URI] as string[],
+const client = new facebookIssuer.Client({
+    client_id: process.env.FACEBOOK_APP_ID as string,
+    client_secret: process.env.FACEBOOK_APP_SECRET,
+    redirect_uris: [process.env.FACEBOOK_REDIRECT_URI] as string[],
     response_types: ['code'],
 });
 
 const params = {
-    scope: 'openid email profile',
-    prompt: 'consent',
+    scope: 'public_profile,email',
 };
 
-const googleClient: Handler = async function (req, res) {
+const facebookClient: Handler = async function (req, res) {
     const authUrl = client.authorizationUrl(params);
     res.redirect(authUrl);
 };
 
-const googleClientCallback: Handler = async function (req, res) {
+const facebookClientCallback: Handler = async function (req, res) {
     const params = client.callbackParams(req);
     try {
-        const tokenSet = await client.callback(process.env.GOOGLE_REDIRECT_URI, params);
+        const tokenSet = await client.callback(process.env.FACEBOOK_REDIRECT_URI, params);
         tokenSet.claims();
 
         const userinfo = await client.userinfo(tokenSet);
+
+        console.log(userinfo);
 
         let user = null;
 
@@ -52,11 +55,11 @@ const googleClientCallback: Handler = async function (req, res) {
         const { accessToken, refreshToken } = await generateJWT(user);
 
         setTokenCookies(res, accessToken, refreshToken);
-        // setCookie(res, 'google_oauth_access', tokenSet.access_token as string);
 
-        res.redirect(process.env.MAIN_SITE_URL + '/auth/log-in');
+        res.redirect(process.env.MAIN_SITE_URL as string);
         console.log('redirect to ', process.env.MAIN_SITE_URL);
     } catch (err: any) {
+        console.log(err);
         const message =
             err.code === 11000
                 ? 'This email aready being used by someone'
@@ -65,4 +68,4 @@ const googleClientCallback: Handler = async function (req, res) {
     }
 };
 
-export { googleClient, googleClientCallback };
+export { facebookClient, facebookClientCallback };

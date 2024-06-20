@@ -16,8 +16,44 @@ function filterObject(obj: object, values: string[]) {
     return k;
 }
 
-function generateOTP(length: number) {
-    var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+interface OTPoptions {
+    digits?: boolean;
+    alphabets?: boolean;
+    upperCase?: boolean;
+    specialChars?: boolean;
+}
+type keysOfProps = keyof OTPoptions;
+
+function generateOTP(length: number, options?: OTPoptions) {
+    var chars = '';
+
+    if (options) {
+        const keys: keysOfProps[] = Object.keys(options) as keysOfProps[];
+        keys.forEach(key => {
+            if (options[key] === true) {
+                switch (key) {
+                    case 'digits':
+                        chars += '0123456789';
+                        break;
+                    case 'alphabets':
+                        chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+                        break;
+                    case 'upperCase':
+                        chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                        break;
+                    case 'specialChars':
+                        chars += '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~';
+                        break;
+                    default:
+                        chars += '0123456789';
+                        break;
+                }
+            }
+        });
+    } else {
+        chars = '0123456789';
+    }
+
     var otp = '';
 
     for (var i = 0; i < length; i++) {
@@ -60,4 +96,18 @@ function isValidMongoId(id: string) {
     }
 }
 
-export { filterObject, generateOTP, acceptFiles, rejectFiles, isValidMongoId };
+function generateTemplate(template: string, data: any) {
+    if (!template) throw new Error('Template must be provided');
+
+    data.server = process.env.SERVER_URL as string;
+
+    const keys = Object.keys(data);
+    keys.forEach(key => {
+        const regex = new RegExp(`{{${[key]}}}`, 'gi');
+        template = template.replace(regex, data[key as keyof typeof data]);
+    });
+
+    return template;
+}
+
+export { filterObject, generateOTP, acceptFiles, rejectFiles, isValidMongoId, generateTemplate };

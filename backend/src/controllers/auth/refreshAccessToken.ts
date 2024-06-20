@@ -4,11 +4,12 @@ import User, { JwtUser } from '../../models/User.js';
 import CustomError from '../../classes/CustomError.js';
 import { clearCookie, setCookie } from '../../utils/cookies.js';
 import jwt from 'jsonwebtoken';
-import { generateJWT } from '../../utils/jwt.js';
+import { generateJWT } from '../../utils/jwt/jwt.js';
+import { getAccessToken } from '../../utils/jwt/token.js';
 
 const refreshAccessToken: Handler = async function (req, res, next) {
     try {
-        const token = req.body.refreshToken;
+        const token = req.body.refreshToken || req.cookies.refresh_token;
 
         if (!token) return CustomError.throw('Refresh token must be provided', 401);
 
@@ -17,8 +18,6 @@ const refreshAccessToken: Handler = async function (req, res, next) {
         const user = await User.findById(decode.id);
 
         if (!user) return CustomError.throw('Refresh token is invalid', 404);
-
-        user.refreshToken = '';
 
         const { accessToken, refreshToken } = await generateJWT(user);
 

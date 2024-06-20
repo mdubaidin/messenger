@@ -30,15 +30,22 @@ import useModal from '@/hooks/useModal';
 import Settings from './Settings';
 import { deleteCookie } from 'cookies-next';
 import { useRouter } from 'next/navigation';
+import useErrorHandler from '@/hooks/useErrorHandler';
+import axios from 'axios';
 
 const Sidebar = () => {
     const { anchorEl, openMenu, closeMenu } = useMenu();
     const { modalState, openModal, closeModal } = useModal();
     const router = useRouter();
+    const errorHandler = useErrorHandler();
 
-    const signOut = () => {
-        deleteCookie('accessToken');
-        router.push('/auth/log-in');
+    const logout = async () => {
+        try {
+            await axios.get('/auth/logout');
+            router.push('/auth/log-in');
+        } catch (err) {
+            errorHandler(err);
+        }
     };
 
     return (
@@ -253,7 +260,7 @@ const Sidebar = () => {
                     <MenuItem
                         onClick={() => {
                             closeMenu();
-                            signOut();
+                            logout();
                         }}>
                         <ListItemIcon>
                             <LogoutIcon fontSize='small' sx={{ color: 'inherit' }} />

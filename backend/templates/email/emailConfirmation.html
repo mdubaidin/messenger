@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600&display=swap');
+
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+                font-family: 'Poppins', sans-serif;
+            }
+
+            .wrapper {
+                background-color: #fafbfc;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+            }
+            .container {
+                max-width: 960px;
+                width: 100%;
+                padding-inline: 16px;
+            }
+
+            .logo {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                min-height: 55px;
+                padding-block: 40px;
+            }
+            .text-center {
+                text-align: center;
+            }
+
+            .card {
+                background-color: white;
+                box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+                padding: 40px;
+            }
+
+            .gutter-bottom {
+                margin-bottom: 16px;
+            }
+
+            .gutter-bottom-2 {
+                margin-bottom: 32px;
+            }
+        </style>
+    </head>
+    <body class="wrapper">
+        <div class="container">
+            <div class="logo">
+                <img src="{{server}}/public/images/logo.png" alt="Logo Here" style="height: 50px" />
+            </div>
+            <div class="card p-5">
+                <h3 class="gutter-bottom-1">Please confirm your email address</h3>
+                <p style="font-size: 14px">
+                    It seems you are regestering at Messengerz and trying to Verify your email
+                    address.
+                </p>
+                <p style="font-size: 14px">{{email}}.</p>
+                <p style="font-size: 14px" class="gutter-bottom">
+                    Here is the verification code. Please copy it and verify your email.
+                </p>
+                <h5 class="text-center" style="margin-top: 24px">Verification code</h5>
+                <h3 class="text-center" style="margin-bottom: 8px">{{code}}</h3>
+                <p class="text-center" style="margin-bottom: 24px; font-size: 12px">
+                    (This code will expire in 10 minutes after it was sent.)
+                </p>
+                <p style="font-size: 14px" class="gutter-bottom">
+                    If you did'nt request this, you can simply ignore this email.
+                </p>
+                <h4>Thanks,</h4>
+                <h4>The Messengerz team</h4>
+            </div>
+        </div>
+    </body>
+</html>

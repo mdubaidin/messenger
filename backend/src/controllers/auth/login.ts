@@ -2,8 +2,8 @@
 import { Handler } from 'express';
 import User from '../../models/User.js';
 import CustomError from '../../classes/CustomError.js';
-import { generateJWT } from '../../utils/jwt.js';
-import { setCookie } from '../../utils/cookies.js';
+import { generateJWT } from '../../utils/jwt/jwt.js';
+import { setTokenCookies } from '../../utils/jwt/token.js';
 
 const login: Handler = async function (req, res, next) {
     const { email, password } = req.body;
@@ -17,7 +17,7 @@ const login: Handler = async function (req, res, next) {
         if (await user.isUnauthorized(password))
             return CustomError.throw(
                 'The password you entered is incorrect, Please try again',
-                200
+                404
             );
 
         // if (user.step !== 0) {
@@ -32,8 +32,7 @@ const login: Handler = async function (req, res, next) {
         const { accessToken, refreshToken } = await generateJWT(user);
         // user.removeSensitiveInfo();
 
-        setCookie(res, 'access_token', accessToken);
-        setCookie(res, 'refresh_token', refreshToken);
+        setTokenCookies(res, accessToken, refreshToken);
 
         res.success({
             user,

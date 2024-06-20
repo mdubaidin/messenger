@@ -10,21 +10,24 @@ import {
     TextField,
     Typography,
 } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm, SubmitHandler, FieldValues } from 'react-hook-form';
 import Form from '@/components/Form';
 import { setCookie } from 'cookies-next';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import GoogleButton from '@/components/GoogleButton';
 import FacebookButton from '@/components/FacebookButton';
 import { isEmpty } from '@/utils/function';
 import axios from 'axios';
 import useErrorHandler from '@/hooks/useErrorHandler';
 import Input from '@/components/Input';
+import { useMessage } from '@/providers/Provider';
 
 const AuthForm = () => {
     const router = useRouter();
     const errorHandler = useErrorHandler();
+    const { showError } = useMessage();
+    const params = useSearchParams();
 
     const {
         register,
@@ -39,15 +42,21 @@ const AuthForm = () => {
 
     const onSubmit: SubmitHandler<FieldValues> = async data => {
         try {
-            const response = await axios.post('/auth/login', data);
-            setCookie('accessToken', response.data.token, {
-                domain: process.env.DOMAIN,
-            });
+            await axios.post('/auth/login', data);
             router.push('/c');
         } catch (err) {
             errorHandler(err);
         }
     };
+
+    useEffect(() => {
+        const error = params.get('e');
+        if (error) {
+            showError(error);
+        } else {
+            router.push('/c');
+        }
+    }, []);
 
     return (
         <Box
@@ -131,7 +140,10 @@ const AuthForm = () => {
                     name='Continue with Google'
                     href={`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/google`}
                 />
-                <FacebookButton name='Continue with Facebook' />
+                <FacebookButton
+                    name='Continue with Facebook'
+                    href={`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/facebook`}
+                />
             </Stack>
 
             <Stack direction='row' justifyContent='center' spacing={2}>

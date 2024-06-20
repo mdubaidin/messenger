@@ -1,17 +1,26 @@
 import express from 'express';
-import { createAccount } from '../controllers/auth/createAccount.js';
+import { createAccount, initiateEmail } from '../controllers/auth/createAccount.js';
 import { login } from '../controllers/auth/login.js';
-import { googleClient, googleClientCallback } from '../libs/openid-client/google.js';
+
 import refreshAccessToken from '../controllers/auth/refreshAccessToken.js';
+import logout from '../controllers/auth/logout.js';
+import authenticate from '../middleware/authenticate.js';
+import googleRouter from './auth/google.js';
+import facebookRouter from './auth/facebook.js';
+import validateJWT from '../middleware/validateJWT.js';
 
 const authRouter = express.Router();
 
+authRouter.use('/google', googleRouter);
+authRouter.use('/facebook', facebookRouter);
+
 // GET
+authRouter.get('/logout', validateJWT, authenticate, logout);
 // authRouter.get('/reset-code/:email', generateResetToken);
-// authRouter.get('/user-info', getUserInfo);
 
 // POST
-authRouter.post('/create', createAccount);
+authRouter.post('/create-account/step1', initiateEmail);
+authRouter.post('/create-account/step2', createAccount);
 authRouter.post('/login', login);
 authRouter.post('/refresh-token', refreshAccessToken);
 // authRouter.post('/users-info', getUsersInfo);
@@ -22,17 +31,5 @@ authRouter.post('/refresh-token', refreshAccessToken);
 
 // PATCH
 // authRouter.patch('/create-password', createPassword);
-
-authRouter.get('/google', googleClient);
-
-authRouter.get('/google/callback', googleClientCallback);
-
-authRouter.get('/profile', (req, res) => {
-    console.log(req.user);
-    if (!req.user) {
-        return res.redirect('/auth/google');
-    }
-    res.json(req.user);
-});
 
 export default authRouter;

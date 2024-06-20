@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { UserDocument } from '../models/User.js';
+import { UserDocument } from '../../models/User.js';
 
 export type Token = {
     readonly accessToken: string;

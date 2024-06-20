@@ -1,5 +1,5 @@
 import { Handler } from 'express';
-import Jwt, { JwtPayload } from 'jsonwebtoken';
+import Jwt from 'jsonwebtoken';
 import CustomError from '../classes/CustomError.js';
 import fs from 'fs';
 import { Types } from 'mongoose';
@@ -9,10 +9,9 @@ const PUBLIC_KEY = fs.readFileSync('./certs/private.pem', 'utf8');
 
 const authenticate: Handler = function authenticate(req, res, next) {
     try {
-        if (typeof req.headers.authorization !== 'string')
-            return CustomError.throw('Provided Auth token is invalid');
+        const token = req.headers.accessToken;
 
-        const token = req.headers.authorization?.split(' ')[1];
+        if (typeof token !== 'string') return CustomError.throw('Provided Auth token is invalid');
 
         if (!token) return CustomError.throw('JWT must be provided', 401);
 

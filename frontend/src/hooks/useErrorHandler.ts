@@ -95,7 +95,7 @@ const useErrorHandler = () => {
                     );
 
                 if (status === 403) {
-                    deleteCookie('accessToken');
+                    deleteCookie('access_token');
                     window.location.reload();
                     return showError(
                         `Access to this resource is denied. You may not have the necessary permissions.`

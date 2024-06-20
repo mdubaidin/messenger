@@ -4,8 +4,9 @@ import type { NextRequest } from 'next/server';
 const authPath = ['/auth/log-in', '/auth/create'];
 
 export function middleware(request: NextRequest) {
-    const accessToken: string | undefined = request.cookies.get('accessToken')?.value;
+    const accessToken: string | undefined = request.cookies.get('access_token')?.value;
     const { pathname } = request.nextUrl;
+    console.log('Middleware', accessToken);
 
     if (accessToken) {
         if (authPath.includes(pathname) || pathname === '/') {

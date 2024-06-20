@@ -2,7 +2,7 @@
 import { Handler } from 'express';
 import User from '../../models/User.js';
 import CustomError from '../../classes/CustomError.js';
-import { clearCookie } from '../../utils/cookies.js';
+import { clearTokenCookies } from '../../utils/jwt/token.js';
 
 const logout: Handler = async function (req, res, next) {
     const userId = req.user?.id;
@@ -15,8 +15,7 @@ const logout: Handler = async function (req, res, next) {
         user.refreshToken = '';
         await user.save();
 
-        clearCookie(res, 'accessToken');
-        clearCookie(res, 'refreshToken');
+        clearTokenCookies(res);
         res.success('logged out');
     } catch (e) {
         next(e);

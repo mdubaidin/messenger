@@ -21,7 +21,7 @@ export default function Navbar({ children }: { children: React.ReactNode }) {
     };
 
     const signOut = () => {
-        deleteCookie('accessToken');
+        deleteCookie('access_token');
         deleteCookie('role');
     };
 

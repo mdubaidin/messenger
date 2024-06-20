@@ -1,7 +1,7 @@
 'use client';
 
 import { Box, Button, CircularProgress, Divider, Link, Stack, Typography } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm, SubmitHandler, FieldValues } from 'react-hook-form';
 import Form from '@/components/Form';
 import FacebookButton from '@/components/FacebookButton';
@@ -10,7 +10,8 @@ import Input from '@/components/Input';
 import useErrorHandler from '@/hooks/useErrorHandler';
 import axios from 'axios';
 import { isEmpty } from '@/utils/function';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useMessage } from '@/providers/Provider';
 
 // interface FormInput {
 //     name: string;
@@ -21,6 +22,8 @@ import { useRouter } from 'next/navigation';
 const AuthForm = () => {
     const errorHandler = useErrorHandler();
     const router = useRouter();
+    const params = useSearchParams();
+    const { showError } = useMessage();
     const {
         register,
         handleSubmit,
@@ -42,6 +45,15 @@ const AuthForm = () => {
             errorHandler(err);
         }
     };
+
+    useEffect(() => {
+        const error = params.get('e');
+        if (error) {
+            showError(error);
+        } else {
+            router.push('/c');
+        }
+    }, []);
 
     return (
         <Box

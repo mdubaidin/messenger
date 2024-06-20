@@ -20,9 +20,6 @@ export interface UserInput {
     providerId: string;
     picture: string;
     refreshToken: string;
-    otp: {
-        email: string;
-    };
 }
 
 interface Methods {
@@ -35,6 +32,8 @@ interface Methods {
     createdAt: Date;
     updatedAt: Date;
 }
+
+const providers = ['Google', 'Facebook'];
 
 export interface UserDocument extends UserInput, Document, Methods {}
 
@@ -65,15 +64,13 @@ const userSchema = new Schema(
         },
         provider: {
             type: String,
-            enum: ['Google', 'Facebook'],
-            default: null,
+            enum: providers,
         },
         providerId: {
-            default: null,
             type: String,
             sparse: true,
             required: function (this: UserDocument) {
-                return this.provider === 'Google' || this.provider === 'Facebook';
+                return providers.includes(this.provider);
             },
         },
         picture: String,
@@ -119,8 +116,9 @@ userSchema.methods = {
         return bcrypt.hash(password, saltRounds);
     },
     removeSensitiveInfo: function () {
-        this.password = undefined;
-        this.otp = undefined;
+        var obj = this.toObject();
+        delete obj.password;
+        return obj;
     },
 
     signAccessToken: function () {
