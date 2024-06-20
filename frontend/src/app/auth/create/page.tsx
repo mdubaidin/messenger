@@ -53,7 +53,7 @@ const AuthForm = () => {
         } else {
             router.push('/c');
         }
-    }, []);
+    }, [params, router, showError]);
 
     return (
         <Box

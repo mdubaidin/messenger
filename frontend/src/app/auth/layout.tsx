@@ -1,6 +1,6 @@
 import Image from '@/components/Image';
 import { Box, Container, Grid, Typography } from '@mui/material';
-import React from 'react';
+import React, { Suspense } from 'react';
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
     return (
@@ -34,7 +34,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
                 </Box>
                 <Grid container justifyContent='space-between' alignItems='center'>
                     <Grid item xs={12} xm={5}>
-                        {children}
+                        <Suspense>{children}</Suspense>
                     </Grid>
                     <Grid item xs={0} xm={5} display={{ xs: 'none', xm: 'block' }}>
                         <Image alt='logo' name='auth-banner.png' />

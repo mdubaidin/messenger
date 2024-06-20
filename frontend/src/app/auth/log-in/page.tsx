@@ -1,19 +1,9 @@
 'use client';
 
-import {
-    Box,
-    Button,
-    CircularProgress,
-    Divider,
-    Link,
-    Stack,
-    TextField,
-    Typography,
-} from '@mui/material';
+import { Box, Button, CircularProgress, Divider, Link, Stack, Typography } from '@mui/material';
 import React, { useEffect } from 'react';
 import { useForm, SubmitHandler, FieldValues } from 'react-hook-form';
 import Form from '@/components/Form';
-import { setCookie } from 'cookies-next';
 import { useRouter, useSearchParams } from 'next/navigation';
 import GoogleButton from '@/components/GoogleButton';
 import FacebookButton from '@/components/FacebookButton';
@@ -56,7 +46,7 @@ const AuthForm = () => {
         } else {
             router.push('/c');
         }
-    }, []);
+    }, [params, router, showError]);
 
     return (
         <Box

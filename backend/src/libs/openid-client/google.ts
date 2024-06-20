@@ -54,7 +54,7 @@ const googleClientCallback: Handler = async function (req, res) {
         setTokenCookies(res, accessToken, refreshToken);
         // setCookie(res, 'google_oauth_access', tokenSet.access_token as string);
 
-        res.redirect(process.env.MAIN_SITE_URL + '/auth/log-in');
+        res.redirect(process.env.MAIN_SITE_URL + '/c');
         console.log('redirect to ', process.env.MAIN_SITE_URL);
     } catch (err: any) {
         const message =
