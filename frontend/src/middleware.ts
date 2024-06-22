@@ -1,12 +1,13 @@
+import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-const authPath = ['/auth/log-in', '/auth/create'];
+const authPath = ['/auth/log-in', '/auth/create-account', '/auth/reset', '/auth/identify'];
 
 export function middleware(request: NextRequest) {
-    const accessToken: string | undefined = request.cookies.get('access_token')?.value;
+    const accessToken: string | undefined = cookies().get('access_token')?.value;
     const { pathname } = request.nextUrl;
-    console.log('Middleware', accessToken);
+    console.log('Middleware');
 
     if (accessToken) {
         if (authPath.includes(pathname) || pathname === '/') {
@@ -31,7 +32,7 @@ export const config = {
     matcher: [
         '/',
         '/auth/log-in',
-        '/auth/create',
+        '/auth/create-account',
         '/((?!api|_next/static|_next/image|favicon.ico|images).*)',
     ],
 };

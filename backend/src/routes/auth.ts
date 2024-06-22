@@ -8,6 +8,9 @@ import authenticate from '../middleware/authenticate.js';
 import googleRouter from './auth/google.js';
 import facebookRouter from './auth/facebook.js';
 import validateJWT from '../middleware/validateJWT.js';
+import identify from '../controllers/auth/identify.js';
+import verify from '../controllers/auth/verify.js';
+import createPassword from '../controllers/auth/createPassword.js';
 
 const authRouter = express.Router();
 
@@ -23,13 +26,14 @@ authRouter.post('/create-account/step1', initiateEmail);
 authRouter.post('/create-account/step2', createAccount);
 authRouter.post('/login', login);
 authRouter.post('/refresh-token', refreshAccessToken);
+authRouter.post('/identify', identify);
+authRouter.post('/verify', verify);
 // authRouter.post('/users-info', getUsersInfo);
 // authRouter.post('/exists/email', exists('email'));
-// authRouter.post('/find', checkEmail);
 // authRouter.post('/verify/reset-code', verifyResetToken);
 // authRouter.post('/unused-emails', getUnusedEmails);
 
 // PATCH
-// authRouter.patch('/create-password', createPassword);
+authRouter.patch('/create-password', createPassword);
 
 export default authRouter;

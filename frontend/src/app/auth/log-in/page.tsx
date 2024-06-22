@@ -4,7 +4,7 @@ import { Box, Button, CircularProgress, Divider, Link, Stack, Typography } from 
 import React, { useEffect } from 'react';
 import { useForm, SubmitHandler, FieldValues } from 'react-hook-form';
 import Form from '@/components/Form';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import GoogleButton from '@/components/GoogleButton';
 import FacebookButton from '@/components/FacebookButton';
 import { isEmpty } from '@/utils/function';
@@ -17,7 +17,6 @@ const AuthForm = () => {
     const router = useRouter();
     const errorHandler = useErrorHandler();
     const { showError } = useMessage();
-    const params = useSearchParams();
 
     const {
         register,
@@ -40,18 +39,21 @@ const AuthForm = () => {
     };
 
     useEffect(() => {
+        const params = new URLSearchParams(location.search);
         const error = params.get('e');
-        if (error) {
+        const status = params.get('s');
+        if (error && status !== '200') {
             showError(error);
-        } else {
+        }
+        if (status === '200') {
             router.push('/c');
         }
-    }, [params, router, showError]);
+    }, [router, showError]);
 
     return (
         <Box
             sx={{
-                width: { xs: 'auto', xm: '400px' },
+                width: { xs: 'auto', xm: '420px' },
                 py: 5,
                 transition: '.2s',
                 display: 'flex',
@@ -103,7 +105,22 @@ const AuthForm = () => {
                     fieldName='password'
                     register={register}
                     registerOptions={{ required: 'Password is required' }}
+                    sx={{ mb: 1.5 }}
                 />
+
+                <Button
+                    href='/auth/identify'
+                    sx={{
+                        px: 1,
+                        py: 0,
+                        m: 0,
+                        color: '#7F8185',
+                        lineHeight: 1,
+                        float: 'right',
+                    }}>
+                    Forgot password?
+                </Button>
+
                 <Button
                     type='submit'
                     fullWidth
@@ -114,7 +131,7 @@ const AuthForm = () => {
                             <CircularProgress sx={{ color: 'contrastColor' }} size='small' />
                         )
                     }
-                    sx={{ my: 2, py: 1, borderRadius: '10px' }}>
+                    sx={{ mt: 1.5, mb: 2, py: 1, borderRadius: '10px' }}>
                     Log In
                 </Button>
             </Form>
@@ -138,7 +155,7 @@ const AuthForm = () => {
 
             <Stack direction='row' justifyContent='center' spacing={2}>
                 <div>New to Messenger?</div>
-                <Link href='/auth/create' color='primary.main' fontWeight={500}>
+                <Link href='/auth/create-account' color='primary.main' fontWeight={500}>
                     Create an account
                 </Link>
             </Stack>

@@ -3,10 +3,14 @@ import { emailValidator } from '../utils/validators.js';
 
 const required = true;
 
+const type = ['email-confirmation', 'password-reset'] as const;
+
+type Type = (typeof type)[number];
+
 export interface OTPInput {
     email: string;
     otp: string;
-    type: string;
+    type: Type;
     createdAt: Date;
 }
 
@@ -25,7 +29,7 @@ const OTPschema = new Schema({
         required,
     },
     otp: { type: String, trim: true, required },
-    type: { type: String, trim: true, enum: ['email-confirmation', 'password-reset'], required },
+    type: { type: String, trim: true, enum: type, required },
     createdAt: { type: Date, expires: '10m', default: Date.now },
 });
 

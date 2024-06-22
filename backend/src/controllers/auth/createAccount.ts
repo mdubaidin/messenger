@@ -54,8 +54,6 @@ const initiateEmail: Handler = async function (req, res, next) {
 
         const template = generateTemplate(html, { email, code: otp });
 
-        // from: '"Catch offer letter"<jobs@catchcommunication.com>', // sender address
-
         transporter.sendMail({
             from: 'Messengerz <onboarding@resend.dev>',
             to: email, // list of receivers

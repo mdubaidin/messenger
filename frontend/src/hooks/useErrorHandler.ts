@@ -9,10 +9,10 @@ type ErrorValue = string | object | string[] | object[];
 const useErrorHandler = () => {
     const { showError } = useMessage();
 
-    const getValue = (object: object) => {
+    const getValue = useCallback((object: object) => {
         const field = Object.keys(object)[0] as keyof typeof object;
         return object[field];
-    };
+    }, []);
 
     const getMessage = useCallback(function (error: AxiosError) {
         if (isEmpty(error)) return 'Unable to encounter the error message';
@@ -95,8 +95,6 @@ const useErrorHandler = () => {
                     );
 
                 if (status === 403) {
-                    deleteCookie('access_token');
-                    window.location.reload();
                     return showError(
                         `Access to this resource is denied. You may not have the necessary permissions.`
                     );

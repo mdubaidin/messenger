@@ -28,7 +28,6 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { useMenu } from '@/hooks/useMenu';
 import useModal from '@/hooks/useModal';
 import Settings from './Settings';
-import { deleteCookie } from 'cookies-next';
 import { useRouter } from 'next/navigation';
 import useErrorHandler from '@/hooks/useErrorHandler';
 import axios from 'axios';
