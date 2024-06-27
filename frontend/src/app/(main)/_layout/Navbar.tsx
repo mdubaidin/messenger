@@ -6,7 +6,6 @@ import React, { useEffect, useState } from 'react';
 import { AppBar, Box, Drawer } from '@mui/material';
 
 //services
-import { deleteCookie } from 'cookies-next';
 import Sidebar from './Sidebar';
 import { usePathname } from 'next/navigation';
 
@@ -18,11 +17,6 @@ export default function Navbar({ children }: { children: React.ReactNode }) {
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
-    };
-
-    const signOut = () => {
-        deleteCookie('access_token');
-        deleteCookie('role');
     };
 
     useEffect(() => {

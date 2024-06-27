@@ -8,6 +8,7 @@ import userRouter from './routes/users.js';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import validateJWT from './middleware/validateJWT.js';
+import authorize from './middleware/authorize.js';
 
 const app = express();
 
@@ -23,12 +24,12 @@ app.use(cookieParser());
 app.use(morgan('dev'));
 app.use('/public', express.static('public'));
 
-app.use('/api/auth', authRouter);
+app.use('/api/auth', authorize, authRouter);
 
 app.use(validateJWT);
 app.use(authenticate);
 
-app.use('/api/user', userRouter);
+app.use('/api/users', userRouter);
 
 app.use(errorHandler);
 

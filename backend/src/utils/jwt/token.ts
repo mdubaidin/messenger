@@ -12,7 +12,7 @@ export type Token = {
 const cookieConfig: CookieOptions = {
     secure: true,
     httpOnly: true,
-    sameSite: 'strict',
+    // sameSite: 'strict',
 };
 
 const getAccessToken = async (refresh_token: string): Promise<Token> => {
@@ -39,8 +39,8 @@ const isTokenExpire = (accessToken: string) => {
 };
 
 const setTokenCookies = (res: Response, accessToken: string, refreshToken: string) => {
-    res.cookie('access_token', accessToken, cookieConfig);
-    res.cookie('refresh_token', refreshToken, cookieConfig);
+    res.cookie('access_token', accessToken);
+    res.cookie('refresh_token', refreshToken);
 };
 
 const clearTokenCookies = (res: Response) => {

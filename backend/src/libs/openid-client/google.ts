@@ -54,16 +54,15 @@ const googleClientCallback: Handler = async function (req, res) {
         setTokenCookies(res, accessToken, refreshToken);
         // setCookie(res, 'google_oauth_access', tokenSet.access_token as string);
 
-        res.redirect(process.env.MAIN_SITE_URL + `/auth/log-in?s=200`);
-        console.log('redirect to ', process.env.MAIN_SITE_URL);
+        res.redirect(process.env.FRONTEND_URL + `/auth/log-in?s=200`);
+        console.log('redirect to ', process.env.FRONTEND_URL);
     } catch (err: any) {
         const message =
             err.code === 11000
                 ? 'This email aready being used by someone'
                 : err.message || 'Something went wrong';
         res.redirect(
-            process.env.MAIN_SITE_URL +
-                `/auth/log-in?s=${err.code}&e=${encodeURIComponent(message)}`
+            process.env.FRONTEND_URL + `/auth/log-in?s=${err.code}&e=${encodeURIComponent(message)}`
         );
     }
 };

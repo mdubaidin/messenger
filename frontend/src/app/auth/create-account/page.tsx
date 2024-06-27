@@ -15,10 +15,10 @@ import FacebookButton from '@/components/FacebookButton';
 import GoogleButton from '@/components/GoogleButton';
 import Input from '@/components/Input';
 import useErrorHandler from '@/hooks/useErrorHandler';
-import axios from 'axios';
 import { isEmpty } from '@/utils/function';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useMessage } from '@/providers/Provider';
+import { authApi } from '@/libs/axios';
 
 interface FormInput {
     name: string;
@@ -78,7 +78,7 @@ function CreateAccount() {
 
     const onSubmit: SubmitHandler<FieldValues> = async data => {
         try {
-            await axios.post('/auth/create-account/step1', { email: data.email });
+            await authApi.post('/create-account/step1', { email: data.email });
 
             setData(data as FormInput);
             setStep(1);
@@ -215,7 +215,7 @@ function EmailConfirmation() {
 
     const onSubmit: SubmitHandler<FieldValues> = async inputData => {
         try {
-            await axios.post('/auth/create-account/step2', { ...data, ...inputData });
+            await authApi.post('/create-account/step2', { ...data, ...inputData });
 
             showSuccess('Account created');
             router.push('/auth/log-in');

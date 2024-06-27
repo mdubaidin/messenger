@@ -61,7 +61,7 @@ function escapeDanger(content: string) {
 
 const hasSame = <Type>(a: Type, b: Type): boolean => a === b;
 
-const generateDate = (d: string) => {
+const generateDate = (d: Date) => {
     const date = DateTime.fromISO(d);
     const today = DateTime.now();
 

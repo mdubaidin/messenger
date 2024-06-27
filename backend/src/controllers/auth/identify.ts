@@ -24,7 +24,7 @@ const identify: Handler = async function (req, res, next) {
         });
 
         const template = generateTemplate(html, {
-            link: `${process.env.MAIN_SITE_URL}/auth/reset?email=${email}&code=${otp}`,
+            link: `${process.env.FRONTEND_URL}/auth/reset?email=${email}&code=${otp}`,
             name: user.name,
         });
 

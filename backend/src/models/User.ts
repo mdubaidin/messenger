@@ -26,7 +26,7 @@ interface Methods {
     isAuthorized(password: string): Promise<string>;
     isUnauthorized(password: string): Promise<boolean>;
     convertPasswordToHash(password: string): string;
-    removeSensitiveInfo(): void;
+    removeSensitiveInfo(): object;
     signAccessToken(): string;
     signRefreshToken(): string;
     createdAt: Date;

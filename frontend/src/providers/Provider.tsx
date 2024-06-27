@@ -1,10 +1,12 @@
 'use client';
 
-import React, { Dispatch, createContext, useCallback, useContext } from 'react';
+import React, { FC, ReactNode, Dispatch, createContext, useCallback, useContext } from 'react';
 import useSnack, { SnackAction } from '@/hooks/useSnack';
 import ThemeProvider from '@/theme';
 import { CacheProvider } from '@emotion/react';
 import createEmotionCache from '@/theme/createEmotionCache';
+import { SessionProvider } from 'next-auth/react';
+import { Session } from 'next-auth';
 import '@/libs/axios';
 
 interface HeaderContextProps {
@@ -15,17 +17,24 @@ const HeaderContext = createContext<HeaderContextProps>({ showMessage: () => {} 
 
 const clientSideEmotionCache = createEmotionCache();
 
-const Provider = ({ children }: { children: React.ReactNode }) => {
+interface ProvidersProps {
+    children: ReactNode;
+    session?: Session;
+}
+
+const Provider: FC<ProvidersProps> = ({ children, session }) => {
     const { SnackBar, showMessage } = useSnack();
 
     return (
         <CacheProvider value={clientSideEmotionCache}>
-            <ThemeProvider>
-                <HeaderContext.Provider value={{ showMessage }}>
-                    {children}
-                    {SnackBar}
-                </HeaderContext.Provider>
-            </ThemeProvider>
+            <SessionProvider session={session}>
+                <ThemeProvider>
+                    <HeaderContext.Provider value={{ showMessage }}>
+                        {children}
+                        {SnackBar}
+                    </HeaderContext.Provider>
+                </ThemeProvider>
+            </SessionProvider>
         </CacheProvider>
     );
 };

@@ -1,8 +1,18 @@
+'use client';
+
+import React, { FC } from 'react';
 import Image from '@/components/Image';
 import { Button, Container, Stack, Typography } from '@mui/material';
-import React from 'react';
+import { useRouter } from 'next/navigation';
 
-const NotFound = () => {
+type ErrorProps = {
+    error: any;
+    reset: () => void;
+};
+
+const Error: FC<ErrorProps> = ({ error, reset }) => {
+    const router = useRouter();
+
     return (
         <Container maxWidth='lg'>
             <Stack
@@ -13,15 +23,18 @@ const NotFound = () => {
                 my={5}>
                 <Image name='logo.png' sx={{ height: '65px', mb: 2 }} alt='logo' />{' '}
                 <Typography variant='h4' mb={1}>
-                    This Page isn&apos;t available
+                    Some error occurred
                 </Typography>
-                <Typography variant='subtitle1'>
-                    The link that you followed may be broken or the Page may have been removed.
-                    That&apos;s all we know
-                </Typography>
+                <Typography variant='subtitle1'>{error.message}</Typography>
                 <Button
                     variant='contained'
-                    href='/c'
+                    onClick={reset}
+                    sx={{ mt: 1.5, mb: 2, py: 1, borderRadius: '10px' }}>
+                    Try again
+                </Button>
+                <Button
+                    variant='outlined'
+                    onClick={() => router.push('/c')}
                     sx={{ mt: 1.5, mb: 2, py: 1, borderRadius: '10px' }}>
                     Return to messenger
                 </Button>
@@ -30,4 +43,4 @@ const NotFound = () => {
     );
 };
 
-export default NotFound;
+export default Error;

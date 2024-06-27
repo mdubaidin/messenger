@@ -56,15 +56,15 @@ const facebookClientCallback: Handler = async function (req, res) {
 
         setTokenCookies(res, accessToken, refreshToken);
 
-        res.redirect(process.env.MAIN_SITE_URL as string);
-        console.log('redirect to ', process.env.MAIN_SITE_URL);
+        res.redirect(process.env.FRONTEND_URL as string);
+        console.log('redirect to ', process.env.FRONTEND_URL);
     } catch (err: any) {
         console.log(err);
         const message =
             err.code === 11000
                 ? 'This email aready being used by someone'
                 : err.message || 'Something went wrong';
-        res.redirect(process.env.MAIN_SITE_URL + '/auth/log-in?e=' + encodeURIComponent(message));
+        res.redirect(process.env.FRONTEND_URL + '/auth/log-in?e=' + encodeURIComponent(message));
     }
 };
 

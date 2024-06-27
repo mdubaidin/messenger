@@ -13,7 +13,7 @@ const validateJWT: Handler = async (req, res, next) => {
             req.cookies.access_token || req.headers.authorization?.replace('Bearer', '');
         const refreshToken: Token = req.cookies.refresh_token;
 
-        console.log('refresh', refreshToken, 'access', accessToken);
+        // console.log('refresh', refreshToken, 'access', accessToken);
 
         if (!accessToken) return CustomError.throw('JWT access token must be provided', 401);
 

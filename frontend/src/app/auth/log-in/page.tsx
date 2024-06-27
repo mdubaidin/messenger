@@ -8,14 +8,12 @@ import { useRouter } from 'next/navigation';
 import GoogleButton from '@/components/GoogleButton';
 import FacebookButton from '@/components/FacebookButton';
 import { isEmpty } from '@/utils/function';
-import axios from 'axios';
-import useErrorHandler from '@/hooks/useErrorHandler';
 import Input from '@/components/Input';
 import { useMessage } from '@/providers/Provider';
+import { signIn } from 'next-auth/react';
 
 const AuthForm = () => {
     const router = useRouter();
-    const errorHandler = useErrorHandler();
     const { showError } = useMessage();
 
     const {
@@ -31,10 +29,13 @@ const AuthForm = () => {
 
     const onSubmit: SubmitHandler<FieldValues> = async data => {
         try {
-            await axios.post('/auth/login', data);
-            router.push('/c');
-        } catch (err) {
-            errorHandler(err);
+            await signIn('credentials', {
+                email: data.email,
+                password: data.password,
+                callbackUrl: 'http://localhost:3000/',
+            });
+        } catch (e) {
+            console.log(e);
         }
     };
 
@@ -75,7 +76,7 @@ const AuthForm = () => {
                 whenever, <br /> wherever
             </Typography>
             <Typography variant='body1' mb={isEmpty(errors) ? 5 : 1} color='text.secondary'>
-                Messenger makes it easy and fun to stay close to your favourite people.
+                Messenger makes it easy and fun to stay close to your favourite people.{' '}
             </Typography>
 
             {isEmpty(errors) ? null : (
@@ -143,10 +144,7 @@ const AuthForm = () => {
             </Divider>
 
             <Stack mt={3} spacing={2} my={3.5}>
-                <GoogleButton
-                    name='Continue with Google'
-                    href={`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/google`}
-                />
+                <GoogleButton name='Continue with Google' onClick={() => signIn('google')} />
                 <FacebookButton
                     name='Continue with Facebook'
                     href={`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/facebook`}

@@ -9,6 +9,7 @@ import useErrorHandler from '@/hooks/useErrorHandler';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { isEmpty } from '@/utils/function';
 import Input from '@/components/Input';
+import { authApi } from '@/libs/axios';
 
 const ForgotPassword = () => {
     const errorHandler = useErrorHandler();
@@ -22,7 +23,7 @@ const ForgotPassword = () => {
 
     const onSubmit: SubmitHandler<FieldValues> = async data => {
         try {
-            await axios.post('/auth/identify', data);
+            await authApi.post('/identify', data);
 
             setEmailSent(true);
         } catch (err) {

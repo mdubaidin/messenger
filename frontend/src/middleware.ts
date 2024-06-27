@@ -1,15 +1,14 @@
-import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 const authPath = ['/auth/log-in', '/auth/create-account', '/auth/reset', '/auth/identify'];
 
 export function middleware(request: NextRequest) {
-    const accessToken: string | undefined = cookies().get('access_token')?.value;
+    const authToken = request.cookies.get('next-auth.session-token');
     const { pathname } = request.nextUrl;
     console.log('Middleware');
 
-    if (accessToken) {
+    if (authToken) {
         if (authPath.includes(pathname) || pathname === '/') {
             return NextResponse.redirect(new URL('/c', request.nextUrl));
         } else {
@@ -22,10 +21,6 @@ export function middleware(request: NextRequest) {
             return NextResponse.next();
         }
     }
-
-    // if (accessToken && authPath.includes(pathname)) {
-    //     return NextResponse.redirect(new URL('/c', request.nextUrl));
-    // }
 }
 
 export const config = {
