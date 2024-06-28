@@ -32,6 +32,8 @@ import useErrorHandler from '@/hooks/useErrorHandler';
 import axios from 'axios';
 import { signOut } from 'next-auth/react';
 import { authApi } from '@/libs/axios';
+import { useAppDispatch } from '@/redux/hook';
+import { setContact } from '@/redux/features/contact/contactSlice';
 
 interface Users {
     _id: string;
@@ -43,11 +45,12 @@ interface Users {
     unreadMessage: string;
 }
 
-const Sidebar = () => {
+const Index = () => {
     const { anchorEl, openMenu, closeMenu } = useMenu();
     const { modalState, openModal, closeModal } = useModal();
     const errorHandler = useErrorHandler();
     const [users, setUsers] = useState<Users[]>([]);
+    const dispatch = useAppDispatch();
 
     const logout = async () => {
         try {
@@ -168,8 +171,7 @@ const Sidebar = () => {
                                                 selected={isActive}
                                                 variant={'sidebarButton'}
                                                 sx={{ minHeight: 70 }}
-                                                //   onClick={() => dispatch(setCustomer(customer))}
-                                            >
+                                                onClick={() => dispatch(setContact(contact))}>
                                                 <Typography
                                                     variant='caption'
                                                     color='currentcolor'
@@ -260,9 +262,9 @@ const Sidebar = () => {
                             overflowY: 'unset',
                             color: 'contrastColor',
                         },
-                        '& .MuiButtonBase-root:hover': {
-                            bgcolor: '#f5f5f5',
-                        },
+                        // '& .MuiButtonBase-root:hover': {
+                        //     bgcolor: '#f5f5f5',
+                        // },
                     }}>
                     <MenuItem
                         onClick={() => {
@@ -303,4 +305,4 @@ const Sidebar = () => {
     );
 };
 
-export default Sidebar;
+export default Index;

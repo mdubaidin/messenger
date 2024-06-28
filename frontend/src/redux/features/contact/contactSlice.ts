@@ -5,13 +5,12 @@ import type { RootState } from '@/redux/store';
 
 interface ContactState {
     contact: {
-        id: number;
-        firstName: string;
-        lastName: string;
+        id: string;
+        name: string;
         email: string;
         blocked: boolean;
         muted: boolean;
-        avatar: string;
+        picture: string;
         message: string;
         time: string;
         unreadMessage: number;
@@ -20,14 +19,13 @@ interface ContactState {
 
 const initialState: ContactState = {
     contact: {
-        id: 3,
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'john@example.com',
-        avatar: 'https://i.pravatar.cc/150?img=3',
-        message: 'lorem ipsum',
-        time: '2024-05-28T01:50:00',
-        unreadMessage: 10,
+        id: '',
+        name: '',
+        email: '',
+        picture: '',
+        message: '',
+        time: '',
+        unreadMessage: 0,
         blocked: false,
         muted: false,
     },

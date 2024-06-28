@@ -1,13 +1,26 @@
 'use client';
 
-import { configureStore } from '@reduxjs/toolkit';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import contactReducer from './features/contact/contactSlice';
+
+import { persistReducer } from 'redux-persist';
+import sessionStorage from 'redux-persist/lib/storage/session';
+
+const persistConfig = {
+    key: 'root',
+    storage: sessionStorage,
+};
+
+const rootReducers = combineReducers({
+    contact: contactReducer,
+});
+
+const persistedReducer = persistReducer(persistConfig, rootReducers);
 
 export function makeStore() {
     return configureStore({
-        reducer: {
-            contact: contactReducer,
-        },
+        reducer: persistedReducer,
+        middleware: getDefaultMiddleware => getDefaultMiddleware({ serializableCheck: false }),
     });
 }
 

@@ -1,17 +1,13 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-
-//mui component
 import { AppBar, Box, Drawer } from '@mui/material';
-
-//services
-import Sidebar from './Sidebar';
 import { usePathname } from 'next/navigation';
+import Index from '../_sidebar';
 
 const drawerWidth = 370;
 
-export default function Navbar({ children }: { children: React.ReactNode }) {
+export default function Navbar() {
     const [mobileOpen, setMobileOpen] = useState(false);
     const pathname = usePathname();
 
@@ -24,12 +20,7 @@ export default function Navbar({ children }: { children: React.ReactNode }) {
     }, [pathname]);
 
     return (
-        <Box
-            sx={{
-                // bgcolor: 'background.default',
-                height: '100dvh',
-                position: 'relative',
-            }}>
+        <>
             <AppBar
                 elevation={0}
                 component={Box}
@@ -269,7 +260,7 @@ export default function Navbar({ children }: { children: React.ReactNode }) {
                             bgcolor: 'custom.menu',
                         },
                     }}>
-                    <Sidebar />
+                    <Index />
                 </Drawer>
                 <Drawer
                     variant='permanent'
@@ -282,23 +273,9 @@ export default function Navbar({ children }: { children: React.ReactNode }) {
                             borderColor: 'divider',
                         },
                     }}>
-                    <Sidebar />
+                    <Index />
                 </Drawer>
             </Box>
-
-            <Box
-                component='main'
-                sx={{
-                    width: {
-                        xs: '100%',
-                        xm: `calc(100% - ${drawerWidth}px)`,
-                    },
-                    ml: { xm: `${drawerWidth}px` },
-                    height: { xs: 'calc(100dvh)' },
-                    backgroundColor: 'background.default',
-                }}>
-                {children}
-            </Box>
-        </Box>
+        </>
     );
 }

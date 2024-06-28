@@ -26,18 +26,20 @@ const Error: FC<ErrorProps> = ({ error, reset }) => {
                     Some error occurred
                 </Typography>
                 <Typography variant='subtitle1'>{error.message}</Typography>
-                <Button
-                    variant='contained'
-                    onClick={reset}
-                    sx={{ mt: 1.5, mb: 2, py: 1, borderRadius: '10px' }}>
-                    Try again
-                </Button>
-                <Button
-                    variant='outlined'
-                    onClick={() => router.push('/c')}
-                    sx={{ mt: 1.5, mb: 2, py: 1, borderRadius: '10px' }}>
-                    Return to messenger
-                </Button>
+                <Stack direction='row' spacing={2} my={2}>
+                    <Button
+                        variant='contained'
+                        onClick={reset}
+                        sx={{ mt: 1.5, mb: 2, py: 1, borderRadius: '10px' }}>
+                        Try again
+                    </Button>
+                    <Button
+                        variant='outlined'
+                        onClick={() => router.push('/c')}
+                        sx={{ mt: 1.5, mb: 2, py: 1, borderRadius: '10px' }}>
+                        Return to messenger
+                    </Button>
+                </Stack>
             </Stack>
         </Container>
     );

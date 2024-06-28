@@ -45,6 +45,16 @@ import useLoader from '@/hooks/useLoader';
 // import { useQueryClient } from '@tanstack/react-query';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
 
+interface Contact {
+    _id: string;
+    name: string;
+    email: string;
+    picture: string;
+    message: string;
+    time: string;
+    unreadMessage: string;
+}
+
 const Chat = ({ params }: { params: { slug: string } }) => {
     // const dispatch = useAppDispatch();
     const contact = useAppSelector(state => state.contact.contact);
@@ -409,7 +419,7 @@ const Chat = ({ params }: { params: { slug: string } }) => {
                     <Grid item>
                         <Avatar
                             alt='Remy Sharp'
-                            src={contact.avatar}
+                            src={contact.picture}
                             sx={{
                                 width: 45,
                                 height: 45,
@@ -438,10 +448,10 @@ const Chat = ({ params }: { params: { slug: string } }) => {
                                         WebkitBoxOrient: 'vertical',
                                         WebkitLineClamp: '1',
                                     }}>
-                                    {contact.firstName + ' ' + contact.lastName}
+                                    {contact.name}
                                 </Typography>
                                 <Typography variant='caption' color='text.secondary'>
-                                    {contact.email} {params.slug}
+                                    {contact.email}
                                 </Typography>
                             </React.Fragment>
                         )}
@@ -887,7 +897,7 @@ const Chat = ({ params }: { params: { slug: string } }) => {
                         p: 2,
                     }}>
                     <Typography variant='subtitle1'>
-                        {contact.muted ? 'Unmute' : 'Mute'} {contact.firstName} {contact.lastName} ?
+                        {contact.muted ? 'Unmute' : 'Mute'} {contact.name} ?
                     </Typography>
 
                     <Box mt={3} sx={{ float: 'right' }}>
@@ -921,8 +931,7 @@ const Chat = ({ params }: { params: { slug: string } }) => {
                         p: 2,
                     }}>
                     <Typography variant='subtitle1'>
-                        {contact.blocked ? 'Unblock' : 'Block'} {contact.firstName}{' '}
-                        {contact.lastName} ?
+                        {contact.blocked ? 'Unblock' : 'Block'} {contact.name} ?
                     </Typography>
                     {!contact.blocked && (
                         <>
