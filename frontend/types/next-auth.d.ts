@@ -10,4 +10,8 @@ declare module 'next-auth' {
     interface User {
         _id: string;
     }
+
+    interface Profile {
+        picture: string;
+    }
 }

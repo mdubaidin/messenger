@@ -28,14 +28,16 @@ const AuthForm = () => {
     });
 
     const onSubmit: SubmitHandler<FieldValues> = async data => {
-        try {
-            await signIn('credentials', {
-                email: data.email,
-                password: data.password,
-                callbackUrl: 'http://localhost:3000/',
-            });
-        } catch (e) {
-            console.log(e);
+        const response = await signIn('credentials', {
+            email: data.email,
+            password: data.password,
+            callbackUrl: 'http://localhost:3000/',
+            redirect: false,
+        });
+
+        if (response?.error) {
+            showError(response?.error || 'Some error occurred');
+            return;
         }
     };
 

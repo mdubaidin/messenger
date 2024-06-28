@@ -13,33 +13,36 @@ const useErrorHandler = () => {
         return object[field];
     }, []);
 
-    const getMessage = useCallback(function (error: AxiosError) {
-        if (isEmpty(error)) return 'Unable to encounter the error message';
+    const getMessage = useCallback(
+        function (error: AxiosError) {
+            if (isEmpty(error)) return 'Unable to encounter the error message';
 
-        const fieldValue = getValue(error) as ErrorValue;
+            const fieldValue = getValue(error) as ErrorValue;
 
-        if (typeof fieldValue === 'string') return fieldValue;
+            if (typeof fieldValue === 'string') return fieldValue;
 
-        if (Array.isArray(fieldValue)) {
-            const innerField = fieldValue.shift();
+            if (Array.isArray(fieldValue)) {
+                const innerField = fieldValue.shift();
 
-            if (isObject(innerField) && !isEmpty(innerField)) {
-                const firstField = getValue(innerField);
-                if (isString(firstField)) return firstField;
+                if (isObject(innerField) && !isEmpty(innerField)) {
+                    const firstField = getValue(innerField);
+                    if (isString(firstField)) return firstField;
+                }
+
+                if (isString(innerField)) return innerField;
+                return getMessage(innerField);
             }
 
-            if (isString(innerField)) return innerField;
-            return getMessage(innerField);
-        }
+            if (isObject(fieldValue)) {
+                const firstField = getValue(fieldValue);
+                if (isString(firstField)) return firstField;
 
-        if (isObject(fieldValue)) {
-            const firstField = getValue(fieldValue);
-            if (isString(firstField)) return firstField;
-
-            if (isString(firstField)) return firstField;
-            return getMessage(firstField);
-        }
-    }, []);
+                if (isString(firstField)) return firstField;
+                return getMessage(firstField);
+            }
+        },
+        [getValue]
+    );
 
     const errorHandler = useCallback(
         (error: any) => {

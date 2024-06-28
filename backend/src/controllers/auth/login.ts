@@ -30,12 +30,12 @@ const login: Handler = async function (req, res, next) {
         // }
 
         const { accessToken, refreshToken } = await generateJWT(user);
-        const userObject = user.removeSensitiveInfo();
+        const userInfo = user.removeSensitiveInfo();
 
         setTokenCookies(res, accessToken, refreshToken);
 
         res.success({
-            ...userObject,
+            ...userInfo,
             accessToken,
             refreshToken,
         });

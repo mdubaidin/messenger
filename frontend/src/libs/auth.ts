@@ -3,6 +3,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import { cookies } from 'next/headers';
 import { authApi } from './axios';
+import errorHandler from '@/utils/errorHandler';
 // import fs from 'fs';
 
 // const PUBLIC_KEY = fs.readFileSync('./certs/private.pem', 'utf8');
@@ -37,38 +38,58 @@ export const authOptions: NextAuthOptions = {
                 try {
                     const { data } = await authApi.post('/login', { email, password });
 
-                    cookies().set('access_token', data.accessToken);
-                    cookies().set('refresh_token', data.refreshToken);
+                    cookies().set('jwt-auth.access-token', data.accessToken);
+                    cookies().set('jwt-auth.refresh-token', data.refreshToken);
 
                     // Handle the data from the API response
                     return data;
                 } catch (err: any) {
-                    console.log(err);
-                    throw err.message;
+                    const error = errorHandler(err);
+                    throw new Error(error);
                 }
             },
         }),
     ],
     callbacks: {
-        signIn({ account, user, profile, credentials }) {
+        async signIn({ account, profile }) {
             if (!account) return false;
 
             if (account.provider === 'google') {
-                console.log(user, credentials);
-                console.log('profile is google', profile);
-                return true;
+                if (!profile) return false;
+
+                try {
+                    const { sub, name, email, picture } = profile;
+
+                    const { data } = await authApi.post('/providers/create', {
+                        providerId: sub,
+                        name,
+                        email,
+                        picture,
+                        provider: 'google',
+                    });
+
+                    cookies().set('jwt-auth.access-token', data.accessToken);
+                    cookies().set('jwt-auth.refresh-token', data.refreshToken);
+
+                    // Handle the data from the API response
+                    return true;
+                } catch (err: any) {
+                    const error = errorHandler(err);
+                    throw new Error(error);
+                }
             }
             return true; // Do different verification for other providers that don't have `email_verified`
         },
 
         session({ session, token }) {
+            // console.log('session', session, token, user);
             if (token) {
                 session.user.id = token.id;
             }
-            console.log('session ', session, token);
             return session;
         },
         jwt({ token, account, user }) {
+            // console.log('jwt', token, account, user, profile);
             if (account) {
                 for (const key in user) {
                     if (tokenCredentials.includes(key)) {

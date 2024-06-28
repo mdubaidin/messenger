@@ -10,13 +10,16 @@ export interface JwtUser extends JwtPayload {
     id: string;
 }
 
+const providers = ['google', 'facebook'] as const;
+type Providers = (typeof providers)[number];
+
 export interface UserInput {
     name: string;
     email: string;
     password: string;
     gender: string;
     dob: Date;
-    provider: 'Google' | 'Facebook';
+    provider: Providers;
     providerId: string;
     picture: string;
     refreshToken: string;
@@ -32,8 +35,6 @@ interface Methods {
     createdAt: Date;
     updatedAt: Date;
 }
-
-const providers = ['Google', 'Facebook'];
 
 export interface UserDocument extends UserInput, Document, Methods {}
 
@@ -129,10 +130,10 @@ userSchema.methods = {
     },
 
     signRefreshToken: function () {
-        const REFRESH_SECRET = process.env.JWT_SECRET;
-        if (!REFRESH_SECRET) throw new Error('REFRESH_SECRET is undefined');
+        const JWT_SECRET = process.env.JWT_SECRET;
+        if (!JWT_SECRET) throw new Error('JWT_SECRET is undefined');
 
-        return jwt.sign({ id: this._id } as JwtUser, REFRESH_SECRET, {
+        return jwt.sign({ id: this._id } as JwtUser, JWT_SECRET, {
             expiresIn: process.env.EXPIRE_JWT_REFRESH_TOKEN,
         });
     },

@@ -16,7 +16,7 @@ import {
     Menu,
     Modal,
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import NavLink from '@/components/NavLink';
 import { generateDate } from '@/utils/function';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
@@ -39,7 +39,7 @@ interface Users {
     email: string;
     picture: string;
     message: string;
-    time: Date;
+    time: string;
     unreadMessage: string;
 }
 
@@ -58,18 +58,18 @@ const Sidebar = () => {
         }
     };
 
-    const fetchUsers = async () => {
+    const fetchUsers = useCallback(async () => {
         try {
             const { data } = await axios.get('/users');
             setUsers(data.users);
         } catch (err) {
             errorHandler(err);
         }
-    };
+    }, [errorHandler]);
 
     useEffect(() => {
         fetchUsers();
-    }, []);
+    }, [fetchUsers]);
 
     return (
         <>

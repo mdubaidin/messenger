@@ -10,8 +10,9 @@ type Token = string | undefined;
 const validateJWT: Handler = async (req, res, next) => {
     try {
         const accessToken: Token =
-            req.cookies.access_token || req.headers.authorization?.replace('Bearer', '');
-        const refreshToken: Token = req.cookies.refresh_token;
+            req.cookies['jwt-auth.access-token'] ||
+            req.headers.authorization?.replace('Bearer', '');
+        const refreshToken: Token = req.cookies['jwt-auth.refresh-token'];
 
         // console.log('refresh', refreshToken, 'access', accessToken);
 

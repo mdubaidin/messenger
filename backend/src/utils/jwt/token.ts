@@ -39,13 +39,13 @@ const isTokenExpire = (accessToken: string) => {
 };
 
 const setTokenCookies = (res: Response, accessToken: string, refreshToken: string) => {
-    res.cookie('access_token', accessToken);
-    res.cookie('refresh_token', refreshToken);
+    res.cookie('jwt-auth.access-token', accessToken);
+    res.cookie('jwt-auth.refresh-token', refreshToken);
 };
 
 const clearTokenCookies = (res: Response) => {
-    res.clearCookie('access_token', cookieConfig);
-    res.clearCookie('refresh_token', cookieConfig);
+    res.clearCookie('jwt-auth.access-token', cookieConfig);
+    res.clearCookie('jwt-auth.refresh-token', cookieConfig);
 };
 
 export { getAccessToken, isTokenExpire, setTokenCookies, clearTokenCookies };
