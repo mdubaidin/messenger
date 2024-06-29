@@ -39,7 +39,7 @@ const FileHandler: FC<FileHandlerProps> = props => {
         for (let file of files) {
             const data = {
                 content: fileMessage,
-                customer: contact.id,
+                customer: contact._id,
                 // attachment: [{ file: await getBase64(file) }],
             };
 

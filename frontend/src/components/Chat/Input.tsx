@@ -34,7 +34,6 @@ import useErrorHandler from '@/hooks/useErrorHandler';
 import eventEmitter from '@/utils/eventEmitter';
 import FileHandler from './FileHandler';
 import Close from '@mui/icons-material/Close';
-import { parseLinks } from '@/utils/function';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
 
 const ChatBoxWrapper = styled('div')(({ theme }) => ({
@@ -231,7 +230,7 @@ const Input = (props: InputProps) => {
                         }}>
                         <Box flexGrow={1} p={1}>
                             <Typography variant='subtitle2' fontWeight={500} color='primary.main'>
-                                {contact.firstName + ' ' + contact.lastName}
+                                {contact.name}
                             </Typography>
                             <Typography
                                 variant='body2'

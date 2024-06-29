@@ -30,27 +30,18 @@ import useModal from '@/hooks/useModal';
 import Settings from './Settings';
 import useErrorHandler from '@/hooks/useErrorHandler';
 import axios from 'axios';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { authApi } from '@/libs/axios';
 import { useAppDispatch } from '@/redux/hook';
-import { setContact } from '@/redux/features/contact/contactSlice';
-
-interface Users {
-    _id: string;
-    name: string;
-    email: string;
-    picture: string;
-    message: string;
-    time: string;
-    unreadMessage: string;
-}
+import { Contact, setContact } from '@/redux/features/contact/contactSlice';
 
 const Index = () => {
     const { anchorEl, openMenu, closeMenu } = useMenu();
     const { modalState, openModal, closeModal } = useModal();
     const errorHandler = useErrorHandler();
-    const [users, setUsers] = useState<Users[]>([]);
+    const [contacts, setContacts] = useState<Contact[]>([]);
     const dispatch = useAppDispatch();
+    const { status } = useSession();
 
     const logout = async () => {
         try {
@@ -61,18 +52,20 @@ const Index = () => {
         }
     };
 
-    const fetchUsers = useCallback(async () => {
+    const getContacts = useCallback(async () => {
         try {
             const { data } = await axios.get('/users');
-            setUsers(data.users);
+            setContacts(data.users);
         } catch (err) {
             errorHandler(err);
         }
     }, [errorHandler]);
 
     useEffect(() => {
-        fetchUsers();
-    }, [fetchUsers]);
+        if (status == 'authenticated') {
+            getContacts();
+        }
+    }, [status, getContacts]);
 
     return (
         <>
@@ -155,7 +148,7 @@ const Index = () => {
                             pb: 2,
                         }}>
                         <List sx={{ px: 0.3 }}>
-                            {users.map((contact, i) => (
+                            {contacts.map((contact, i) => (
                                 <NavLink
                                     href={`/c/${contact._id}`}
                                     key={i}

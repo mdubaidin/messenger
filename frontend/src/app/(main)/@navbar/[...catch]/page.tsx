@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { AppBar, Box, Drawer } from '@mui/material';
 import { usePathname } from 'next/navigation';
-import Index from '../_sidebar';
+import Sidebar from '../../../../components/Sidebar';
 
 const drawerWidth = 370;
 
@@ -260,7 +260,7 @@ export default function Navbar() {
                             bgcolor: 'custom.menu',
                         },
                     }}>
-                    <Index />
+                    <Sidebar />
                 </Drawer>
                 <Drawer
                     variant='permanent'
@@ -273,7 +273,7 @@ export default function Navbar() {
                             borderColor: 'divider',
                         },
                     }}>
-                    <Index />
+                    <Sidebar />
                 </Drawer>
             </Box>
         </>

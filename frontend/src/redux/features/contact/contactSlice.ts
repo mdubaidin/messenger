@@ -3,23 +3,25 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { RootState } from '@/redux/store';
 
+export type Contact = {
+    _id: string;
+    name: string;
+    email: string;
+    blocked: boolean;
+    muted: boolean;
+    picture: string;
+    message: string;
+    time: string;
+    unreadMessage: number;
+};
+
 interface ContactState {
-    contact: {
-        id: string;
-        name: string;
-        email: string;
-        blocked: boolean;
-        muted: boolean;
-        picture: string;
-        message: string;
-        time: string;
-        unreadMessage: number;
-    };
+    contact: Contact;
 }
 
 const initialState: ContactState = {
     contact: {
-        id: '',
+        _id: '',
         name: '',
         email: '',
         picture: '',

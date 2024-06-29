@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import Provider from '@/providers/Provider';
 // import StoreProvider from './StoreProvider';
 // import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import StoreProvider from './StoreProvider';
+import StoreProvider from '../providers/StoreProvider';
 
 export const metadata: Metadata = {
     title: 'Messenger',
