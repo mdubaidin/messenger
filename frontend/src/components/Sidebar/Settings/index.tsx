@@ -1,7 +1,6 @@
 import {
     Box,
     Divider,
-    Grid,
     List,
     ListItem,
     ListItemButton,
@@ -10,14 +9,6 @@ import {
     Stack,
     Typography,
 } from '@mui/material';
-import MarkChatUnreadIcon from '@mui/icons-material/MarkChatUnread';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import DarkModeIcon from '@mui/icons-material/DarkMode';
-import PublicIcon from '@mui/icons-material/Public';
-import GppGoodIcon from '@mui/icons-material/GppGood';
-import LogoutIcon from '@mui/icons-material/Logout';
-import WarningIcon from '@mui/icons-material/Warning';
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import React, { useState } from 'react';
 import ActiveStatus from './ActiveStatus';
 import Notifications from './Notifications';
@@ -25,6 +16,17 @@ import Appearance from './Appearance';
 import Language from './Language';
 import Privacy from './Privacy';
 import { getCookie } from 'cookies-next';
+
+// Icons
+import {
+    MdLogout,
+    MdFiberManualRecord,
+    MdManageAccounts,
+    MdDarkMode,
+    MdMarkChatUnread,
+    MdGppGood,
+} from 'react-icons/md';
+import { IoIosSettings, IoIosWarning, IoIosNotifications, IoMdGlobe } from 'react-icons/io';
 
 export type OptionType = {
     name: string;
@@ -37,35 +39,35 @@ export type OptionType = {
 const Preferences: OptionType[] = [
     {
         name: 'Active status',
-        icon: <MarkChatUnreadIcon fontSize='small' sx={{ color: 'white' }} />,
+        icon: <MdMarkChatUnread size={20} style={{ color: 'white' }} />,
         background: '#31cc46',
         component: ActiveStatus,
         setting: 'On',
     },
     {
         name: 'Notifications',
-        icon: <NotificationsIcon fontSize='small' sx={{ color: 'white' }} />,
+        icon: <IoIosNotifications size={20} style={{ color: 'white' }} />,
         background: '#a033ff',
         component: Notifications,
         setting: 'On',
     },
     {
         name: 'Appearance',
-        icon: <DarkModeIcon fontSize='small' sx={{ color: 'white' }} />,
+        icon: <MdDarkMode size={20} style={{ color: 'white' }} />,
         background: '#1e2227',
         component: Appearance,
         setting: getCookie('P13N'),
     },
     {
         name: 'Language',
-        icon: <PublicIcon fontSize='small' sx={{ color: 'white' }} />,
+        icon: <IoMdGlobe size={20} style={{ color: 'white' }} />,
         background: '#0a7cff',
         component: Language,
         setting: 'English',
     },
     {
         name: 'Privacy & safety',
-        icon: <GppGoodIcon fontSize='small' sx={{ color: 'white' }} />,
+        icon: <MdGppGood size={20} style={{ color: 'white' }} />,
         background: '#0a7cff',
         component: Privacy,
         setting: 'On',
@@ -75,21 +77,21 @@ const Preferences: OptionType[] = [
 const Account: OptionType[] = [
     {
         name: 'Account settings',
-        icon: <ManageAccountsIcon fontSize='small' sx={{ color: 'white' }} />,
+        icon: <MdManageAccounts size={20} style={{ color: 'white' }} />,
         background: '#19baff',
         component: ActiveStatus,
         setting: 'On',
     },
     {
         name: 'Report a problem',
-        icon: <WarningIcon fontSize='small' sx={{ color: 'white' }} />,
+        icon: <IoIosWarning size={20} style={{ color: 'white' }} />,
         background: '#ff7057',
         component: Notifications,
         setting: 'On',
     },
     {
         name: 'Log Out',
-        icon: <LogoutIcon fontSize='small' sx={{ color: 'white' }} />,
+        icon: <MdLogout size={20} style={{ color: 'white' }} />,
         background: '#a033ff',
         component: Appearance,
         setting: 'On',

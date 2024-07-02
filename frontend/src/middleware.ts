@@ -10,7 +10,7 @@ export function middleware(request: NextRequest) {
 
     if (authToken) {
         if (authPath.includes(pathname) || pathname === '/') {
-            return NextResponse.redirect(new URL('/c', request.nextUrl));
+            return NextResponse.redirect(new URL('/chats', request.nextUrl));
         } else {
             return NextResponse.next();
         }

@@ -21,7 +21,7 @@ const NotFound = () => {
                 </Typography>
                 <Button
                     variant='contained'
-                    href='/c'
+                    href='/chats'
                     sx={{ mt: 1.5, mb: 2, py: 1, borderRadius: '10px' }}>
                     Return to messenger
                 </Button>

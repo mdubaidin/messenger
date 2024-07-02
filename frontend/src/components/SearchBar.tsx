@@ -1,7 +1,9 @@
 import { InputBase } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
 import React from 'react';
 import { styled } from '@mui/material/styles';
+
+// Icons
+import { IoSearchOutline } from 'react-icons/io5';
 
 const SearchWrapper = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -66,7 +68,7 @@ const SearchBar = () => {
                     placeholder='Search...'
                 />
                 <IconWrapperRight>
-                    <SearchIcon />
+                    <IoSearchOutline />
                 </IconWrapperRight>
             </SearchWrapper>
         </React.Fragment>

@@ -31,8 +31,7 @@ const AuthForm = () => {
         const response = await signIn('credentials', {
             email: data.email,
             password: data.password,
-            callbackUrl: 'http://localhost:3000/',
-            redirect: false,
+            callbackUrl: 'http://localhost:3000/chats',
         });
 
         if (response?.error) {
@@ -49,7 +48,7 @@ const AuthForm = () => {
             showError(error);
         }
         if (status === '200') {
-            router.push('/c');
+            router.push('/chats');
         }
     }, [router, showError]);
 

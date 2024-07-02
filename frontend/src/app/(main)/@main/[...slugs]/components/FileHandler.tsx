@@ -6,10 +6,11 @@ import { Box, IconButton, Menu, Stack, TextField, Typography } from '@mui/materi
 import Image from '@/components/Image';
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
 import { getBase64, getFileType, isImage, parseKB } from '@/utils/function';
-import AddReactionOutlinedIcon from '@mui/icons-material/AddReactionOutlined';
-import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
-import Close from '@mui/icons-material/Close';
 import { useAppSelector } from '@/redux/hook';
+
+// Icons
+import { IoMdSend, IoMdClose } from 'react-icons/io';
+import { BsEmojiSmileFill } from 'react-icons/bs';
 
 interface FileHandlerProps {
     mutate?: any;
@@ -194,7 +195,7 @@ const FileHandler: FC<FileHandlerProps> = props => {
                                         opacity: 0,
                                     }}
                                 />
-                                <Close
+                                <IoMdClose
                                     onClick={e => {
                                         e.stopPropagation();
                                         const f = Array.from(files);
@@ -207,7 +208,7 @@ const FileHandler: FC<FileHandlerProps> = props => {
                                         if (fileIndex === lastIndex) setFileIndex(prev => --prev);
                                         setFiles(f);
                                     }}
-                                    sx={{
+                                    style={{
                                         position: 'absolute',
                                         right: 0,
                                         top: 0,
@@ -241,7 +242,7 @@ const FileHandler: FC<FileHandlerProps> = props => {
                 alignItems='center'
                 spacing={2}>
                 <IconButton onClick={openEmoji}>
-                    <AddReactionOutlinedIcon color='primary' />
+                    <BsEmojiSmileFill color='primary' />
                 </IconButton>
                 <TextField
                     fullWidth
@@ -262,7 +263,7 @@ const FileHandler: FC<FileHandlerProps> = props => {
                     sx={{ mb: 0 }}
                 />
                 <IconButton onClick={sendFile}>
-                    <SendOutlinedIcon color='primary' />
+                    <IoMdSend color='primary' />
                 </IconButton>
             </Stack>
             <Menu

@@ -14,7 +14,7 @@ const Options: Structure[] = [
     {
         name: 'Chats',
         icon: TbMessageCircle2Filled,
-        href: '/c',
+        href: '/chats',
     },
     {
         name: 'People',

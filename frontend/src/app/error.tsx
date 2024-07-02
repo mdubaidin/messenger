@@ -35,7 +35,7 @@ const Error: FC<ErrorProps> = ({ error, reset }) => {
                     </Button>
                     <Button
                         variant='outlined'
-                        onClick={() => router.push('/c')}
+                        onClick={() => router.push('/chats')}
                         sx={{ mt: 1.5, mb: 2, py: 1, borderRadius: '10px' }}>
                         Return to messenger
                     </Button>

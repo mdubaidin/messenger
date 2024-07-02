@@ -8,7 +8,7 @@ import errorHandler from '@/utils/errorHandler';
 
 // const PUBLIC_KEY = fs.readFileSync('./certs/private.pem', 'utf8');
 
-const tokenCredentials = ['id', 'name', 'email', 'picture'];
+const tokenCredentials = ['_id', 'id', 'name', 'email', 'picture'];
 
 export const authOptions: NextAuthOptions = {
     providers: [

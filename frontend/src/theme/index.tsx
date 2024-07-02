@@ -113,7 +113,7 @@ const ThemeProvider = (props: ThemeContextProviderProps): React.JSX.Element => {
                 icon: '#cdcdcd',
                 sideStrip: '#121212',
             },
-            divider: '#e7e3e3',
+            divider: '#f1f1f1',
             contrastColor: 'black',
             icon: '#6a6a6a',
         }),
@@ -133,7 +133,7 @@ const ThemeProvider = (props: ThemeContextProviderProps): React.JSX.Element => {
             text: {
                 secondary: '#787878',
             },
-            divider: '#424242',
+            divider: 'rgba(255, 255, 255, 0.125)',
             dividerHover: '#42424266',
             contrastColor: '#FFFFFF',
             icon: '#6a6a6a',
@@ -148,7 +148,7 @@ const ThemeProvider = (props: ThemeContextProviderProps): React.JSX.Element => {
                     mode: mode,
                     primary: {
                         // main: '#4064fd',
-                        main: '#0080ff',
+                        main: '#0093ff',
                     },
                     secondary: {
                         main: '#ed499b',

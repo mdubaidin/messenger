@@ -17,6 +17,7 @@ export type Contact = {
 
 interface ContactState {
     contact: Contact;
+    contactPanel: true | false;
 }
 
 const initialState: ContactState = {
@@ -31,6 +32,7 @@ const initialState: ContactState = {
         blocked: false,
         muted: false,
     },
+    contactPanel: false,
 };
 
 export const contactSlice = createSlice({
@@ -41,10 +43,13 @@ export const contactSlice = createSlice({
         setContact: (state, action) => {
             state.contact = action.payload;
         },
+        setContactPanel: (state, action: { payload: boolean }) => {
+            state.contactPanel = action.payload;
+        },
     },
 });
 
-export const { setContact } = contactSlice.actions;
+export const { setContact, setContactPanel } = contactSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectCount = (state: RootState) => state.contact.contact;

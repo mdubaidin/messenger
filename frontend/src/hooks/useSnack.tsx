@@ -4,9 +4,10 @@ import { SnackbarContent } from '@mui/material';
 import Alert, { AlertColor } from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
 import Slide, { SlideProps } from '@mui/material/Slide';
 import React, { Dispatch, useReducer } from 'react';
+
+import { IoMdClose } from 'react-icons/io';
 
 type SnackAction = object | null;
 
@@ -63,7 +64,7 @@ export default function useSnack(): Snack {
                                 <IconButton
                                     sx={{ p: 0.5, color: 'inherit' }}
                                     onClick={() => showMessage(null)}>
-                                    <CloseIcon />
+                                    <IoMdClose />
                                 </IconButton>
                             </React.Fragment>
                         }

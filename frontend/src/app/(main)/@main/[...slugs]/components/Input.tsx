@@ -16,79 +16,50 @@ import {
     styled,
 } from '@mui/material';
 import React, { MouseEvent, KeyboardEvent, useRef, useState, ChangeEvent } from 'react';
-import AttachFile from '@mui/icons-material/AttachFileOutlined';
-import KeyboardVoiceOutlinedIcon from '@mui/icons-material/KeyboardVoiceOutlined';
-import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined';
-import FormatQuoteOutlinedIcon from '@mui/icons-material/FormatQuoteOutlined';
-import AddReactionOutlinedIcon from '@mui/icons-material/AddReactionOutlined';
-import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
-import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
 import { useMenu } from '@/hooks/useMenu';
 import useModal from '@/hooks/useModal';
 import { useMessage } from '@/providers/Provider';
-import { useDispatch, useSelector } from 'react-redux';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
 import EmojiPicker from 'emoji-picker-react';
 import useErrorHandler from '@/hooks/useErrorHandler';
-import eventEmitter from '@/utils/eventEmitter';
 import FileHandler from './FileHandler';
-import Close from '@mui/icons-material/Close';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
+
+// Icons
+import { BiSolidMicrophone } from 'react-icons/bi';
+import { PiStickerFill } from 'react-icons/pi';
+import { IoMdSend, IoMdAddCircle, IoMdClose } from 'react-icons/io';
+import { AiFillLike } from 'react-icons/ai';
+import { BsEmojiSmileFill, BsImage } from 'react-icons/bs';
 
 const ChatBoxWrapper = styled('div')(({ theme }) => ({
     position: 'relative',
     width: '100%',
     maxWidth: '100%',
     display: 'flex',
-    alignItems: 'flex-end',
     flexDirection: 'column',
-    backgroundColor: theme.palette.common.white,
-    border: '1px solid white',
-    borderRadius: '8px',
-    opacity: 0.7,
-    padding: '4px',
+    backgroundColor: theme.palette.background.paper,
     transition: 'all 235ms ease-in-out',
+    padding: 10,
 }));
 
-const IconLeft = styled('div')(({ theme }) => ({
-    padding: theme.spacing(1),
-    position: 'absolute',
-    left: 0,
+const InputWrapper = styled(Box)(({ theme }) => ({
+    backgroundColor: theme.palette.background.search,
     display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 10,
-}));
-
-const IconRight = styled('div')(({ theme }) => ({
-    padding: theme.spacing(1),
-    position: 'absolute',
-    right: 0,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 10,
+    width: '100%',
+    borderRadius: 500,
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
     color: 'inherit',
     width: '100%',
+    padding: 0,
     '& .MuiInputBase-input': {
         maxHeight: '100px',
-        padding: theme.spacing(1, 1, 1, 0),
-        marginLeft: `calc(1em + ${theme.spacing(4)})`,
+        paddingInline: 16,
+        fontSize: 15,
+        // marginLeft: `calc(1em + ${theme.spacing(4)})`,
         marginRight: `calc(1em + ${theme.spacing(7)})`,
-        [theme.breakpoints.up('sm')]: {
-            padding: theme.spacing(1.5, 1, 1.5),
-        },
         transition: theme.transitions.create('width'),
-        width: '100%',
-        // '&:focus': {
-        //     backgroundColor: theme.palette.custom.search.focus,
-        //     boxShadow: 'rgba(0, 0, 0, 0.24) 0px 1px 3px',
-        //     borderRadius: '20px',
-        // },
     },
 }));
 
@@ -103,7 +74,7 @@ const Input = (props: InputProps) => {
     const [message, setMessage] = useState<string>('');
     const [caret, setCaret] = useState<number | null>(null);
     const contact = useAppSelector(state => state.contact.contact);
-    const queryClient = useQueryClient();
+    // const queryClient = useQueryClient();
     const { showError } = useMessage();
     const errorHandler = useErrorHandler();
 
@@ -220,13 +191,16 @@ const Input = (props: InputProps) => {
                 {false && (
                     <Stack
                         direction='row'
+                        justifyContent='center'
                         spacing={2}
                         sx={{
                             height: 50,
                             width: '100%',
-                            bgcolor: 'lightgray',
+                            bgcolor: 'background.search',
                             borderLeft: '3px solid',
                             borderColor: 'primary.main',
+                            borderRadius: '5px',
+                            mb: 1,
                         }}>
                         <Box flexGrow={1} p={1}>
                             <Typography variant='subtitle2' fontWeight={500} color='primary.main'>
@@ -247,57 +221,57 @@ const Input = (props: InputProps) => {
                         <IconButton
                         //  onClick={() => setSelectedMessage({})}
                         >
-                            <Close />
+                            <IoMdClose />
                         </IconButton>
                     </Stack>
                 )}
-                <Stack direction='row' sx={{ width: '100%' }}>
-                    <IconLeft>
+                <Stack direction='row'>
+                    <IconButton color='primary' onClick={openAttachFile}>
+                        <IoMdAddCircle />
+                    </IconButton>
+                    <InputWrapper>
+                        <FormControl fullWidth>
+                            <StyledInputBase
+                                sx={{
+                                    flex: 1,
+                                }}
+                                ref={inputRef}
+                                value={message}
+                                onMouseUp={(e: MouseEvent) => {
+                                    const event = e.target as HTMLInputElement;
+                                    setCaret(event.selectionStart);
+                                }}
+                                onKeyUp={(e: KeyboardEvent) => {
+                                    const event = e.target as HTMLInputElement;
+                                    setCaret(event.selectionStart);
+                                }}
+                                placeholder='Type a message'
+                                onKeyDown={handleKeyDown}
+                                onChange={onChangeHandler}
+                                multiline
+                                maxRows={5}
+                            />
+                        </FormControl>
+
+                        <IconButton color='primary'>
+                            <PiStickerFill />
+                        </IconButton>
+                        <IconButton onClick={openEmoji} color='primary'>
+                            <BsEmojiSmileFill size='20' />
+                        </IconButton>
+                    </InputWrapper>
+                    {message?.trim() ? (
                         <IconButton
-                            sx={{ transform: 'rotate(45deg)' }}
                             color='primary'
-                            onClick={openAttachFile}>
-                            <AttachFile />
-                        </IconButton>
-                    </IconLeft>
-                    <FormControl fullWidth>
-                        <StyledInputBase
-                            sx={{
-                                flex: 1,
-                            }}
-                            ref={inputRef}
-                            value={message}
-                            onMouseUp={(e: MouseEvent) => {
-                                const event = e.target as HTMLInputElement;
-                                setCaret(event.selectionStart);
-                            }}
-                            onKeyUp={(e: KeyboardEvent) => {
-                                const event = e.target as HTMLInputElement;
-                                setCaret(event.selectionStart);
-                            }}
-                            placeholder='Type a message'
-                            onKeyDown={handleKeyDown}
-                            onChange={onChangeHandler}
-                            multiline
-                            maxRows={5}
-                        />
-                    </FormControl>
-                    <IconRight>
-                        <IconButton onClick={openEmoji}>
-                            <AddReactionOutlinedIcon color='primary' />
-                        </IconButton>
-                        {message?.trim() ? (
-                            <IconButton
                             // onClick={sendMessage}
-                            >
-                                <SendOutlinedIcon color='primary' />
-                            </IconButton>
-                        ) : (
-                            <IconButton>
-                                <KeyboardVoiceOutlinedIcon color='primary' />
-                            </IconButton>
-                        )}
-                    </IconRight>
+                        >
+                            <IoMdSend />
+                        </IconButton>
+                    ) : (
+                        <IconButton color='primary'>
+                            <AiFillLike />
+                        </IconButton>
+                    )}
                 </Stack>
             </ChatBoxWrapper>
 
@@ -370,7 +344,7 @@ const Input = (props: InputProps) => {
                     bottom: 0,
                     transform: 'translateY(-20px)',
                     '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
-                        width: 'min(100%, 200px)',
+                        width: 'min(100%, 240px)',
                         boxShadow:
                             'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
                         border: '1px solid',
@@ -378,21 +352,35 @@ const Input = (props: InputProps) => {
                         backdropFilter: 'blur(6px)',
                         bgcolor: 'rgba(255, 255, 255, 0.7)',
                         borderRadius: '8px',
-                        px: 0.2,
-                        py: 1.5,
+                        p: 0.2,
                         overflowY: 'unset',
                     },
                     '& .MuiButtonBase-root:hover': {
                         bgcolor: 'rgba(255, 255, 255, 0.8)',
                     },
+
+                    '& .MuiListItemIcon-root': {
+                        minWidth: 25,
+                    },
                 }}>
-                <MenuItem onClick={() => fileRef.current && fileRef.current.click()}>
-                    <ListItemIcon>
-                        <InsertDriveFileOutlinedIcon fontSize='small' color='primary' />
+                <MenuItem
+                    color='primary'
+                    onClick={() => fileRef.current && fileRef.current.click()}>
+                    <ListItemIcon sx={{ color: 'primary.main' }}>
+                        <BiSolidMicrophone />
                     </ListItemIcon>
-                    <ListItemText
-                        primaryTypographyProps={{ fontSize: 14, color: 'text.secondary' }}>
-                        Upload file
+                    <ListItemText primaryTypographyProps={{ fontSize: 14 }}>
+                        Send a voice clip
+                    </ListItemText>
+                </MenuItem>
+                <MenuItem
+                    color='primary'
+                    onClick={() => fileRef.current && fileRef.current.click()}>
+                    <ListItemIcon sx={{ color: 'primary.main' }}>
+                        <BsImage />
+                    </ListItemIcon>
+                    <ListItemText primaryTypographyProps={{ fontSize: 14 }}>
+                        Attach a file
                     </ListItemText>
                 </MenuItem>
             </Menu>
