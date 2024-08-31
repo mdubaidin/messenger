@@ -1,7 +1,7 @@
-import User, { JwtUser } from '../../models/User.js';
+import User, { JwtUser, UserDocument } from '../../models/User.js';
 import CustomError from '../../classes/CustomError.js';
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { generateJWT } from '../../utils/jwt/jwt.js';
+import { generateJwtPair } from '../../utils/jwt/jwt.js';
 import { CookieOptions, Response } from 'express';
 
 export type Token = {
@@ -21,16 +21,16 @@ const getAccessToken = async (refresh_token: string): Promise<Token> => {
     const user = await User.findById(decode.id);
 
     if (!user) {
-        CustomError.throw('Refresh token is invalid', 401);
+        new CustomError('Refresh token is invalid', 401);
         return {};
     }
 
-    const { accessToken, refreshToken } = await generateJWT(user);
+    const { accessToken, refreshToken } = await generateJwtPair(user);
 
     return { accessToken, refreshToken };
 };
 
-const isTokenExpire = (accessToken: string) => {
+const isAccessTokenExpire = (accessToken: string) => {
     const decodedToken = jwt.decode(accessToken) as JwtPayload;
     if (!decodedToken) return true;
 
@@ -48,4 +48,4 @@ const clearTokenCookies = (res: Response) => {
     res.clearCookie('jwt-auth.refresh-token', cookieConfig);
 };
 
-export { getAccessToken, isTokenExpire, setTokenCookies, clearTokenCookies };
+export { getAccessToken, isAccessTokenExpire, setTokenCookies, clearTokenCookies };

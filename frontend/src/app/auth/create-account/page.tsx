@@ -19,6 +19,7 @@ import { isEmpty } from '@/utils/function';
 import { useRouter } from 'next/navigation';
 import { useMessage } from '@/providers/Provider';
 import { authApi } from '@/libs/axios';
+import { signIn } from 'next-auth/react';
 
 interface FormInput {
     name: string;
@@ -185,10 +186,7 @@ function CreateAccount() {
             </Divider>
 
             <Stack mt={3} spacing={2} my={3}>
-                <GoogleButton
-                    name='Sign up with Google'
-                    href={`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/google`}
-                />
+                <GoogleButton name='Sign up with Google' onClick={() => signIn('google')} />
                 <FacebookButton name='Sign up with Facebook' />
             </Stack>
 

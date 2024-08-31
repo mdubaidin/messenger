@@ -8,7 +8,7 @@ const fetch: Handler = async function (req, res, next) {
     try {
         if (userId) {
             const user = await User.findById(userId).select('-password -refreshToken -otp');
-            return res.success({ user, token: req.headers.accessToken });
+            return res.success({ user });
         }
 
         const dataSource = new DataSource(User, req.query);

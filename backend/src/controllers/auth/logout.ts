@@ -10,7 +10,7 @@ const logout: Handler = async function (req, res, next) {
     try {
         const user = await User.findById(userId);
 
-        if (!user) return CustomError.throw('This Account Does Not Exist', 404);
+        if (!user) return res.error('This Account Does Not Exist');
 
         user.refreshToken = '';
         await user.save();

@@ -10,7 +10,7 @@ import ContactPanel from './components/ContactPanel';
 import DefaultMessage from '@/components/DefaultMessage';
 import { usePathname } from 'next/navigation';
 
-const panelWidth = 350;
+const panelWidth = 340;
 
 const Page = ({ params }: { params: { slugs: string[] } }) => {
     const contactPanel = useAppSelector(state => state.contact.contactPanel);

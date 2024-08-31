@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 
 const upload = multer({
     storage: multer.diskStorage({
-        destination: './temp_uploads',
+        destination: './uploads',
         filename: (req, file, cb) => {
             const id = new mongoose.Types.ObjectId();
             const uniqueSuffix = id.toString();

@@ -6,7 +6,7 @@ const authorize: Handler = (req, res, next) => {
     console.log('Auth key: ' + authKey);
 
     if (!authKey || authKey !== process.env.API_KEY) {
-        return CustomError.throw('Unauthorized', 401);
+        throw new CustomError('Access Denied: A valid API key is required to proceed.', 401);
     }
     next();
 };

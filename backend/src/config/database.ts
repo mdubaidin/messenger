@@ -1,5 +1,7 @@
 import mongoose, { connect, disconnect } from 'mongoose';
 
+mongoose.set('runValidators', true);
+
 async function connectDB() {
     try {
         const connectionString = process.env.MONGODB_CONNECTION_STRING;

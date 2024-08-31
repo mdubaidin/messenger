@@ -1,16 +1,11 @@
 class CustomError extends Error {
-    code: number = 0;
+    statusCode: number;
 
-    constructor(message: string) {
+    constructor(message: string, statusCode?: number) {
         super(message);
         this.name = 'CustomError';
         this.message = message;
-    }
-
-    public static throw(msg: string, code: number = 400) {
-        const error = new CustomError(msg);
-        error.code = code;
-        throw error;
+        this.statusCode = statusCode || 400;
     }
 }
 

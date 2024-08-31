@@ -2,6 +2,7 @@
 import fs from 'fs';
 import path from 'path';
 import { Types } from 'mongoose';
+import { NextFunction, Request, Response } from 'express';
 
 type K = {
     [key: string]: string | number | boolean;
@@ -24,7 +25,7 @@ interface OTPoptions {
 }
 type keysOfProps = keyof OTPoptions;
 
-function generateOTP(length: number, options?: OTPoptions) {
+function generateRandomBytes(length: number, options?: OTPoptions) {
     var chars = '';
 
     if (options) {
@@ -96,6 +97,16 @@ function isValidMongoId(id: string) {
     }
 }
 
+function TryCatch(cb: Function) {
+    return async function (req: Request, res: Response, next: NextFunction) {
+        try {
+            await cb(req, res, next);
+        } catch (err) {
+            next(err);
+        }
+    };
+}
+
 function generateTemplate(template: string, data: any) {
     if (!template) throw new Error('Template must be provided');
 
@@ -110,4 +121,20 @@ function generateTemplate(template: string, data: any) {
     return template;
 }
 
-export { filterObject, generateOTP, acceptFiles, rejectFiles, isValidMongoId, generateTemplate };
+function base64EncodeUrl(file: any) {
+    const bitmap = fs.readFileSync(file.path);
+    const mimeType = file.mimetype;
+    const base64 = bitmap.toString('base64');
+    return `data:${mimeType};base64,${base64}`;
+}
+
+export {
+    filterObject,
+    generateRandomBytes,
+    acceptFiles,
+    rejectFiles,
+    isValidMongoId,
+    generateTemplate,
+    TryCatch,
+    base64EncodeUrl,
+};

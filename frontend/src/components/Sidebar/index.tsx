@@ -6,11 +6,8 @@ import {
     ListItem,
     ListItemButton,
     ListItemText,
-    Stack,
-    Typography,
     IconButton,
     Avatar,
-    ListItemAvatar,
     ListItemIcon,
     MenuItem,
     Menu,
@@ -31,12 +28,14 @@ import { authApi } from '@/libs/axios';
 // Icons
 import { MdLogout } from 'react-icons/md';
 import { IoIosSettings } from 'react-icons/io';
+import { useAppSelector } from '@/redux/hook';
 
 const Index = () => {
     const { anchorEl, openMenu, closeMenu } = useMenu();
     const { modalState, openModal, closeModal } = useModal();
     const { data: user } = useSession();
     const errorHandler = useErrorHandler();
+    const contact = useAppSelector(state => state.contact.contact);
 
     const logout = async () => {
         try {
@@ -59,7 +58,7 @@ const Index = () => {
                 <List disablePadding sx={{ flexGrow: 1 }}>
                     {Options.map((option, i) => (
                         <NavLink
-                            href={option.href}
+                            href={contact._id ? option.href + '/' + contact._id : option.href}
                             key={i}
                             style={{
                                 textDecoration: 'none',

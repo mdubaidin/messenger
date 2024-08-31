@@ -1,13 +1,13 @@
-import { CallbackWithoutResultAndOptionalError, Document, model, Schema } from 'mongoose';
-import bcrypt from 'bcrypt';
-import { emailValidator } from '../utils/validators.js';
+import { CallbackWithoutResultAndOptionalError, Document, model, Schema, Types } from 'mongoose';
+import { compareSync, hashSync } from 'bcrypt';
+import { emailValidator, usernameValidator } from '../utils/validators.js';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import fs from 'fs';
 
 const PRIVATE_KEY = fs.readFileSync('./certs/private.pem', 'utf8');
 
 export interface JwtUser extends JwtPayload {
-    id: string;
+    id: string | Types.ObjectId;
 }
 
 const providers = ['google', 'facebook'] as const;
@@ -19,6 +19,7 @@ export interface UserInput {
     password: string;
     gender: string;
     dob: Date;
+    bio: string;
     provider: Providers;
     providerId: string;
     picture: string;
@@ -28,7 +29,7 @@ export interface UserInput {
 interface Methods {
     isAuthorized(password: string): Promise<string>;
     isUnauthorized(password: string): Promise<boolean>;
-    convertPasswordToHash(password: string): string;
+    hash(password: string): string;
     removeSensitiveInfo(): object;
     signAccessToken(): string;
     signRefreshToken(): string;
@@ -51,12 +52,32 @@ const userSchema = new Schema(
                 message: props => `${props.value} is not a valid email address!`,
             },
         },
+        username: {
+            type: String,
+            required: true,
+            trim: true,
+            unique: true,
+            lowercase: true,
+            minlength: 3,
+            maxlength: 30,
+            validate: {
+                validator: usernameValidator,
+                message: () =>
+                    `A username can only contain letters, numbers, periods, and underscores.`,
+            },
+        },
         name: {
             type: String,
             trim: true,
             minlength: 3,
             maxlength: 40,
             required: true,
+        },
+        bio: {
+            type: String,
+            trim: true,
+            minlength: 3,
+            maxlength: 100,
         },
         password: {
             type: String,
@@ -92,33 +113,35 @@ const userSchema = new Schema(
     { timestamps: true, toJSON: { virtuals: true } }
 );
 
-const convertPasswordToHash = async function (
+const hashPassword = async function (
     this: UserDocument,
     next: CallbackWithoutResultAndOptionalError
 ) {
     if (this.isModified('password')) {
-        this.password = await this.convertPasswordToHash(this.password);
+        this.password = this.hash(this.password);
     }
     next();
 };
 
-userSchema.pre(['save'], convertPasswordToHash);
+userSchema.pre(['save'], hashPassword);
 
 userSchema.methods = {
     isAuthorized: async function (password: string) {
-        return bcrypt.compare(password, this.password);
+        return compareSync(password, this.password);
+    },
+
+    hash: async function (password: string) {
+        return hashSync(password, 10);
     },
     isUnauthorized: async function (password: string) {
         const authorized = await this.isAuthorized(password);
         return Boolean(!authorized);
     },
-    convertPasswordToHash: async function (password: string) {
-        const saltRounds = 10;
-        return bcrypt.hash(password, saltRounds);
-    },
+
     removeSensitiveInfo: function () {
         var obj = this.toObject();
         delete obj.password;
+        delete obj.otp;
         return obj;
     },
 

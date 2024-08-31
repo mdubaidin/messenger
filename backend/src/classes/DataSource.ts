@@ -27,7 +27,7 @@ class DataSource<T extends Document> {
     private queryFilters: Record<string, any>;
     pageData: PageData | undefined;
 
-    constructor(Model: Model<T>, query: QueryParams, filtersAllowed: string[] = []) {
+    constructor(Model: Model<any>, query: QueryParams, filtersAllowed: string[] = []) {
         this.Model = Model;
         this.query = query;
         this.filtersAllowed = filtersAllowed;

@@ -5,6 +5,7 @@ import Provider from '@/providers/Provider';
 // import StoreProvider from './StoreProvider';
 // import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import StoreProvider from '../providers/StoreProvider';
+import socket from '@/libs/socket';
 
 export const metadata: Metadata = {
     title: 'Messenger',
@@ -12,15 +13,9 @@ export const metadata: Metadata = {
     icons: '/images/logo.png',
 };
 
-// const queryClient = new QueryClient({
-//     defaultOptions: {
-//         queries: {
-//             staleTime: Infinity,
-//             refetchIntervalInBackground: false,
-//             refetchOnWindowFocus: false,
-//         },
-//     },
-// });
+socket.on('connection', () => {
+    console.log('I am connected');
+});
 
 export default function RootLayout({
     children,

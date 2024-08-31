@@ -1,6 +1,6 @@
 import { NextFunction } from 'express';
-import { JwtPayload } from 'jsonwebtoken';
 import { JwtUser } from '../../src/models/User.ts';
+import { Types } from 'mongoose';
 
 declare global {
     namespace Express {
@@ -11,6 +11,13 @@ declare global {
 
         interface Request {
             user?: JwtUser;
+            group: { _id: Types.ObjectId; isAdmin: Boolean };
+        }
+
+        namespace Multer {
+            interface File {
+                picture: string;
+            }
         }
 
         type Handler = (req: Request, res: Response, next?: NextFunction) => void;

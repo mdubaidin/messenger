@@ -34,13 +34,13 @@ import useModal from '@/hooks/useModal';
 import useLoader from '@/hooks/useLoader';
 // import { useQueryClient } from '@tanstack/react-query';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
+import { notFound } from 'next/navigation';
+import { setContactPanel } from '@/redux/features/contact/contactSlice';
 
 // Icons
 import { IoMdMore, IoIosVideocam } from 'react-icons/io';
 import { MdBlock } from 'react-icons/md';
 import { FaPhone } from 'react-icons/fa6';
-import { notFound } from 'next/navigation';
-import { setContactPanel } from '@/redux/features/contact/contactSlice';
 
 type HeaderProps = {
     contactId: string;

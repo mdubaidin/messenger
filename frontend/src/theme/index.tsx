@@ -40,6 +40,10 @@ declare module '@mui/material/styles' {
         sideStrip: string;
     }
 
+    interface TypeText {
+        tertiary: string;
+    }
+
     interface Palette {
         contrastColor: string;
         icon: string;
@@ -112,6 +116,11 @@ const ThemeProvider = (props: ThemeContextProviderProps): React.JSX.Element => {
                 search: '#f5f5f5',
                 icon: '#cdcdcd',
                 sideStrip: '#121212',
+                icons: {
+                    media: '#e6f7ef',
+                    link: '#fff5e5',
+                    file: '#ebf6fd',
+                },
             },
             divider: '#f1f1f1',
             contrastColor: 'black',
@@ -129,10 +138,16 @@ const ThemeProvider = (props: ThemeContextProviderProps): React.JSX.Element => {
                 search: '#242424',
                 icon: '#323232',
                 sideStrip: '#121212',
+                icons: {
+                    media: '#242424',
+                    link: '#242424',
+                    file: '#242424',
+                },
             },
             text: {
                 secondary: '#787878',
             },
+
             divider: 'rgba(255, 255, 255, 0.125)',
             dividerHover: '#42424266',
             contrastColor: '#FFFFFF',
@@ -147,11 +162,14 @@ const ThemeProvider = (props: ThemeContextProviderProps): React.JSX.Element => {
                 palette: {
                     mode: mode,
                     primary: {
-                        // main: '#4064fd',
+                        // main: '#3593e2',
                         main: '#0093ff',
                     },
                     secondary: {
                         main: '#ed499b',
+                    },
+                    text: {
+                        tertiary: '#515f79',
                     },
 
                     ...(mode === 'light' ? light : dark),

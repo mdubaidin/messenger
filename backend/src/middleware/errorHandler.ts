@@ -14,9 +14,9 @@ export default function (err: any, req: Request, res: Response, next: NextFuncti
 
     // if (err.name === 'Error') return res.error(err.message);
 
-    // Any Error thrown by Error.throw()
+    // Any Error thrown by CustomError
     if (err instanceof CustomError) {
-        return res.status(err.code).error({ errors: [err.message] });
+        return res.status(err.statusCode).error({ errors: [err.message] });
     }
 
     // Any Mongoose Error

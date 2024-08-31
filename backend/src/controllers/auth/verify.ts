@@ -6,11 +6,11 @@ const verify: Handler = async function (req, res, next) {
     try {
         const { email, otp } = req.body;
 
-        if (!(email && otp)) return CustomError.throw('Link is Invalid', 403);
+        if (!(email && otp)) throw new CustomError('Link is Invalid', 403);
 
         const isExists = await OTP.findOne({ email, otp });
 
-        if (!isExists) return CustomError.throw('Link is Invalid', 403);
+        if (!isExists) throw new CustomError('Link is Invalid', 403);
 
         res.success('');
     } catch (e) {

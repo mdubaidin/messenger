@@ -57,8 +57,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
         maxHeight: '100px',
         paddingInline: 16,
         fontSize: 15,
-        // marginLeft: `calc(1em + ${theme.spacing(4)})`,
-        marginRight: `calc(1em + ${theme.spacing(7)})`,
+        overflow: 'hidden',
         transition: theme.transitions.create('width'),
     },
 }));
@@ -347,16 +346,10 @@ const Input = (props: InputProps) => {
                         width: 'min(100%, 240px)',
                         boxShadow:
                             'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
-                        border: '1px solid',
-                        borderColor: 'common.white',
                         backdropFilter: 'blur(6px)',
-                        bgcolor: 'rgba(255, 255, 255, 0.7)',
                         borderRadius: '8px',
                         p: 0.2,
                         overflowY: 'unset',
-                    },
-                    '& .MuiButtonBase-root:hover': {
-                        bgcolor: 'rgba(255, 255, 255, 0.8)',
                     },
 
                     '& .MuiListItemIcon-root': {
