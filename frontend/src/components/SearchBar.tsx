@@ -1,6 +1,6 @@
 'use client';
 
-import { InputBase } from '@mui/material';
+import { InputBase, InputBaseProps } from '@mui/material';
 import React from 'react';
 import { styled } from '@mui/material/styles';
 
@@ -46,7 +46,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     width: '100%',
     'input::placeholder': {
         color: theme.palette.contrastColor,
-        fontWeight: 500,
+        fontWeight: 400,
     },
     '& .MuiInputBase-input': {
         padding: theme.spacing(1),
@@ -59,7 +59,11 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }));
 
-const SearchBar = () => {
+interface Search extends InputBaseProps {
+    placeholder?: string;
+}
+
+const SearchBar = (props: Search) => {
     return (
         <React.Fragment>
             <SearchWrapper>
@@ -68,6 +72,7 @@ const SearchBar = () => {
                         flex: 1,
                     }}
                     placeholder='Search...'
+                    {...props}
                 />
                 <IconWrapperRight>
                     <IoSearchOutline />

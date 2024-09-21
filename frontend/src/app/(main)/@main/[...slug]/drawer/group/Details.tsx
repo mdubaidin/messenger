@@ -12,54 +12,37 @@ import {
     ListItemAvatar,
     ListItemButton,
     ListItemText,
+    Modal,
     Stack,
     Typography,
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 
 // Icons
 import { IoSearchOutline, IoExitOutline } from 'react-icons/io5';
 import { IoIosNotifications } from 'react-icons/io';
 import { MdPersonAdd, MdBlock } from 'react-icons/md';
 import { FileIcon, LinkIcon, MediaIcon } from '@/components/Icons';
-import axios from 'axios';
-import useErrorHandler from '@/hooks/useErrorHandler';
+import { Key } from './Main';
+import useModal from '@/hooks/useModal';
+import AddMember from './AddMember';
 
-type GroupInfoProps = {
-    groupId: string;
+type DetailsProps = {
+    groupInfo: any | null;
+    members: any | null;
+    setComponent: Dispatch<SetStateAction<Key>>;
 };
 
-const GroupInfo = (props: GroupInfoProps) => {
-    const { groupId } = props;
-    const [info, setInfo] = useState<any>(null);
-    const [members, setMembers] = useState<any>([]);
-    const errorHandler = useErrorHandler();
+const Details = (props: DetailsProps) => {
+    const { groupInfo, members, setComponent } = props;
+    const { modalState, openModal, closeModal } = useModal();
 
-    const getGroupInfo = async (id: string) => {
-        try {
-            const response = await axios.get(`/groups/${id}`);
-
-            setInfo(response.data.group);
-            setMembers(response.data.members);
-        } catch (error) {
-            errorHandler(error);
-        }
-    };
-
-    console.log({ data: info });
-
-    useEffect(() => {
-        if (!groupId) return;
-
-        getGroupInfo(groupId);
-    }, [groupId]);
-
-    return info ? (
+    return groupInfo ? (
         <Box p={2.5}>
             <Stack alignItems='center' justifyContent='center' py={4} textAlign='center'>
                 <Avatar
-                    alt={info.name}
-                    src={info.picture}
+                    alt={groupInfo.name}
+                    src={groupInfo.picture}
                     sx={{ width: 100, height: 100, mb: 1.5 }}
                 />
                 <Typography
@@ -73,7 +56,7 @@ const GroupInfo = (props: GroupInfoProps) => {
                         WebkitBoxOrient: 'vertical',
                         WebkitLineClamp: '1',
                     }}>
-                    {info.name}
+                    {groupInfo.name}
                 </Typography>
                 <Typography
                     variant='subtitle2'
@@ -87,9 +70,9 @@ const GroupInfo = (props: GroupInfoProps) => {
                         WebkitLineClamp: '1',
                     }}>
                     Group · {members.length} members
-                </Typography>   
+                </Typography>
                 <Typography variant='body2' color='text.secondary'>
-                    {info.description}
+                    {groupInfo.description}
                 </Typography>
             </Stack>
 
@@ -98,7 +81,10 @@ const GroupInfo = (props: GroupInfoProps) => {
                     variant='contained'
                     fullWidth
                     startIcon={<IoSearchOutline />}
-                    sx={{ py: 1, borderRadius: 2.5 }}>
+                    sx={{ py: 1, borderRadius: 2.5 }}
+                    onClick={() => {
+                        setComponent('search');
+                    }}>
                     Search
                 </Button>
                 <Button
@@ -127,6 +113,7 @@ const GroupInfo = (props: GroupInfoProps) => {
                 variant='text'
                 fullWidth
                 startIcon={<MediaIcon />}
+                onClick={() => setComponent('media')}
                 sx={{
                     color: 'text.secondary',
                     justifyContent: 'flex-start',
@@ -139,6 +126,7 @@ const GroupInfo = (props: GroupInfoProps) => {
                 variant='text'
                 fullWidth
                 startIcon={<LinkIcon />}
+                onClick={() => setComponent('links')}
                 sx={{
                     color: 'text.secondary',
                     justifyContent: 'flex-start',
@@ -151,13 +139,14 @@ const GroupInfo = (props: GroupInfoProps) => {
                 variant='text'
                 fullWidth
                 startIcon={<FileIcon />}
+                onClick={() => setComponent('docs')}
                 sx={{
                     color: 'text.secondary',
                     justifyContent: 'flex-start',
                     borderRadius: 1.5,
                     pl: 1.5,
                 }}>
-                Files
+                Docs
             </Button>
 
             <Stack direction='row' justifyContent='space-between' alignItems='center' my={0.5}>
@@ -173,14 +162,17 @@ const GroupInfo = (props: GroupInfoProps) => {
                     }}>
                     Members
                 </Typography>
-                <IconButton color='primary'>
+                <IconButton color='primary' onClick={() => setComponent('searchMembers')}>
                     <IoSearchOutline />
                 </IconButton>
             </Stack>
 
             <List sx={{ mx: -0.5 }}>
                 <ListItem disablePadding>
-                    <ListItemButton variant={'memberButton'} sx={{ minHeight: 60 }}>
+                    <ListItemButton
+                        variant={'memberButton'}
+                        sx={{ minHeight: 60 }}
+                        onClick={openModal}>
                         <ListItemAvatar>
                             <Avatar
                                 alt={'Add Member'}
@@ -267,6 +259,19 @@ const GroupInfo = (props: GroupInfoProps) => {
                     ))}
             </List>
 
+            <Button
+                variant='text'
+                fullWidth
+                color='success'
+                onClick={() => setComponent('searchMembers')}
+                sx={{
+                    justifyContent: 'flex-start',
+                    borderRadius: 1.5,
+                    pl: 1.5,
+                    mb: 0.5,
+                }}>
+                View all
+            </Button>
             <Divider sx={{ mb: 1 }} />
 
             <Button
@@ -295,8 +300,15 @@ const GroupInfo = (props: GroupInfoProps) => {
                 }}>
                 Exit group
             </Button>
+
+            <Modal
+                open={modalState}
+                onClose={closeModal}
+                sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <AddMember closeModal={closeModal} />
+            </Modal>
         </Box>
     ) : null;
 };
 
-export default GroupInfo;
+export default Details;

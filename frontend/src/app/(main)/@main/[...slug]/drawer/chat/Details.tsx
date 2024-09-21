@@ -1,6 +1,6 @@
 import { useAppSelector } from '@/redux/hook';
 import { Avatar, Box, Button, Card, Divider, Stack, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 // Icons
 import { IoSearchOutline } from 'react-icons/io5';
@@ -9,41 +9,22 @@ import { MdBlock } from 'react-icons/md';
 import { FileIcon, LinkIcon, MediaIcon } from '@/components/Icons';
 import axios from 'axios';
 import useErrorHandler from '@/hooks/useErrorHandler';
-import { indexOf } from 'lodash';
+import { Key } from './Main';
 
-type ChatInfoProps = {
-    chatId: string;
+type ChatProps = {
+    chatInfo: any | null;
+    setComponent: Dispatch<SetStateAction<Key>>;
 };
 
-const ChatInfo = (props: ChatInfoProps) => {
-    const { chatId } = props;
-    const [info, setInfo] = useState<any>(null);
-    const errorHandler = useErrorHandler();
+const Details = (props: ChatProps) => {
+    const { chatInfo, setComponent } = props;
 
-    const getChatInfo = async (id: string) => {
-        try {
-            const response = await axios.get(`/chats/${id}`);
-
-            setInfo(response.data.chat);
-        } catch (error) {
-            errorHandler(error);
-        }
-    };
-
-    console.log({ data: info });
-
-    useEffect(() => {
-        if (!chatId) return;
-
-        getChatInfo(chatId);
-    }, [chatId]);
-
-    return info ? (
+    return chatInfo ? (
         <Box height={'100%'} p={2.5}>
             <Stack alignItems='center' justifyContent='center' py={4} textAlign='center'>
                 <Avatar
-                    alt={info.name}
-                    src={info.picture}
+                    alt={chatInfo.name}
+                    src={chatInfo.picture}
                     sx={{ width: 100, height: 100, mb: 1.5 }}
                 />
                 <Typography
@@ -57,7 +38,7 @@ const ChatInfo = (props: ChatInfoProps) => {
                         WebkitBoxOrient: 'vertical',
                         WebkitLineClamp: '1',
                     }}>
-                    {info.name}
+                    {chatInfo.name}
                 </Typography>
                 <Typography
                     variant='subtitle2'
@@ -70,10 +51,10 @@ const ChatInfo = (props: ChatInfoProps) => {
                         WebkitBoxOrient: 'vertical',
                         WebkitLineClamp: '1',
                     }}>
-                    {info.username}
+                    {chatInfo.username}
                 </Typography>
                 <Typography variant='body2' color='text.secondary'>
-                    {info.bio}
+                    {chatInfo.bio}
                 </Typography>
             </Stack>
 
@@ -82,7 +63,8 @@ const ChatInfo = (props: ChatInfoProps) => {
                     variant='contained'
                     fullWidth
                     startIcon={<IoSearchOutline />}
-                    sx={{ py: 1, borderRadius: 2.5 }}>
+                    sx={{ py: 1, borderRadius: 2.5 }}
+                    onClick={() => setComponent('search')}>
                     Search
                 </Button>
                 <Button
@@ -111,6 +93,7 @@ const ChatInfo = (props: ChatInfoProps) => {
                 variant='text'
                 fullWidth
                 startIcon={<MediaIcon />}
+                onClick={() => setComponent('media')}
                 sx={{
                     color: 'text.secondary',
                     justifyContent: 'flex-start',
@@ -123,6 +106,7 @@ const ChatInfo = (props: ChatInfoProps) => {
                 variant='text'
                 fullWidth
                 startIcon={<LinkIcon />}
+                onClick={() => setComponent('links')}
                 sx={{
                     color: 'text.secondary',
                     justifyContent: 'flex-start',
@@ -135,13 +119,14 @@ const ChatInfo = (props: ChatInfoProps) => {
                 variant='text'
                 fullWidth
                 startIcon={<FileIcon />}
+                onClick={() => setComponent('docs')}
                 sx={{
                     color: 'text.secondary',
                     justifyContent: 'flex-start',
                     borderRadius: 1.5,
                     pl: 1.5,
                 }}>
-                Files
+                Docs
             </Button>
 
             <Typography
@@ -171,10 +156,10 @@ const ChatInfo = (props: ChatInfoProps) => {
                     pl: 1.5,
                     mb: 0.5,
                 }}>
-                Block {info.name}
+                Block {chatInfo.name}
             </Button>
         </Box>
     ) : null;
 };
 
-export default ChatInfo;
+export default Details;

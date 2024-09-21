@@ -5,11 +5,11 @@ import Header from './components/Header';
 import Input from './components/Input';
 import ChatSection from './components/ChatSection';
 import { useAppSelector } from '@/redux/hook';
-import Drawer from '@mui/material/Drawer';
+import MuiDrawer from '@mui/material/Drawer';
 import DefaultMessage from '@/components/DefaultMessage';
-import Info from './info/Info';
+import Drawer from './drawer/drawer';
 
-const panelWidth = 370;
+const panelWidth = 380;
 
 const Page = () => {
     const { chat, contactPanel } = useAppSelector(state => state.chat);
@@ -27,7 +27,7 @@ const Page = () => {
             <ChatSection />
             <Input />
 
-            <Drawer
+            <MuiDrawer
                 variant='persistent'
                 open={contactPanel}
                 anchor='right'
@@ -40,8 +40,8 @@ const Page = () => {
                         borderColor: 'divider',
                     },
                 }}>
-                <Info />
-            </Drawer>
+                <Drawer />
+            </MuiDrawer>
         </Box>
     ) : (
         <DefaultMessage />
