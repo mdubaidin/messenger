@@ -4,18 +4,29 @@ import User from '../../models/User.js';
 import CustomError from '../../classes/CustomError.js';
 import { generateJwtPair } from '../../utils/jwt/jwt.js';
 import { setTokenCookies } from '../../utils/jwt/token.js';
+import { emailValidator, usernameValidator } from '../../utils/validators.js';
 
 const login: Handler = async function (req, res, next) {
-    const { username, email, password } = req.body;
+    const { user, password } = req.body;
+
+    const email = emailValidator(user) ? user : undefined;
+    const username = usernameValidator(user) ? user : undefined;
 
     try {
         const query = { $or: [{ email }, { username }] };
         const user = await User.findOne(query);
 
-        if (!user) throw new CustomError(`We can't find account with ${email}`, 404);
+        if (!user)
+            throw new CustomError(
+                `Sorry, your password was incorrect. Please double-check your password.`,
+                400
+            );
 
         if (await user.isUnauthorized(password))
-            throw new CustomError('The password you entered is incorrect, Please try again', 404);
+            throw new CustomError(
+                'Sorry, your password was incorrect. Please double-check your password.',
+                400
+            );
 
         const { accessToken, refreshToken } = await generateJwtPair(user);
 
@@ -33,4 +44,4 @@ const login: Handler = async function (req, res, next) {
     }
 };
 
-export { login };
+export default login;

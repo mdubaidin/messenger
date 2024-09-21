@@ -1,6 +1,8 @@
 import { Handler } from 'express';
 import Chat from '../../models/Chat.js';
 import DataSource from '../../classes/DataSource.js';
+import UserChat from '../../models/UserChat.js';
+import { Types } from 'mongoose';
 
 const fetch: Handler = async function (req, res, next) {
     try {
@@ -8,10 +10,74 @@ const fetch: Handler = async function (req, res, next) {
         const chatId = req.params.id;
 
         if (chatId) {
-            const chat = await Chat.findOne({ _id: chatId, group: false }).populate(
-                'members',
-                'name username bio'
-            );
+            const [chat] = await UserChat.aggregate([
+                {
+                    $match: {
+                        chat: new Types.ObjectId(chatId),
+                        user: {
+                            $ne: userId,
+                        },
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'user',
+                        foreignField: '_id',
+                        as: 'user',
+                        pipeline: [
+                            {
+                                $project: {
+                                    name: 1,
+                                    username: 1,
+                                    picture: 1,
+                                    bio: 1,
+                                },
+                            },
+                        ],
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'chats',
+                        localField: 'chat',
+                        foreignField: '_id',
+                        as: 'chat',
+                        pipeline: [
+                            {
+                                $project: {
+                                    members: 0,
+                                },
+                            },
+                        ],
+                    },
+                },
+                {
+                    $replaceRoot: {
+                        newRoot: {
+                            $mergeObjects: [
+                                {
+                                    $arrayElemAt: ['$chat', 0],
+                                },
+                                {
+                                    $arrayElemAt: ['$user', 0],
+                                },
+                                '$$ROOT',
+                            ],
+                        },
+                    },
+                },
+                {
+                    $addFields: {
+                        chat: {
+                            $first: '$chat._id',
+                        },
+                        user: {
+                            $first: '$user._id',
+                        },
+                    },
+                },
+            ]);
 
             return res.success({ chat });
         }
@@ -20,7 +86,7 @@ const fetch: Handler = async function (req, res, next) {
 
         const chats = await dataSource.aggregate([
             {
-                $match: { members: { $all: [userId] }, group: false },
+                $match: { members: { $all: [userId] } },
             },
             {
                 $lookup: {
@@ -51,9 +117,6 @@ const fetch: Handler = async function (req, res, next) {
                 },
             },
             { $project: { members: 0 } },
-            {
-                $sort: { updatedAt: -1 },
-            },
         ]);
 
         res.success({ chats, pageData: dataSource.pageData });
@@ -74,7 +137,9 @@ const fetchAll: Handler = async function (req, res, next) {
                     chats: [
                         {
                             $match: {
-                                group: false,
+                                members: {
+                                    $all: [userId],
+                                },
                             },
                         },
                         {
@@ -109,7 +174,7 @@ const fetchAll: Handler = async function (req, res, next) {
                             $addFields: {
                                 name: '$members.name',
                                 picture: '$members.picture',
-                                memberId: '$members._id',
+                                userId: '$members._id',
                             },
                         },
                         {
@@ -118,32 +183,6 @@ const fetchAll: Handler = async function (req, res, next) {
                             },
                         },
                     ],
-                    groups: [
-                        {
-                            $match: {
-                                group: true,
-                            },
-                        },
-                    ],
-                },
-            },
-            {
-                $project: {
-                    chats: {
-                        $concatArrays: ['$chats', '$groups'],
-                    },
-                },
-            },
-            {
-                $set: {
-                    chats: {
-                        $sortArray: {
-                            input: '$chats',
-                            sortBy: {
-                                updatedAt: -1,
-                            },
-                        },
-                    },
                 },
             },
             {
@@ -154,6 +193,38 @@ const fetchAll: Handler = async function (req, res, next) {
             {
                 $replaceRoot: {
                     newRoot: '$chats',
+                },
+            },
+            {
+                $unionWith: {
+                    coll: 'usergroups',
+                    pipeline: [
+                        {
+                            $match: {
+                                user: userId,
+                            },
+                        },
+                        {
+                            $lookup: {
+                                from: 'groups',
+                                localField: 'group',
+                                foreignField: '_id',
+                                as: 'group',
+                            },
+                        },
+                        {
+                            $addFields: {
+                                group: {
+                                    $first: '$group',
+                                },
+                            },
+                        },
+                        {
+                            $replaceRoot: {
+                                newRoot: '$group',
+                            },
+                        },
+                    ],
                 },
             },
         ]);

@@ -6,6 +6,7 @@ import leave from '../controllers/groups/member/leave.js';
 import adminRouter from './group/admin.js';
 import isAdmin from '../middleware/isAdmin.js';
 import upload from '../libs/multer.js';
+import update from '../controllers/groups/update.js';
 
 const groupRouter = express.Router();
 
@@ -21,6 +22,7 @@ groupRouter.post('/', upload.single('picture'), create);
 // PATCH
 groupRouter.patch('/join/:id', join);
 groupRouter.patch('/leave/:id', leave);
+groupRouter.patch('/:id', upload.single('picture'), update);
 
 // DELETE
 

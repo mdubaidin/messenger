@@ -1,20 +1,20 @@
 import { Handler } from 'express';
 import CustomError from '../../../classes/CustomError.js';
-import Chat from '../../../models/Chat.js';
-import Member from '../../../models/Member.js';
+import Group from '../../../models/Group.js';
+import UserGroup from '../../../models/UserGroup.js';
 
 const join: Handler = async function (req, res, next) {
     try {
-        const user = req.user?.id;
-        const chat = req.params.id;
+        const userId = req.user?._id;
+        const groupId = req.params.id;
 
-        if (!chat) throw new CustomError('Group Id must be provided');
+        if (!groupId) throw new CustomError('Group Id must be provided');
 
-        const group = await Chat.findOne({ chat, group: true });
+        const group = await Group.findById(groupId);
 
-        if (!group) throw new CustomError('No group found');
+        if (!group) throw new CustomError('No group found', 404);
 
-        await Member.create({ user: user, chat: chat });
+        await UserGroup.create({ user: userId, group: groupId });
 
         res.success({ message: 'New Member added' });
     } catch (e) {

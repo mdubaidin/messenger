@@ -35,7 +35,7 @@ const Index = () => {
     const { modalState, openModal, closeModal } = useModal();
     const { data: user } = useSession();
     const errorHandler = useErrorHandler();
-    const contact = useAppSelector(state => state.contact.contact);
+    const chat = useAppSelector(state => state.chat.chat);
 
     const logout = async () => {
         try {
@@ -58,7 +58,7 @@ const Index = () => {
                 <List disablePadding sx={{ flexGrow: 1 }}>
                     {Options.map((option, i) => (
                         <NavLink
-                            href={contact._id ? option.href + '/' + contact._id : option.href}
+                            href={option.href}
                             key={i}
                             style={{
                                 textDecoration: 'none',

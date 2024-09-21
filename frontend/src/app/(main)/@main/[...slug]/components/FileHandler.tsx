@@ -26,7 +26,7 @@ export interface File {
 
 const FileHandler: FC<FileHandlerProps> = props => {
     const { mutate, closeModal } = props;
-    const contact = useAppSelector(state => state.contact.contact);
+    const contact = useAppSelector(state => state.chat.chat);
     const [fileMessage, setFileMessage] = useState('');
     const [caret, setCaret] = useState<number>(0);
     const [fileIndex, setFileIndex] = useState<number>(0);

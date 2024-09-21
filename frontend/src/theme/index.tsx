@@ -35,6 +35,7 @@ declare module '@mui/material/styles' {
 
     interface TypeBackground {
         highlight: string;
+        highlight2: string;
         search: string;
         icon: string;
         sideStrip: string;
@@ -53,6 +54,7 @@ declare module '@mui/material/styles' {
 enum ListItemButtonVariants {
     'sidebarButton',
     'sidebarIconButton',
+    'memberButton',
 }
 
 declare module '@mui/material/TextField' {
@@ -113,6 +115,7 @@ const ThemeProvider = (props: ThemeContextProviderProps): React.JSX.Element => {
                 paper: '#FFFFFF',
                 default: '#F7F9FC',
                 highlight: '#1ba2fa3d',
+                highlight2: '#0093ff0a',
                 search: '#f5f5f5',
                 icon: '#cdcdcd',
                 sideStrip: '#121212',
@@ -263,6 +266,38 @@ const ThemeProvider = (props: ThemeContextProviderProps): React.JSX.Element => {
                                     },
                                     '.MuiListItemText-root': {
                                         marginTop: '1px',
+                                    },
+                                }),
+                            },
+                            {
+                                props: { variant: 'memberButton' },
+                                style: ({ theme }) => ({
+                                    borderRadius: '5px',
+                                    padding: '1px 10px',
+                                    paddingRight: '100px !important',
+                                    cursor: 'pointer',
+                                    color: theme.palette.text.secondary,
+                                    position: 'relative',
+                                    minHeight: 60,
+
+                                    '&.Mui-selected': {
+                                        color: theme.palette.contrastColor,
+
+                                        '.MuiListItemIcon-root': {
+                                            color: theme.palette.primary.main,
+                                        },
+                                        '.MuiListItemText-root': {
+                                            color: theme.palette.contrastColor,
+                                        },
+                                        '.MuiDivider-root': {
+                                            borderColor: 'white',
+                                        },
+                                    },
+                                    '.MuiListItemText-root': {
+                                        marginTop: '1px',
+                                    },
+                                    '.MuiListItemAvatar-root': {
+                                        minWidth: 50,
                                     },
                                 }),
                             },

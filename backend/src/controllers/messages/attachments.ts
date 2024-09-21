@@ -1,14 +1,15 @@
 import { Handler } from 'express';
 import Message from '../../models/Message.js';
 
-const create: Handler = async function (req, res, next) {
+const attachments: Handler = async function (req, res, next) {
     try {
         const userId = req.user?.id;
-        const { chatId, content, attachment } = req.body;
+        const { chatId, receiver, content, attachment } = req.body;
 
         const newMessage = new Message({
             chatId,
             sender: userId,
+            receiver,
             content,
             attachment,
         });
@@ -21,4 +22,4 @@ const create: Handler = async function (req, res, next) {
     }
 };
 
-export default create;
+export default attachments;

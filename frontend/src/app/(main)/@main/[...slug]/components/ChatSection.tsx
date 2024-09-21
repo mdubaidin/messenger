@@ -22,7 +22,6 @@ import Avatar from '@/components/Avatar';
 // import Input from './Chat/Input';
 // import Message from './Chat/Message';
 import { useMenu } from '@/hooks/useMenu';
-import { isEmpty } from '@/utils/function';
 // import { useInfiniteQuery, useQueries, useQueryClient } from '@tanstack/react-query';
 // import axios from 'axios';
 // import { useIntersection } from '@mantine/hooks';

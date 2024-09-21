@@ -3,45 +3,37 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { RootState } from '@/redux/store';
 
-export type Contact = {
+export type Chat = {
     _id: string;
+    userId?: string;
+    creator?: string;
     name: string;
-    email: string;
+    email?: string;
     blocked: boolean;
     muted: boolean;
-    picture: string;
-    message: string;
-    time: string;
-    unreadMessage: number;
+    picture?: string;
+    message?: string;
+    time?: string;
+    unreadMessage?: number;
 };
 
-interface ContactState {
-    contact: Contact;
-    contactPanel: true | false;
+interface ChatState {
+    chat: Chat | null;
+    contactPanel: boolean;
 }
 
-const initialState: ContactState = {
-    contact: {
-        _id: '',
-        name: '',
-        email: '',
-        picture: '',
-        message: '',
-        time: '',
-        unreadMessage: 0,
-        blocked: false,
-        muted: false,
-    },
+const initialState: ChatState = {
+    chat: null,
     contactPanel: false,
 };
 
-export const contactSlice = createSlice({
-    name: 'contact',
+export const chatSlice = createSlice({
+    name: 'chat',
     // `createSlice` will infer the state type from the `initialState` argument
     initialState,
     reducers: {
-        setContact: (state, action) => {
-            state.contact = action.payload;
+        setChat: (state, action) => {
+            state.chat = action.payload;
         },
         setContactPanel: (state, action: { payload: boolean }) => {
             state.contactPanel = action.payload;
@@ -49,9 +41,9 @@ export const contactSlice = createSlice({
     },
 });
 
-export const { setContact, setContactPanel } = contactSlice.actions;
+export const { setChat, setContactPanel } = chatSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
-export const selectCount = (state: RootState) => state.contact.contact;
+export const selectCount = (state: RootState) => state.chat.chat;
 
-export default contactSlice.reducer;
+export default chatSlice.reducer;

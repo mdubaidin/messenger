@@ -1,7 +1,5 @@
 import './config/config.js';
 import express from 'express';
-import { createServer } from 'http';
-import { Server } from 'socket.io';
 import cors from 'cors';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
@@ -20,13 +18,6 @@ import authRouter from './routes/auth.js';
 import contactRouter from './routes/contact.js';
 
 const app = express();
-const server = createServer(app);
-const socket = new Server(server, {
-    cors: {
-        origin: ['http://localhost:3000'],
-        credentials: true,
-    },
-});
 
 app.use(
     cors({
@@ -45,10 +36,6 @@ app.use('/api/auth', authorize, authRouter);
 app.use(validateJWT);
 app.use(authenticate);
 
-socket.on('connection', socket => {
-    console.log('a user connected ', socket.id);
-});
-
 app.use('/api/profile', profileRouter);
 app.use('/api/messages', messageRouter);
 app.use('/api/requests', requestRouter);
@@ -58,4 +45,4 @@ app.use('/api/contacts', contactRouter);
 
 app.use(errorHandler);
 
-export default server;
+export default app;

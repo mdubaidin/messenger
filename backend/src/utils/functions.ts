@@ -4,17 +4,17 @@ import path from 'path';
 import { Types } from 'mongoose';
 import { NextFunction, Request, Response } from 'express';
 
-type K = {
+type Fields = {
     [key: string]: string | number | boolean;
 };
 
-function filterObject(obj: object, values: string[]) {
-    const k: K = {};
-    values.forEach(key => {
-        const field = key as keyof typeof obj;
-        if (obj.hasOwnProperty(key)) k[key] = obj[field];
+function filterObject(fields: Fields, filterBy: string[]) {
+    const filter: Fields = {};
+    filterBy.forEach(key => {
+        const field = key as keyof typeof fields;
+        if (fields.hasOwnProperty(key)) filter[key] = fields[field];
     });
-    return k;
+    return filter;
 }
 
 interface OTPoptions {

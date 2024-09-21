@@ -32,9 +32,10 @@ import { DateTime } from 'luxon';
 import useErrorHandler from '@/hooks/useErrorHandler';
 import useModal from '@/hooks/useModal';
 import useLoader from '@/hooks/useLoader';
+import lodash from 'lodash';
 // import { useQueryClient } from '@tanstack/react-query';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
-import { notFound } from 'next/navigation';
+import { notFound, useRouter } from 'next/navigation';
 import { setContactPanel } from '@/redux/features/contact/contactSlice';
 
 // Icons
@@ -42,13 +43,8 @@ import { IoMdMore, IoIosVideocam } from 'react-icons/io';
 import { MdBlock } from 'react-icons/md';
 import { FaPhone } from 'react-icons/fa6';
 
-type HeaderProps = {
-    contactId: string;
-};
-
-const Header = ({ contactId }: HeaderProps) => {
-    const contact = useAppSelector(state => state.contact.contact);
-    const contactPanel = useAppSelector(state => state.contact.contactPanel);
+const Header = () => {
+    const { chat, contactPanel } = useAppSelector(state => state.chat);
     const dispatch = useAppDispatch();
 
     const toggleContactPanel = () => dispatch(setContactPanel(!contactPanel));
@@ -64,9 +60,10 @@ const Header = ({ contactId }: HeaderProps) => {
     } = useModal();
 
     const { start: blockStart, end: blockEnd, circular: blockCircular } = useLoader();
+    const router = useRouter();
 
-    return (
-        <>
+    return chat ? (
+        <React.Fragment>
             <Box
                 sx={{
                     backdropFilter: 'blur(16px) saturate(180%)',
@@ -76,7 +73,11 @@ const Header = ({ contactId }: HeaderProps) => {
                     borderColor: 'divider',
                 }}>
                 <Grid container px={1} py={1.6} gap={1.5} alignItems='center'>
-                    <Grid item>
+                    <Stack
+                        direction='row'
+                        spacing={1.5}
+                        sx={{ cursor: 'pointer' }}
+                        onClick={toggleContactPanel}>
                         <Badge
                             badgeContent=' '
                             color='success'
@@ -93,43 +94,35 @@ const Header = ({ contactId }: HeaderProps) => {
                             }}>
                             <Avatar
                                 alt='Remy Sharp'
-                                src={contact.picture}
+                                src={chat.picture}
                                 sx={{
                                     width: 45,
                                     height: 45,
                                 }}
                             />
                         </Badge>
-                    </Grid>
-                    <Grid item>
-                        {isEmpty(contact) ? (
-                            <React.Fragment>
-                                <Skeleton variant='text' width={140} height={16} />
-                                <Skeleton variant='text' width={130} height={14} />
-                            </React.Fragment>
-                        ) : (
-                            <React.Fragment>
-                                <Typography
-                                    variant='subtitle1'
-                                    lineHeight={1.2}
-                                    fontWeight='500'
-                                    sx={{
-                                        overflow: 'hidden',
-                                        display: '-webkit-box',
-                                        WebkitBoxOrient: 'vertical',
-                                        WebkitLineClamp: '1',
-                                    }}>
-                                    {contact.name}
-                                </Typography>
-                                <Typography variant='body2' fontWeight={500} color='text.secondary'>
-                                    Active now
-                                </Typography>
-                            </React.Fragment>
-                        )}
-                    </Grid>
+
+                        <Box>
+                            <Typography
+                                variant='subtitle1'
+                                lineHeight={1.2}
+                                fontWeight='500'
+                                sx={{
+                                    overflow: 'hidden',
+                                    display: '-webkit-box',
+                                    WebkitBoxOrient: 'vertical',
+                                    WebkitLineClamp: '1',
+                                }}>
+                                {chat.name}
+                            </Typography>
+                            <Typography variant='body2' fontWeight={500} color='text.secondary'>
+                                Active now
+                            </Typography>
+                        </Box>
+                    </Stack>
                     <Grid item xs>
                         <Stack direction='row' justifyContent='flex-end' color='primary'>
-                            {contact.blocked && (
+                            {chat.blocked && (
                                 <MdBlock style={{ fontSize: 18, marginRight: '4px' }} />
                             )}
                         </Stack>
@@ -202,9 +195,9 @@ const Header = ({ contactId }: HeaderProps) => {
                         p: 2,
                     }}>
                     <Typography variant='subtitle1'>
-                        {contact.blocked ? 'Unblock' : 'Block'} {contact.name} ?
+                        {chat.blocked ? 'Unblock' : 'Block'} {chat.name} ?
                     </Typography>
-                    {!contact.blocked && (
+                    {!chat.blocked && (
                         <>
                             <Divider variant='fullWidth' sx={{ my: 1 }} />
                             <Typography variant='body2' mb={2}>
@@ -223,13 +216,13 @@ const Header = ({ contactId }: HeaderProps) => {
                             //  onClick={blockCustomer}
                             endIcon={blockCircular}>
                             {' '}
-                            {contact.blocked ? 'Unblock' : 'Block'}
+                            {chat.blocked ? 'Unblock' : 'Block'}
                         </Button>
                     </Box>
                 </Box>
             </Modal>
-        </>
-    );
+        </React.Fragment>
+    ) : null;
 };
 
 export default Header;

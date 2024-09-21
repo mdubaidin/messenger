@@ -18,7 +18,7 @@ import {
 import SearchBar from '@/components/SearchBar';
 import NavLink from '@/components/NavLink';
 import useErrorHandler from '@/hooks/useErrorHandler';
-import { Contact, setContact } from '@/redux/features/contact/contactSlice';
+import { Chat, setChat } from '@/redux/features/contact/contactSlice';
 import { useAppDispatch } from '@/redux/hook';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
@@ -31,7 +31,7 @@ import { generateDate } from '@/utils/function';
 
 export default function Chats() {
     const errorHandler = useErrorHandler();
-    const [activeContacts, setActiveContacts] = useState<Contact[]>([]);
+    const [activeContacts, setActiveContacts] = useState<Chat[]>([]);
     const dispatch = useAppDispatch();
     const { status } = useSession();
 
@@ -92,7 +92,7 @@ export default function Chats() {
                                         selected={isActive}
                                         variant={'sidebarButton'}
                                         sx={{ minHeight: 70 }}
-                                        onClick={() => dispatch(setContact(contact))}>
+                                        onClick={() => dispatch(setChat(contact))}>
                                         <Typography
                                             variant='caption'
                                             color='currentcolor'

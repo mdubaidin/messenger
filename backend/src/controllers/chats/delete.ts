@@ -9,13 +9,13 @@ const _delete: Handler = async function (req, res, next) {
 
         if (!chatId) throw new CustomError('Chat Id must be provided');
 
-        const group = await Chat.findById(chatId);
+        const chat = await Chat.findById(chatId);
 
-        if (!group) throw new CustomError('No chat found');
+        if (!chat) throw new CustomError('No chat found');
 
-        await group.updateOne({ $pull: { members: userId } });
+        await chat.updateOne({ $pull: { members: userId } });
 
-        console.log(group);
+        if (chat.members?.length === 0) await chat.deleteOne();
 
         res.success({ message: 'Chat deleted' });
     } catch (e) {

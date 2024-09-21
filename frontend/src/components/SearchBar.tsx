@@ -1,3 +1,5 @@
+'use client';
+
 import { InputBase } from '@mui/material';
 import React from 'react';
 import { styled } from '@mui/material/styles';

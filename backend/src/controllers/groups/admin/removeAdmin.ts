@@ -1,7 +1,7 @@
 import { Handler } from 'express';
 import CustomError from '../../../classes/CustomError.js';
-import Chat from '../../../models/Chat.js';
-import Member from '../../../models/Member.js';
+import Group from '../../../models/Group.js';
+import UserGroup from '../../../models/UserGroup.js';
 
 const removeAdmin: Handler = async function (req, res, next) {
     try {
@@ -10,11 +10,11 @@ const removeAdmin: Handler = async function (req, res, next) {
 
         if (!memberId) throw new CustomError('Member Id must be provided');
 
-        const group = await Chat.findOne({ _id: groupId, group: true });
+        const group = await Group.findById(groupId);
 
-        if (!group) throw new CustomError('No group found');
+        if (!group) throw new CustomError('No group found', 404);
 
-        const member = Member.findOne({ chat: groupId, user: memberId });
+        const member = UserGroup.findOne({ group: groupId, user: memberId });
 
         if (!member) throw new CustomError(`Member is not in ${group.name} group`);
 

@@ -1,5 +1,5 @@
 import { Handler } from 'express';
-import User from '../../models/User.js';
+import User from '../../../models/User.js';
 
 function exists(toFind: string): Handler {
     return async function (req, res, next) {

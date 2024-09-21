@@ -28,15 +28,15 @@ export const authOptions: NextAuthOptions = {
         CredentialsProvider({
             name: 'credentials',
             credentials: {
-                email: {},
+                user: {},
                 password: {},
             },
             async authorize(credentials) {
-                const { email, password } = credentials || {};
-                if (!email || !password) return null;
+                const { user, password } = credentials || {};
+                if (!user || !password) return null;
 
                 try {
-                    const { data } = await authApi.post('/login', { email, password });
+                    const { data } = await authApi.post('/login', { user, password });
 
                     cookies().set('jwt-auth.access-token', data.accessToken);
                     cookies().set('jwt-auth.refresh-token', data.refreshToken);

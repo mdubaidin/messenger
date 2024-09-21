@@ -1,48 +1,82 @@
 import { useAppSelector } from '@/redux/hook';
-import { Avatar, Box, Button, Stack, Typography } from '@mui/material';
-import React from 'react';
+import { Avatar, Box, Button, Card, Divider, Stack, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 
 // Icons
 import { IoSearchOutline } from 'react-icons/io5';
 import { IoIosNotifications } from 'react-icons/io';
+import { MdBlock } from 'react-icons/md';
 import { FileIcon, LinkIcon, MediaIcon } from '@/components/Icons';
+import axios from 'axios';
+import useErrorHandler from '@/hooks/useErrorHandler';
+import { indexOf } from 'lodash';
 
-const ContactPanel = () => {
-    const contact = useAppSelector(state => state.contact.contact);
+type ChatInfoProps = {
+    chatId: string;
+};
 
-    return (
-        <Box height={'100%'} p={3}>
-            <Stack alignItems='center' justifyContent='center' py={3}>
+const ChatInfo = (props: ChatInfoProps) => {
+    const { chatId } = props;
+    const [info, setInfo] = useState<any>(null);
+    const errorHandler = useErrorHandler();
+
+    const getChatInfo = async (id: string) => {
+        try {
+            const response = await axios.get(`/chats/${id}`);
+
+            setInfo(response.data.chat);
+        } catch (error) {
+            errorHandler(error);
+        }
+    };
+
+    console.log({ data: info });
+
+    useEffect(() => {
+        if (!chatId) return;
+
+        getChatInfo(chatId);
+    }, [chatId]);
+
+    return info ? (
+        <Box height={'100%'} p={2.5}>
+            <Stack alignItems='center' justifyContent='center' py={4} textAlign='center'>
                 <Avatar
-                    alt={contact.name}
-                    src={contact.picture}
+                    alt={info.name}
+                    src={info.picture}
                     sx={{ width: 100, height: 100, mb: 1.5 }}
                 />
                 <Typography
                     variant='h6'
                     lineHeight={1.2}
                     fontWeight={500}
+                    gutterBottom
                     sx={{
                         overflow: 'hidden',
                         display: '-webkit-box',
                         WebkitBoxOrient: 'vertical',
                         WebkitLineClamp: '1',
                     }}>
-                    {contact.name}
+                    {info.name}
                 </Typography>
                 <Typography
-                    variant='body2'
-                    color='text.secondary'
-                    fontSize={14}
+                    variant='subtitle2'
+                    color='text.tertiary'
+                    fontWeight={500}
+                    gutterBottom
                     sx={{
                         overflow: 'hidden',
                         display: '-webkit-box',
                         WebkitBoxOrient: 'vertical',
                         WebkitLineClamp: '1',
                     }}>
-                    {contact.email}
+                    {info.username}
+                </Typography>
+                <Typography variant='body2' color='text.secondary'>
+                    {info.bio}
                 </Typography>
             </Stack>
+
             <Stack direction='row' spacing={1} mb={4}>
                 <Button
                     variant='contained'
@@ -124,8 +158,23 @@ const ContactPanel = () => {
                 }}>
                 Attachements Images
             </Typography>
+
+            <Divider sx={{ mb: 1 }} />
+            <Button
+                variant='text'
+                fullWidth
+                startIcon={<MdBlock />}
+                color='error'
+                sx={{
+                    justifyContent: 'flex-start',
+                    borderRadius: 1.5,
+                    pl: 1.5,
+                    mb: 0.5,
+                }}>
+                Block {info.name}
+            </Button>
         </Box>
-    );
+    ) : null;
 };
 
-export default ContactPanel;
+export default ChatInfo;

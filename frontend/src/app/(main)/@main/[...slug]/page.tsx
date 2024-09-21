@@ -5,18 +5,16 @@ import Header from './components/Header';
 import Input from './components/Input';
 import ChatSection from './components/ChatSection';
 import { useAppSelector } from '@/redux/hook';
-import { Drawer, Stack, Typography } from '@mui/material';
-import ContactPanel from './components/ContactPanel';
+import Drawer from '@mui/material/Drawer';
 import DefaultMessage from '@/components/DefaultMessage';
-import { usePathname } from 'next/navigation';
+import Info from './info/Info';
 
-const panelWidth = 340;
+const panelWidth = 370;
 
-const Page = ({ params }: { params: { slugs: string[] } }) => {
-    const contactPanel = useAppSelector(state => state.contact.contactPanel);
-    const pathname = usePathname().split('/');
+const Page = () => {
+    const { chat, contactPanel } = useAppSelector(state => state.chat);
 
-    return pathname[1] ? (
+    return chat ? (
         <Box
             height='100%'
             display='flex'
@@ -25,7 +23,7 @@ const Page = ({ params }: { params: { slugs: string[] } }) => {
                 width: contactPanel ? `calc(100% - ${panelWidth}px)` : '100%',
                 mr: contactPanel ? `${panelWidth}px` : 0,
             }}>
-            <Header contactId={pathname[1]} />
+            <Header />
             <ChatSection />
             <Input />
 
@@ -38,12 +36,11 @@ const Page = ({ params }: { params: { slugs: string[] } }) => {
                         boxSizing: 'border-box',
                         width: panelWidth,
                         bgcolor: 'background.paper',
-                        overflow: 'unset',
                         borderLeft: '1px solid',
                         borderColor: 'divider',
                     },
                 }}>
-                <ContactPanel />
+                <Info />
             </Drawer>
         </Box>
     ) : (

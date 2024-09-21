@@ -20,6 +20,7 @@ const AuthForm = () => {
         register,
         handleSubmit,
         formState: { errors, isSubmitting },
+        watch,
     } = useForm<FieldValues>({
         defaultValues: {
             email: '',
@@ -29,16 +30,17 @@ const AuthForm = () => {
 
     const onSubmit: SubmitHandler<FieldValues> = async data => {
         const response = await signIn('credentials', {
-            email: data.email,
+            user: data.user,
             password: data.password,
-            callbackUrl: 'http://localhost:3000/chats',
+            redirect: false,
         });
 
-        if (response?.error) {
-            showError(response?.error || 'Some error occurred');
-            return;
-        }
+        if (response?.ok) return router.push('/chats');
+
+        showError(response?.error || 'Some error occurred');
     };
+
+    const watchFields = watch();
 
     useEffect(() => {
         const params = new URLSearchParams(location.search);
@@ -70,8 +72,8 @@ const AuthForm = () => {
                     fontSize: '80px',
                     fontWeight: 500,
                     lineHeight: '75px',
-                    fontFamily:
-                        'Calibre, Helvetica Neue, Segoe UI, Helvetica, Arial, Lucida Grande, sans-serif',
+                    // fontFamily:
+                    //     'Calibre, Helvetica Neue, Segoe UI, Helvetica, Arial, Lucida Grande, sans-serif',
                 }}>
                 Hang out <br />
                 whenever, <br /> wherever
@@ -80,24 +82,12 @@ const AuthForm = () => {
                 Messenger makes it easy and fun to stay close to your favourite people.{' '}
             </Typography>
 
-            {isEmpty(errors) ? null : (
-                <Typography variant='body2' color='red' mb={1.5}>
-                    {Object.values(errors)[0]?.message as string}
-                </Typography>
-            )}
             <Form onSubmit={handleSubmit(onSubmit)}>
                 <Input
-                    fieldName='email'
+                    fieldName='user'
                     variation='auth'
-                    placeholder='Email address'
+                    placeholder='Phone number, username or email'
                     register={register}
-                    registerOptions={{
-                        required: 'Email address is required',
-                        pattern: {
-                            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                            message: 'Email address must be valid',
-                        },
-                    }}
                 />
 
                 <Input
@@ -106,7 +96,6 @@ const AuthForm = () => {
                     placeholder='Password'
                     fieldName='password'
                     register={register}
-                    registerOptions={{ required: 'Password is required' }}
                     sx={{ mb: 1.5 }}
                 />
 
@@ -127,7 +116,7 @@ const AuthForm = () => {
                     type='submit'
                     fullWidth
                     variant='contained'
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || !(watchFields.user && watchFields.password)}
                     endIcon={
                         isSubmitting && (
                             <CircularProgress sx={{ color: 'contrastColor' }} size='small' />

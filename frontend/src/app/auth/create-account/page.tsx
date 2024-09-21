@@ -107,8 +107,8 @@ function CreateAccount() {
                     fontSize: '80px',
                     fontWeight: 500,
                     lineHeight: '75px',
-                    fontFamily:
-                        'Calibre, Helvetica Neue, Segoe UI, Helvetica, Arial, Lucida Grande, sans-serif',
+                    // fontFamily:
+                    //     'Calibre, Helvetica Neue, Segoe UI, Helvetica, Arial, Lucida Grande, sans-serif',
                 }}>
                 Let&apos;s <br />
                 get started!
@@ -136,6 +136,21 @@ function CreateAccount() {
                         maxLength: {
                             value: 40,
                             message: 'Name exceeds the maximum character limit',
+                        },
+                    }}
+                />
+
+                <Input
+                    fieldName='username'
+                    variation='auth'
+                    placeholder='Username'
+                    register={register}
+                    registerOptions={{
+                        required: 'Username is required',
+                        pattern: {
+                            value: /^[a-z][a-z0-9_.]+[a-z0-9]$/i,
+                            message:
+                                'A username can only contain letters, numbers, periods, and underscores.',
                         },
                     }}
                 />

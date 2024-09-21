@@ -1,24 +1,24 @@
 import { Handler } from 'express';
 import CustomError from '../../../classes/CustomError.js';
-import Chat from '../../../models/Chat.js';
-import Member from '../../../models/Member.js';
 import mongoose from 'mongoose';
+import Group from '../../../models/Group.js';
+import UserGroup from '../../../models/UserGroup.js';
 
 const _delete: Handler = async function (req, res, next) {
     let session = null;
     try {
-        const chatId = req.params.id;
+        const groupId = req.params.id;
 
-        if (!chatId) throw new CustomError('Group Id must be provided');
+        if (!groupId) throw new CustomError('Group Id must be provided');
 
-        const group = await Chat.findOne({ _id: chatId, group: true });
+        const group = await Group.findById(groupId);
 
-        if (!group) throw new CustomError('No group found');
+        if (!group) throw new CustomError('No group found', 404);
 
         session = await mongoose.startSession();
         session.startTransaction();
 
-        await Member.deleteMany({ chat: chatId }, { session });
+        await UserGroup.deleteMany({ group: groupId }, { session });
 
         await group.deleteOne({ session });
 

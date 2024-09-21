@@ -1,15 +1,17 @@
 'use client';
 
-import DoneIcon from '@mui/icons-material/Done';
-import DoneAllIcon from '@mui/icons-material/DoneAll';
 // import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined';
 import { DateTime } from 'luxon';
 import React from 'react';
 import { IconButton, Stack, Typography, Box } from '@mui/material';
 import { escapeDanger } from '@/utils/function';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import StarIcon from '@mui/icons-material/Star';
 import { OpenMenu } from '@/hooks/useMenu';
+import {
+    MdOutlineDone,
+    MdOutlineDoneAll,
+    MdOutlineKeyboardArrowRight,
+    MdStarRate,
+} from 'react-icons/md';
 
 type MessageProps = {
     message: {
@@ -147,7 +149,9 @@ const Message = (props: MessageProps) => {
                         bgcolor: sender === 'assistance' ? 'primary.main' : 'background.paper',
                     },
                 }}>
-                <ArrowForwardIosIcon sx={{ transform: 'rotate(90deg)', fontSize: '1.2rem' }} />
+                <MdOutlineKeyboardArrowRight
+                    style={{ transform: 'rotate(90deg)', fontSize: '1.2rem' }}
+                />
             </IconButton>
             {/* {attachment?.length
                 ? attachment.map((file, i) => (
@@ -229,7 +233,9 @@ const Message = (props: MessageProps) => {
             />
             <Box position='absolute' display='flex' bottom={0} right='3px'>
                 {message.important && (
-                    <StarIcon sx={{ fontSize: 14, height: 'auto', mb: 0.4, mr: 0.3 }} />
+                    <MdStarRate
+                        style={{ fontSize: 14, height: 'auto', marginTop: 0.4, marginRight: 0.3 }}
+                    />
                 )}
                 <Typography
                     variant='caption'
@@ -240,11 +246,11 @@ const Message = (props: MessageProps) => {
                 </Typography>
                 <Box display={sender === 'assistance' ? 'block' : 'none'}>
                     {status === 'sent' ? (
-                        <DoneIcon sx={{ fontSize: 14 }} />
+                        <MdOutlineDone style={{ fontSize: 14 }} />
                     ) : status === 'delivered' ? (
-                        <DoneAllIcon sx={{ fontSize: 15 }} />
+                        <MdOutlineDoneAll style={{ fontSize: 15 }} />
                     ) : (
-                        <DoneAllIcon sx={{ fontSize: 15, color: '#5e5eea' }} />
+                        <MdOutlineDoneAll style={{ fontSize: 15, color: '#5e5eea' }} />
                     )}
                 </Box>
             </Box>

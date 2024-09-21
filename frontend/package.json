@@ -20,6 +20,7 @@
         "axios": "^1.6.5",
         "cookies-next": "^4.2.1",
         "emoji-picker-react": "^4.9.3",
+        "lodash": "^4.17.21",
         "luxon": "^3.4.4",
         "next": "14.1.0",
         "next-auth": "^4.24.7",
@@ -32,6 +33,7 @@
         "socket.io-client": "^4.7.5"
     },
     "devDependencies": {
+        "@types/lodash": "^4.17.7",
         "@types/luxon": "^3.4.2",
         "@types/node": "^20",
         "@types/react": "^18",

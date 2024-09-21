@@ -1,11 +1,13 @@
 import express from 'express';
 
-express.response.success = function (res: object | string) {
+express.response.success = function (res: object | string | number) {
     if (typeof res === 'string')
         return this.json({
             success: true,
             message: res,
         });
+
+    if (typeof res === 'number') return this.status(res).send(); // No Content
 
     return this.json({
         success: true,

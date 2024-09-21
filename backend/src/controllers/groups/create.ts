@@ -1,29 +1,22 @@
 import { Handler } from 'express';
 import CustomError from '../../classes/CustomError.js';
-import Chat from '../../models/Chat.js';
 import { base64EncodeUrl } from '../../utils/functions.js';
 import mongoose, { Types } from 'mongoose';
-import Member, { MemberObject } from '../../models/Member.js';
+import UserGroup, { UserGroupInput } from '../../models/UserGroup.js';
 import FileSystem from '../../classes/FileSystem.js';
+import { emitEvent } from '../../events/emitter.js';
+import Group from '../../models/Group.js';
 
 const create: Handler = async function (req, res, next) {
     let session = null;
     const fs = new FileSystem();
-    let filename = '';
+    let filename: string | undefined;
 
     try {
         const userId = req.user?._id;
         const { name, members } = req.body;
 
         if (!name) throw new CustomError('Group name must be provided');
-
-        const picture = req.file;
-
-        if (!picture) throw new CustomError('Group Icon must be provided');
-
-        filename = picture.filename;
-
-        console.log(picture);
 
         const filterMembers: string[] = Array.from(new Set(members));
 
@@ -32,35 +25,43 @@ const create: Handler = async function (req, res, next) {
 
         if (filterMembers.length < 2) throw new CustomError('At least 2 members must be provided');
 
+        const file = req.file;
+        const picture = file ? base64EncodeUrl(file) : '';
+        filename = file?.filename;
+
         session = await mongoose.startSession();
         session.startTransaction();
 
-        const newChat = new Chat({
+        const newGroup = new Group({
             name,
-            group: true,
-            picture: base64EncodeUrl(picture),
+            picture,
+            creator: userId,
         });
 
-        const memberToInsert: MemberObject[] = [{ user: userId, chat: newChat.id, admin: true }];
+        const memberToInsert: UserGroupInput[] = [
+            { user: userId, group: newGroup.id, admin: true },
+        ];
 
         filterMembers.forEach(member => {
-            memberToInsert.push({ user: new Types.ObjectId(member), chat: newChat.id });
+            memberToInsert.push({ user: new Types.ObjectId(member), group: newGroup.id });
         });
 
-        await Member.insertMany(memberToInsert, { session });
+        await UserGroup.insertMany(memberToInsert, { session });
 
-        await newChat.save({ session });
+        await newGroup.save({ session });
 
         await session.commitTransaction();
 
-        res.success({ message: 'New group created', group: newChat });
+        emitEvent('Alert');
+
+        res.success({ message: 'New group created', group: newGroup });
     } catch (e) {
         next(e);
         await session?.abortTransaction();
     } finally {
         session?.endSession();
 
-        if (filename != null) fs.deleteFile(filename);
+        if (filename) fs.deleteFile(filename);
     }
 };
 

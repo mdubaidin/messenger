@@ -1,25 +1,25 @@
 import { Handler } from 'express';
 import CustomError from '../../../classes/CustomError.js';
-import Chat from '../../../models/Chat.js';
-import Member from '../../../models/Member.js';
+import Group from '../../../models/Group.js';
+import UserGroup from '../../../models/UserGroup.js';
 
 const leave: Handler = async function (req, res, next) {
     try {
-        const userId = req.user?.id;
+        const userId = req.user?._id;
         const groupId = req.params.id;
 
         if (!groupId) throw new CustomError('Group Id must be provided');
 
-        const group = await Chat.findOne({ _id: groupId, group: true });
+        const group = await Group.findById(groupId);
 
-        if (!group) throw new CustomError('No group found');
+        if (!group) throw new CustomError('No group found', 404);
 
-        const adminCount = await Member.countDocuments({ chat: groupId, admin: true });
+        const adminCount = await UserGroup.countDocuments({ gruop: groupId, admin: true });
 
         if (adminCount && adminCount < 2)
             throw new CustomError('Before leaving the group you must have to assign a new admin');
 
-        await Member.deleteOne({ chat: groupId, user: userId });
+        await UserGroup.deleteOne({ group: groupId, user: userId });
 
         await group.save();
 

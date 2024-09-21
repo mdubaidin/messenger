@@ -72,7 +72,7 @@ const Input = (props: InputProps) => {
     const dispatch = useAppDispatch();
     const [message, setMessage] = useState<string>('');
     const [caret, setCaret] = useState<number | null>(null);
-    const contact = useAppSelector(state => state.contact.contact);
+    const contact = useAppSelector(state => state.chat.chat);
     // const queryClient = useQueryClient();
     const { showError } = useMessage();
     const errorHandler = useErrorHandler();

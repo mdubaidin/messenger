@@ -2,21 +2,19 @@ import { Schema, Types, model } from 'mongoose';
 
 const required = true;
 
-export interface MemberObject {
+export interface UserChatInput {
     user: Types.ObjectId;
     chat: Types.ObjectId;
-    admin?: boolean;
 }
 
-export interface MemberDocument extends MemberObject, Document {}
+export interface UserChatDocument extends UserChatInput, Document {}
 
-const memberSchema = new Schema(
+const userChatSchema = new Schema(
     {
         chat: { type: Types.ObjectId, ref: 'Chat', required },
         user: { type: Types.ObjectId, ref: 'User', required },
-        admin: { type: Boolean },
     },
     { timestamps: true }
 );
 
-export default model<MemberDocument>('member', memberSchema);
+export default model<UserChatDocument>('userchat', userChatSchema);
