@@ -62,8 +62,7 @@ const userSchema = new Schema(
             maxlength: 30,
             validate: {
                 validator: usernameValidator,
-                message: () =>
-                    `A username can only contain letters, numbers, periods, and underscores.`,
+                message: () => `A username can only contain letters, numbers, periods, and underscores.`,
             },
         },
         name: {
@@ -113,10 +112,7 @@ const userSchema = new Schema(
     { timestamps: true, toJSON: { virtuals: true } }
 );
 
-const hashPassword = async function (
-    this: UserDocument,
-    next: CallbackWithoutResultAndOptionalError
-) {
+const hashPassword = async function (this: UserDocument, next: CallbackWithoutResultAndOptionalError) {
     if (this.isModified('password')) {
         this.password = this.hash(this.password);
     }
@@ -146,10 +142,14 @@ userSchema.methods = {
     },
 
     signAccessToken: function () {
-        return jwt.sign({ id: this._id } as JwtUser, PRIVATE_KEY, {
-            algorithm: 'RS256',
-            expiresIn: process.env.EXPIRE_JWT_ACCESS_TOKEN,
-        });
+        return jwt.sign(
+            { id: this._id, name: this.name, picture: this.picture, email: this.email, username: this.username } as JwtUser,
+            PRIVATE_KEY,
+            {
+                algorithm: 'RS256',
+                expiresIn: process.env.EXPIRE_JWT_ACCESS_TOKEN,
+            }
+        );
     },
 
     signRefreshToken: function () {

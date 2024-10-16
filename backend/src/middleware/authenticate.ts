@@ -17,7 +17,7 @@ const authenticate: Handler = function authenticate(req, res, next) {
 
         const user = Jwt.verify(token, PUBLIC_KEY) as JwtUser;
 
-        console.log('user: ', user);
+        // console.log('user: ', user);
 
         req.user = user;
         req.user._id = new Types.ObjectId(user.id);

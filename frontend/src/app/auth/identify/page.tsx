@@ -3,12 +3,12 @@
 import { Box, Typography, Button, CircularProgress, Link, Stack } from '@mui/material';
 import React, { useState } from 'react';
 import axios from 'axios';
-import Form from '@/components/Form';
+import Form from '@/components/lib/form';
 import { useRouter } from 'next/navigation';
 import useErrorHandler from '@/hooks/useErrorHandler';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { isEmpty } from '@/utils/function';
-import Input from '@/components/Input';
+import Input from '@/components/lib/input';
 import { authApi } from '@/libs/axios';
 
 const ForgotPassword = () => {
@@ -44,15 +44,13 @@ const ForgotPassword = () => {
                 <Box>
                     <Typography
                         sx={{
-                            backgroundImage:
-                                'linear-gradient(83.84deg, rgb(0, 136, 255) -6.87%, rgb(160, 51, 255) 26.54%, rgb(255, 92, 135) 58.58%)',
+                            backgroundImage: 'linear-gradient(83.84deg, rgb(0, 136, 255) -6.87%, rgb(160, 51, 255) 26.54%, rgb(255, 92, 135) 58.58%)',
                             backgroundClip: 'text',
                             color: 'transparent',
                             fontSize: '80px',
                             fontWeight: 500,
                             lineHeight: '75px',
-                            fontFamily:
-                                'Calibre, Helvetica Neue, Segoe UI, Helvetica, Arial, Lucida Grande, sans-serif',
+                            fontFamily: 'Calibre, Helvetica Neue, Segoe UI, Helvetica, Arial, Lucida Grande, sans-serif',
                         }}>
                         Email Sent!
                     </Typography>
@@ -65,22 +63,19 @@ const ForgotPassword = () => {
                 <Box>
                     <Typography
                         sx={{
-                            backgroundImage:
-                                'linear-gradient(83.84deg, rgb(0, 136, 255) -6.87%, rgb(160, 51, 255) 26.54%, rgb(255, 92, 135) 58.58%)',
+                            backgroundImage: 'linear-gradient(83.84deg, rgb(0, 136, 255) -6.87%, rgb(160, 51, 255) 26.54%, rgb(255, 92, 135) 58.58%)',
                             backgroundClip: 'text',
                             color: 'transparent',
                             fontSize: '80px',
                             fontWeight: 500,
                             lineHeight: '75px',
-                            fontFamily:
-                                'Calibre, Helvetica Neue, Segoe UI, Helvetica, Arial, Lucida Grande, sans-serif',
+                            fontFamily: 'Calibre, Helvetica Neue, Segoe UI, Helvetica, Arial, Lucida Grande, sans-serif',
                         }}>
                         Trouble Logging in?
                     </Typography>
 
                     <Typography variant='body1' mb={isEmpty(errors) ? 5 : 1} color='text.secondary'>
-                        Please enter your email address and we&apos;ll send you a link to get back
-                        into your account.
+                        Please enter your email address and we&apos;ll send you a link to get back into your account.
                     </Typography>
 
                     {isEmpty(errors) ? null : (
@@ -109,9 +104,7 @@ const ForgotPassword = () => {
                             type='submit'
                             variant='contained'
                             disabled={isSubmitting}
-                            endIcon={
-                                isSubmitting && <CircularProgress color='inherit' size='small' />
-                            }
+                            endIcon={isSubmitting && <CircularProgress color='inherit' size='small' />}
                             sx={{
                                 mt: 1,
                                 mb: 2,

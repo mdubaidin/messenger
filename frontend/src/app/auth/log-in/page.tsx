@@ -1,20 +1,19 @@
 'use client';
 
-import { Box, Button, CircularProgress, Divider, Link, Stack, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, Link, Stack, Typography } from '@mui/material';
 import React, { useEffect } from 'react';
 import { useForm, SubmitHandler, FieldValues } from 'react-hook-form';
-import Form from '@/components/Form';
+import Form from '@/components/lib/form';
 import { useRouter } from 'next/navigation';
-import GoogleButton from '@/components/GoogleButton';
-import FacebookButton from '@/components/FacebookButton';
 import { isEmpty } from '@/utils/function';
-import Input from '@/components/Input';
-import { useMessage } from '@/providers/Provider';
-import { signIn } from 'next-auth/react';
+import Input from '@/components/lib/input';
+import useErrorHandler from '@/hooks/useErrorHandler';
+import { authApi } from '@/libs/axios';
+import { toast } from 'sonner';
 
 const AuthForm = () => {
     const router = useRouter();
-    const { showError } = useMessage();
+    const errorHandler = useErrorHandler();
 
     const {
         register,
@@ -29,15 +28,20 @@ const AuthForm = () => {
     });
 
     const onSubmit: SubmitHandler<FieldValues> = async data => {
-        const response = await signIn('credentials', {
-            user: data.user,
-            password: data.password,
-            redirect: false,
-        });
+        try {
+            const response = await authApi.post('/login', data);
 
-        if (response?.ok) return router.push('/chats');
+            const loginData = response.data;
 
-        showError(response?.error || 'Some error occurred');
+            if (loginData && loginData.success) {
+                toast.success('Successfully Logged in');
+                return router.push('/chats');
+            }
+
+            throw new Error('Failed to login');
+        } catch (err: any) {
+            errorHandler(err);
+        }
     };
 
     const watchFields = watch();
@@ -47,12 +51,12 @@ const AuthForm = () => {
         const error = params.get('e');
         const status = params.get('s');
         if (error && status !== '200') {
-            showError(error);
+            toast.error(error);
         }
         if (status === '200') {
             router.push('/chats');
         }
-    }, [router, showError]);
+    }, [router]);
 
     return (
         <Box
@@ -65,8 +69,7 @@ const AuthForm = () => {
             }}>
             <Typography
                 sx={{
-                    backgroundImage:
-                        'linear-gradient(83.84deg, rgb(0, 136, 255) -6.87%, rgb(160, 51, 255) 26.54%, rgb(255, 92, 135) 58.58%)',
+                    backgroundImage: 'linear-gradient(83.84deg, rgb(0, 136, 255) -6.87%, rgb(160, 51, 255) 26.54%, rgb(255, 92, 135) 58.58%)',
                     backgroundClip: 'text',
                     color: 'transparent',
                     fontSize: '80px',
@@ -83,21 +86,9 @@ const AuthForm = () => {
             </Typography>
 
             <Form onSubmit={handleSubmit(onSubmit)}>
-                <Input
-                    fieldName='user'
-                    variation='auth'
-                    placeholder='Phone number, username or email'
-                    register={register}
-                />
+                <Input fieldName='user' variation='auth' placeholder='Phone number, username or email' register={register} />
 
-                <Input
-                    variation='auth'
-                    type='password'
-                    placeholder='Password'
-                    fieldName='password'
-                    register={register}
-                    sx={{ mb: 1.5 }}
-                />
+                <Input variation='auth' type='password' placeholder='Password' fieldName='password' register={register} sx={{ mb: 1.5 }} />
 
                 <Button
                     href='/auth/identify'
@@ -117,29 +108,11 @@ const AuthForm = () => {
                     fullWidth
                     variant='contained'
                     disabled={isSubmitting || !(watchFields.user && watchFields.password)}
-                    endIcon={
-                        isSubmitting && (
-                            <CircularProgress sx={{ color: 'contrastColor' }} size='small' />
-                        )
-                    }
+                    endIcon={isSubmitting && <CircularProgress sx={{ color: 'contrastColor' }} size='small' />}
                     sx={{ mt: 1.5, mb: 2, py: 1, borderRadius: '10px' }}>
                     Log In
                 </Button>
             </Form>
-
-            <Divider variant='middle' sx={{ borderWidth: '2px' }}>
-                <Typography variant='body2' color='text.secondary'>
-                    Or continue with
-                </Typography>
-            </Divider>
-
-            <Stack mt={3} spacing={2} my={3.5}>
-                <GoogleButton name='Continue with Google' onClick={() => signIn('google')} />
-                <FacebookButton
-                    name='Continue with Facebook'
-                    href={`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/facebook`}
-                />
-            </Stack>
 
             <Stack direction='row' justifyContent='center' spacing={2}>
                 <div>New to Messenger?</div>

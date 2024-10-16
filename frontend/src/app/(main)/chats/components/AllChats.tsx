@@ -1,46 +1,22 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
-import {
-    Avatar,
-    Box,
-    List,
-    ListItem,
-    ListItemAvatar,
-    ListItemButton,
-    ListItemText,
-    Typography,
-} from '@mui/material';
-import NavLink from '@/components/NavLink';
-import useErrorHandler from '@/hooks/useErrorHandler';
-import { Chat, setChat } from '@/redux/features/contact/contactSlice';
-import { useAppDispatch, useAppSelector } from '@/redux/hook';
-import axios from 'axios';
+import React from 'react';
+import { Avatar, Box, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, Typography } from '@mui/material';
+import { setChat } from '@/store/features/chat/chatSlice';
+import { useAppDispatch, useAppSelector } from '@/store/hook';
 
 // Icons
 import { MdFiberManualRecord } from 'react-icons/md';
 import { generateDate } from '@/utils/function';
+import { useGetChatListQuery } from '@/api/chats/client';
+import { Chat } from '@/types/types';
 
 export default function AllChats() {
-    const errorHandler = useErrorHandler();
-    const [chats, setChats] = useState<Chat[]>([]);
+    const { data } = useGetChatListQuery();
     const dispatch = useAppDispatch();
     const selectedChat = useAppSelector(state => state.chat.chat);
 
-    const getChats = useCallback(async () => {
-        try {
-            const { data } = await axios.get('/chats/all', {
-                params: { sortBy: 'updatedAt', direction: -1 },
-            });
-            setChats(data.chats);
-        } catch (err) {
-            errorHandler(err);
-        }
-    }, [errorHandler]);
-
-    useEffect(() => {
-        getChats();
-    }, []);
+    console.log({ data });
 
     return (
         <Box
@@ -51,20 +27,14 @@ export default function AllChats() {
                 pb: 2,
             }}>
             <List sx={{ px: 0.3 }}>
-                {chats.map((chat, i) => (
+                {data?.data.map(chat => (
                     <ListItem sx={{ p: 0.5 }}>
                         <ListItemButton
                             selected={selectedChat ? selectedChat._id === chat._id : false}
                             variant={'sidebarButton'}
                             sx={{ minHeight: 70 }}
                             onClick={() => dispatch(setChat(chat))}>
-                            <Typography
-                                variant='caption'
-                                color='currentcolor'
-                                fontSize={11}
-                                position='absolute'
-                                top='8px'
-                                right='8px'>
+                            <Typography variant='caption' color='currentcolor' fontSize={11} position='absolute' top='8px' right='8px'>
                                 {chat.time ? generateDate(chat.time) : null}
                             </Typography>
                             {chat.unreadMessage && (
@@ -80,11 +50,7 @@ export default function AllChats() {
                             )}
 
                             <ListItemAvatar>
-                                <Avatar
-                                    alt={chat.name}
-                                    src={chat.picture}
-                                    sx={{ width: '45px', height: '45px' }}
-                                />
+                                <Avatar alt={chat.name} src={chat.picture} sx={{ width: '45px', height: '45px' }} />
                             </ListItemAvatar>
                             <ListItemText>
                                 <Typography

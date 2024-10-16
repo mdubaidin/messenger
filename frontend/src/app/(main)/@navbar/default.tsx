@@ -1,8 +1,8 @@
 import React from 'react';
-import Sidebar from '@/components/Sidebar';
+import Index from '@/components/options';
 
 const Default = () => {
-    return <Sidebar />;
+    return <Index />;
 };
 
 export default Default;

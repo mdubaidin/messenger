@@ -1,51 +1,31 @@
-'use client';
+import { NextjsPageProps } from '@/types/types';
+import Header from './components/header';
+import Input from './components/input';
+import MessageList from './components/messageList';
+import Drawer from '../../../../components/drawer/drawer';
+import Main from './main';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import { getServerQueryClient } from '@/config/apiClient';
+import { getSessionCookie, getSessionCookieUser } from '@/actions/auth';
+import { headers } from 'next/headers';
+import { prefetchChatById } from '@/api/chats/server';
 
-import Box from '@mui/material/Box';
-import Header from './components/Header';
-import Input from './components/Input';
-import ChatSection from './components/ChatSection';
-import { useAppSelector } from '@/redux/hook';
-import MuiDrawer from '@mui/material/Drawer';
-import DefaultMessage from '@/components/DefaultMessage';
-import Drawer from './drawer/drawer';
+const Page = async () => {
+    const queryClient = getServerQueryClient();
+    const sessionCookie = await getSessionCookie();
+    const user = await getSessionCookieUser();
+    if (!sessionCookie || !user) return null;
 
-const panelWidth = 380;
+    await prefetchChatById(queryClient, '66dc13a98c89ee1ae0a94eb7');
 
-const Page = () => {
-    const { chat, contactPanel } = useAppSelector(state => state.chat);
-
-    return chat ? (
-        <Box
-            height='100%'
-            display='flex'
-            flexDirection='column'
-            sx={{
-                width: contactPanel ? `calc(100% - ${panelWidth}px)` : '100%',
-                mr: contactPanel ? `${panelWidth}px` : 0,
-            }}>
-            <Header />
-            <ChatSection />
-            <Input />
-
-            <MuiDrawer
-                variant='persistent'
-                open={contactPanel}
-                anchor='right'
-                sx={{
-                    '& .MuiDrawer-paper': {
-                        boxSizing: 'border-box',
-                        width: panelWidth,
-                        bgcolor: 'background.paper',
-                        borderLeft: '1px solid',
-                        borderColor: 'divider',
-                    },
-                }}>
-                <Drawer />
-            </MuiDrawer>
-        </Box>
-    ) : (
-        <DefaultMessage />
+    return (
+        <HydrationBoundary state={dehydrate(queryClient)}>
+            <Main>
+                <Header />
+                <MessageList />
+                <Input />
+            </Main>
+        </HydrationBoundary>
     );
 };
-
 export default Page;

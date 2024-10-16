@@ -15,25 +15,23 @@ import {
     Stack,
     Typography,
 } from '@mui/material';
-import SearchBar from '@/components/SearchBar';
-import NavLink from '@/components/NavLink';
+import SearchBar from '@/components/lib/searchbar';
+import NavLink from '@/components/lib/navLink';
 import useErrorHandler from '@/hooks/useErrorHandler';
-import { Chat, setChat } from '@/redux/features/contact/contactSlice';
-import { useAppDispatch } from '@/redux/hook';
-import { useSession } from 'next-auth/react';
+import { setChat } from '@/store/features/chat/chatSlice';
+import { useAppDispatch } from '@/store/hook';
 import axios from 'axios';
-import Sidebar from '@/components/Sidebar';
+import Index from '@/components/options';
 
 // Icons
 import { PiNotePencil } from 'react-icons/pi';
 import { MdFiberManualRecord } from 'react-icons/md';
 import { generateDate } from '@/utils/function';
+import { Chat } from '@/types/types';
 
 export default function Chats() {
-    const errorHandler = useErrorHandler();
     const [activeContacts, setActiveContacts] = useState<Chat[]>([]);
     const dispatch = useAppDispatch();
-    const { status } = useSession();
 
     // const getContacts = useCallback(async () => {
     //     try {
@@ -52,11 +50,7 @@ export default function Chats() {
 
     return (
         <Box display='flex' flexDirection='column' flexGrow={1} px={1}>
-            <Box
-                display='flex'
-                alignItems='center'
-                justifyContent='space-between'
-                sx={{ textDecoration: 'none', color: 'text.primary', py: 1.5 }}>
+            <Box display='flex' alignItems='center' justifyContent='space-between' sx={{ textDecoration: 'none', color: 'text.primary', py: 1.5 }}>
                 <Typography variant='h6' fontSize={24} fontWeight='600' py={0.5}>
                     People
                 </Typography>
@@ -93,13 +87,7 @@ export default function Chats() {
                                         variant={'sidebarButton'}
                                         sx={{ minHeight: 70 }}
                                         onClick={() => dispatch(setChat(contact))}>
-                                        <Typography
-                                            variant='caption'
-                                            color='currentcolor'
-                                            fontSize={11}
-                                            position='absolute'
-                                            top='8px'
-                                            right='8px'>
+                                        <Typography variant='caption' color='currentcolor' fontSize={11} position='absolute' top='8px' right='8px'>
                                             {contact.time ? generateDate(contact.time) : null}
                                         </Typography>
                                         {contact.unreadMessage && (
@@ -115,11 +103,7 @@ export default function Chats() {
                                         )}
 
                                         <ListItemAvatar>
-                                            <Avatar
-                                                alt={contact.name}
-                                                src={contact.picture}
-                                                sx={{ width: '45px', height: '45px' }}
-                                            />
+                                            <Avatar alt={contact.name} src={contact.picture} sx={{ width: '45px', height: '45px' }} />
                                         </ListItemAvatar>
                                         <ListItemText>
                                             <Typography

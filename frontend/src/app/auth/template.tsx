@@ -1,16 +1,11 @@
-import Image from '@/components/Image';
+import Image from '@/components/lib/image';
 import { Box, Container, Grid, Typography } from '@mui/material';
 import React, { Suspense } from 'react';
 
 const AuthTemplate = ({ children }: { children: React.ReactNode }) => {
     return (
         <Suspense fallback={'loading...'}>
-            <Box
-                display='flex'
-                minHeight='100dvh'
-                flexDirection='column'
-                justifyContent='center'
-                bgcolor='background.paper'>
+            <Box display='flex' minHeight='100dvh' flexDirection='column' justifyContent='center' bgcolor='background.paper'>
                 <Container
                     sx={{
                         maxWidth: { xs: '600px', xm: '1205px' },
@@ -18,11 +13,7 @@ const AuthTemplate = ({ children }: { children: React.ReactNode }) => {
                         px: 2,
                         transition: '.2s',
                     }}>
-                    <Box
-                        display='inline-flex'
-                        alignItems='center'
-                        mt={2}
-                        sx={{ cursor: 'pointer' }}>
+                    <Box display='inline-flex' alignItems='center' mt={2} sx={{ cursor: 'pointer' }}>
                         <Image alt='logo' name='logo.png' sx={{ height: '35px' }} />
                         <Typography
                             variant='h5'

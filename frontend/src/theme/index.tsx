@@ -1,15 +1,7 @@
 'use client';
 
 import { createTheme, PaletteMode, Theme, useMediaQuery } from '@mui/material';
-import React, {
-    useMemo,
-    useContext,
-    useState,
-    createContext,
-    useLayoutEffect,
-    Dispatch,
-    SetStateAction,
-} from 'react';
+import React, { useMemo, useContext, useState, createContext, useLayoutEffect, Dispatch, SetStateAction } from 'react';
 import { CssBaseline, ThemeProvider as MuiThemeProvider } from '@mui/material';
 import { getLocalStorage, setLocalStorage } from '@/utils/function';
 
@@ -206,18 +198,15 @@ const ThemeProvider = (props: ThemeContextProviderProps): React.JSX.Element => {
                                     backgroundColor: theme.palette.divider,
                                     // backgroundColor: 'red',
                                 },
-                                '&::-webkit-scrollbar-thumb:focus, & *::-webkit-scrollbar-thumb:focus':
-                                    {
-                                        backgroundColor: '#747775',
-                                    },
-                                '&::-webkit-scrollbar-thumb:active, & *::-webkit-scrollbar-thumb:active':
-                                    {
-                                        backgroundColor: '#747775',
-                                    },
-                                '&::-webkit-scrollbar-thumb:hover, & *::-webkit-scrollbar-thumb:hover':
-                                    {
-                                        backgroundColor: '#747775',
-                                    },
+                                '&::-webkit-scrollbar-thumb:focus, & *::-webkit-scrollbar-thumb:focus': {
+                                    backgroundColor: '#747775',
+                                },
+                                '&::-webkit-scrollbar-thumb:active, & *::-webkit-scrollbar-thumb:active': {
+                                    backgroundColor: '#747775',
+                                },
+                                '&::-webkit-scrollbar-thumb:hover, & *::-webkit-scrollbar-thumb:hover': {
+                                    backgroundColor: '#747775',
+                                },
                             },
                         }),
                     },
@@ -304,8 +293,8 @@ const ThemeProvider = (props: ThemeContextProviderProps): React.JSX.Element => {
                             {
                                 props: { variant: 'sidebarIconButton' },
                                 style: ({ theme }) => ({
-                                    width: 54,
-                                    height: 42,
+                                    minWidth: 50,
+                                    height: 40,
                                     margin: 0,
                                     padding: 0,
                                     borderRadius: '8px',
@@ -315,7 +304,7 @@ const ThemeProvider = (props: ThemeContextProviderProps): React.JSX.Element => {
                                     },
 
                                     '.MuiListItemIcon-root': {
-                                        width: '100%',
+                                        minWidth: 'inherit',
                                         display: 'inline-flex',
                                         justifyContent: 'center',
                                         alignItems: 'center',
@@ -412,11 +401,10 @@ const ThemeProvider = (props: ThemeContextProviderProps): React.JSX.Element => {
                         styleOverrides: {
                             root: {
                                 marginBottom: '16px',
-                                'input::-webkit-outer-spin-button,\ninput::-webkit-inner-spin-button':
-                                    {
-                                        WebkitAppearance: 'none',
-                                        margin: '0',
-                                    },
+                                'input::-webkit-outer-spin-button,\ninput::-webkit-inner-spin-button': {
+                                    WebkitAppearance: 'none',
+                                    margin: '0',
+                                },
                             },
                         },
                     },

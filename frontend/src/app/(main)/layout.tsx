@@ -11,11 +11,7 @@ type LayoutProps = {
 export default function Layout({ children, navbar, main }: Readonly<LayoutProps>) {
     return (
         <Box height='100dvh' display='flex' bgcolor='background.paper'>
-            <Box
-                minWidth={drawerWidth}
-                display='flex'
-                borderRight='1px solid'
-                borderColor='divider'>
+            <Box minWidth={drawerWidth} display='flex' borderRight='1px solid' borderColor='divider'>
                 {navbar}
                 {children}
             </Box>

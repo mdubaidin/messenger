@@ -1,25 +1,15 @@
 'use client';
 
-import { Box, Button, CircularProgress, Divider, Link, Stack, Typography } from '@mui/material';
-import React, {
-    useEffect,
-    createContext,
-    useState,
-    Dispatch,
-    SetStateAction,
-    useContext,
-} from 'react';
+import { Box, Button, CircularProgress, Link, Stack, Typography } from '@mui/material';
+import React, { useEffect, createContext, useState, Dispatch, SetStateAction, useContext } from 'react';
 import { useForm, SubmitHandler, FieldValues } from 'react-hook-form';
-import Form from '@/components/Form';
-import FacebookButton from '@/components/FacebookButton';
-import GoogleButton from '@/components/GoogleButton';
-import Input from '@/components/Input';
+import Form from '@/components/lib/form';
+import Input from '@/components/lib/input';
 import useErrorHandler from '@/hooks/useErrorHandler';
 import { isEmpty } from '@/utils/function';
 import { useRouter } from 'next/navigation';
-import { useMessage } from '@/providers/Provider';
 import { authApi } from '@/libs/axios';
-import { signIn } from 'next-auth/react';
+import { toast } from 'sonner';
 
 interface FormInput {
     name: string;
@@ -59,9 +49,7 @@ const Main = () => {
                 display: 'flex',
                 flexDirection: 'column',
             }}>
-            <FormContext.Provider value={{ data, setData, step, setStep }}>
-                {React.createElement(Steps[step])}
-            </FormContext.Provider>
+            <FormContext.Provider value={{ data, setData, step, setStep }}>{React.createElement(Steps[step])}</FormContext.Provider>
         </Box>
     );
 };
@@ -70,7 +58,7 @@ function CreateAccount() {
     const { setData, setStep } = useContext(FormContext);
     const errorHandler = useErrorHandler();
     const router = useRouter();
-    const { showError } = useMessage();
+
     const {
         register,
         handleSubmit,
@@ -79,7 +67,7 @@ function CreateAccount() {
 
     const onSubmit: SubmitHandler<FieldValues> = async data => {
         try {
-            await authApi.post('/create-account/step1', { email: data.email });
+            await authApi.post('/create-account/step1');
 
             setData(data as FormInput);
             setStep(1);
@@ -92,16 +80,15 @@ function CreateAccount() {
         const params = new URLSearchParams(location.search);
         const error = params.get('e');
         if (error) {
-            showError(error);
+            toast.error(error);
         }
-    }, [router, showError]);
+    }, [router]);
 
     return (
         <Box>
             <Typography
                 sx={{
-                    backgroundImage:
-                        'linear-gradient(83.84deg, rgb(0, 136, 255) -6.87%, rgb(160, 51, 255) 26.54%, rgb(255, 92, 135) 58.58%)',
+                    backgroundImage: 'linear-gradient(83.84deg, rgb(0, 136, 255) -6.87%, rgb(160, 51, 255) 26.54%, rgb(255, 92, 135) 58.58%)',
                     backgroundClip: 'text',
                     color: 'transparent',
                     fontSize: '80px',
@@ -149,8 +136,7 @@ function CreateAccount() {
                         required: 'Username is required',
                         pattern: {
                             value: /^[a-z][a-z0-9_.]+[a-z0-9]$/i,
-                            message:
-                                'A username can only contain letters, numbers, periods, and underscores.',
+                            message: 'A username can only contain letters, numbers, periods, and underscores.',
                         },
                     }}
                 />
@@ -194,7 +180,7 @@ function CreateAccount() {
                 </Button>
             </Form>
 
-            <Divider variant='middle' sx={{ borderWidth: '2px' }}>
+            {/* <Divider variant='middle' sx={{ borderWidth: '2px' }}>
                 <Typography variant='body2' color='text.secondary'>
                     Or create an account with
                 </Typography>
@@ -203,7 +189,7 @@ function CreateAccount() {
             <Stack mt={3} spacing={2} my={3}>
                 <GoogleButton name='Sign up with Google' onClick={() => signIn('google')} />
                 <FacebookButton name='Sign up with Facebook' />
-            </Stack>
+            </Stack> */}
 
             <Stack direction='row' justifyContent='center' mt={3} spacing={2}>
                 <div>Already have an account?</div>
@@ -219,7 +205,6 @@ function EmailConfirmation() {
     const { data, setStep } = useContext(FormContext);
     const errorHandler = useErrorHandler();
     const router = useRouter();
-    const { showSuccess } = useMessage();
     const {
         register,
         handleSubmit,
@@ -230,7 +215,7 @@ function EmailConfirmation() {
         try {
             await authApi.post('/create-account/step2', { ...data, ...inputData });
 
-            showSuccess('Account created');
+            toast.success('Account created');
             router.push('/auth/log-in');
         } catch (err) {
             errorHandler(err);
@@ -241,22 +226,19 @@ function EmailConfirmation() {
         <Box>
             <Typography
                 sx={{
-                    backgroundImage:
-                        'linear-gradient(83.84deg, rgb(0, 136, 255) -6.87%, rgb(160, 51, 255) 26.54%, rgb(255, 92, 135) 58.58%)',
+                    backgroundImage: 'linear-gradient(83.84deg, rgb(0, 136, 255) -6.87%, rgb(160, 51, 255) 26.54%, rgb(255, 92, 135) 58.58%)',
                     backgroundClip: 'text',
                     color: 'transparent',
                     fontSize: '80px',
                     fontWeight: 500,
                     lineHeight: '75px',
-                    fontFamily:
-                        'Calibre, Helvetica Neue, Segoe UI, Helvetica, Arial, Lucida Grande, sans-serif',
+                    fontFamily: 'Calibre, Helvetica Neue, Segoe UI, Helvetica, Arial, Lucida Grande, sans-serif',
                 }}>
                 Email Confirmation
             </Typography>
 
             <Typography variant='body1' mb={isEmpty(errors) ? 5 : 1} color='text.secondary'>
-                Messenger wants to make sure that it&apos;s really you. Messenger will send an email
-                with a six-digit confirmation code on your{' '}
+                Messenger wants to make sure that it&apos;s really you. Messenger will send an email with a six-digit confirmation code on your{' '}
                 <Link href={`mailto:${data.email}`}>{data.email}</Link>.
             </Typography>
 

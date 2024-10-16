@@ -7,6 +7,7 @@ import adminRouter from './group/admin.js';
 import isAdmin from '../middleware/isAdmin.js';
 import upload from '../libs/multer.js';
 import update from '../controllers/groups/update.js';
+import fetchMembers from '../controllers/groups/member/fetch.js';
 
 const groupRouter = express.Router();
 
@@ -15,6 +16,7 @@ groupRouter.use('/admin/:groupId/', isAdmin, adminRouter);
 // GET
 groupRouter.get('/', fetch);
 groupRouter.get('/:id', fetch);
+groupRouter.get('/members/:id', fetchMembers);
 
 // POST
 groupRouter.post('/', upload.single('picture'), create);

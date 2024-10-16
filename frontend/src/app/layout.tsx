@@ -1,10 +1,8 @@
-import '@/libs/axios';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 import type { Metadata } from 'next';
-import Provider from '@/providers/Provider';
-// import StoreProvider from './StoreProvider';
-// import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import StoreProvider from '../providers/StoreProvider';
+import Provider from '@/providers';
+import { Inter } from 'next/font/google';
+import { ViewTransitions } from 'next-view-transitions';
 import socket from '@/libs/socket';
 
 export const metadata: Metadata = {
@@ -17,23 +15,22 @@ socket.on('connection', () => {
     console.log('I am connected');
 });
 
+const font = Inter({ subsets: ['latin'] });
+
 export default function RootLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
     return (
-        <html lang='en'>
-            <head>
-                <link href='https://fonts.cdnfonts.com/css/calibre-2' rel='stylesheet' />
-            </head>
-            <body>
-                <Provider>
-                    <StoreProvider>
+        <ViewTransitions>
+            <html lang='en'>
+                <body className={font.className}>
+                    <Provider>
                         <AppRouterCacheProvider>{children}</AppRouterCacheProvider>
-                    </StoreProvider>
-                </Provider>
-            </body>
-        </html>
+                    </Provider>
+                </body>
+            </html>
+        </ViewTransitions>
     );
 }

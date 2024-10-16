@@ -20,4 +20,4 @@ function useMenu() {
     return { anchorEl, openMenu, closeMenu };
 }
 
-export { useMenu };
+export default useMenu;

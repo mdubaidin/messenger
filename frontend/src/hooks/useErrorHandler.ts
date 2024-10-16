@@ -1,13 +1,11 @@
 import { useCallback } from 'react';
-import { useMessage } from '@/providers/Provider';
 import { isEmpty, isObject, isString } from '../utils/function';
 import { AxiosError } from 'axios';
+import { toast } from 'sonner';
 
 type ErrorValue = string | object | string[] | object[];
 
 const useErrorHandler = () => {
-    const { showError } = useMessage();
-
     const getValue = useCallback((object: object) => {
         const field = Object.keys(object)[0] as keyof typeof object;
         return object[field];
@@ -62,58 +60,31 @@ const useErrorHandler = () => {
                 console.log({ message });
 
                 // SERVER ERROR
-                if (status === 500)
-                    return showError(
-                        'Internal Server Error. Oops! Something went wrong on our end.'
-                    );
+                if (status === 500) return toast.error('Internal Server Error. Oops! Something went wrong on our end.');
 
-                if (status === 501)
-                    return showError(
-                        `Not Implemented. The server doesn't support this functionality. Check your request first`
-                    );
+                if (status === 501) return toast.error(`Not Implemented. The server doesn't support this functionality. Check your request first`);
 
-                if (status === 502)
-                    return showError(
-                        'Bad Gateway. The server received an invalid response. Please try again later'
-                    );
+                if (status === 502) return toast.error('Bad Gateway. The server received an invalid response. Please try again later');
 
-                if (status === 503)
-                    return showError(
-                        'Service Unavailable. The server is temporarily busy. Please try again later.'
-                    );
+                if (status === 503) return toast.error('Service Unavailable. The server is temporarily busy. Please try again later.');
 
-                if (status === 504)
-                    return showError(
-                        `Gateway Timeout. Sorry, we're experiencing delays the server is taking too long to respond.`
-                    );
+                if (status === 504) return toast.error(`Gateway Timeout. Sorry, we're experiencing delays the server is taking too long to respond.`);
 
                 // CLIENT ERROR
-                if (status === 400)
-                    return showError(message || `Ensure you've entered valid information.`);
+                if (status === 400) return toast.error(message || `Ensure you've entered valid information.`);
 
-                if (status === 401)
-                    return showError(
-                        `Unauthorized: Access Denied. Verify your credentials and try again. `
-                    );
+                if (status === 401) return toast.error(`Unauthorized: Access Denied. Verify your credentials and try again. `);
 
                 if (status === 403) {
-                    return showError(
-                        `Access to this resource is denied. You may not have the necessary permissions.`
-                    );
+                    return toast.error(`Access to this resource is denied. You may not have the necessary permissions.`);
                 }
 
-                if (status === 404)
-                    return showError(message || `We can't find what you are looking for.`);
+                if (status === 404) return toast.error(message || `We can't find what you are looking for.`);
 
-                if (status === 409)
-                    return showError(
-                        `It seems there's a conflict between your request and the current state of the resource.`
-                    );
+                if (status === 409) return toast.error(`It seems there's a conflict between your request and the current state of the resource.`);
 
                 if (data.errors) {
-                    showError(
-                        data.errors || 'Our server encountered an error, Please try again later'
-                    );
+                    toast.error(data.errors || 'Our server encountered an error, Please try again later');
                 }
             } else if (error.request) {
                 // The request was made but no response was received
@@ -123,10 +94,10 @@ const useErrorHandler = () => {
             } else {
                 // Something happened in setting up the request that triggered an Error
                 console.log('Error', error.message);
-                return showError(error.message);
+                return toast.error(error.message);
             }
         },
-        [showError, getMessage]
+        [toast.error, getMessage]
     );
 
     return errorHandler;

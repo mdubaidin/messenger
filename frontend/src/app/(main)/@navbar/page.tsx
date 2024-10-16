@@ -1,8 +1,8 @@
 import React from 'react';
-import Sidebar from '@/components/Sidebar';
+import Index from '@/components/options';
 
 const page = () => {
-    return <Sidebar />;
+    return <Index />;
 };
 
 export default page;

@@ -10,7 +10,7 @@ const fetch: Handler = async function (req, res, next) {
         const chatId = req.params.id;
 
         if (chatId) {
-            const [chat] = await UserChat.aggregate([
+            const [data] = await UserChat.aggregate([
                 {
                     $match: {
                         chat: new Types.ObjectId(chatId),
@@ -79,12 +79,12 @@ const fetch: Handler = async function (req, res, next) {
                 },
             ]);
 
-            return res.success({ chat });
+            return res.success({ data });
         }
 
         const dataSource = new DataSource(Chat, req.query);
 
-        const chats = await dataSource.aggregate([
+        const data = await dataSource.aggregate([
             {
                 $match: { members: { $all: [userId] } },
             },
@@ -119,7 +119,7 @@ const fetch: Handler = async function (req, res, next) {
             { $project: { members: 0 } },
         ]);
 
-        res.success({ chats, pageData: dataSource.pageData });
+        res.success({ data, pageData: dataSource.pageData });
     } catch (e) {
         next(e);
     }
@@ -131,7 +131,7 @@ const fetchAll: Handler = async function (req, res, next) {
 
         const dataSource = new DataSource(Chat, req.query);
 
-        const chats = await dataSource.aggregate([
+        const data = await dataSource.aggregate([
             {
                 $facet: {
                     chats: [
@@ -229,7 +229,7 @@ const fetchAll: Handler = async function (req, res, next) {
             },
         ]);
 
-        res.success({ chats, pageData: dataSource.pageData });
+        res.success({ data, pageData: dataSource.pageData });
     } catch (e) {
         next(e);
     }

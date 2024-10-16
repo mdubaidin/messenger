@@ -10,20 +10,17 @@ const fetch: Handler = async function (req, res, next) {
 
         if (groupId) {
             const group = await Group.findById(groupId);
-            const members = await UserGroup.find(
-                { group: groupId },
-                { user: 1, admin: 1 }
-            ).populate({
+            const members = await UserGroup.find({ group: groupId }, { user: 1, admin: 1 }, { limit: 5 }).populate({
                 path: 'user',
                 select: 'username bio name',
             });
 
-            return res.success({ group, members });
+            return res.success({ data: { group, members } });
         }
 
         const dataSource = new DataSource(UserGroup, req.query);
 
-        const [groups] = await dataSource.aggregate([
+        const [data] = await dataSource.aggregate([
             { $match: { user: userId } },
             {
                 $lookup: {
@@ -45,7 +42,7 @@ const fetch: Handler = async function (req, res, next) {
             },
         ]);
 
-        res.success({ groups, pageData: dataSource.pageData });
+        res.success({ data, pageData: dataSource.pageData });
     } catch (e) {
         next(e);
     }
