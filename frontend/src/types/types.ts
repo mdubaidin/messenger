@@ -24,6 +24,9 @@ export type PaginationType = {
 
 export type User = { _id: string; name: string; email: string; username?: string; picture?: string; bio?: string };
 export type Member = { _id: string; name: string; username: string; picture?: string; admin?: boolean; group: string; bio?: string };
+export interface AttachmentType extends File {
+    url?: string;
+}
 
 export type Chat = {
     _id: string;

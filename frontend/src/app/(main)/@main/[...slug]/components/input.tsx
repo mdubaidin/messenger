@@ -15,11 +15,9 @@ import {
     Typography,
     styled,
 } from '@mui/material';
-import React, { MouseEvent, KeyboardEvent, useRef, useState, ChangeEvent } from 'react';
+import React, { MouseEvent, KeyboardEvent, useRef, useState, ChangeEvent, useEffect } from 'react';
 import useMenu from '@/hooks/useMenu';
-import useModal from '@/hooks/useModal';
 import EmojiPicker from 'emoji-picker-react';
-import useErrorHandler from '@/hooks/useErrorHandler';
 import Attachment from './attachment';
 import { useAppDispatch, useAppSelector } from '@/store/hook';
 
@@ -30,23 +28,14 @@ import { IoMdSend, IoMdAddCircle, IoMdClose } from 'react-icons/io';
 import { AiFillLike } from 'react-icons/ai';
 import { BsEmojiSmileFill, BsImage } from 'react-icons/bs';
 import { toast } from 'sonner';
-
-const ChatBoxWrapper = styled('div')(({ theme }) => ({
-    position: 'relative',
-    width: '100%',
-    maxWidth: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    backgroundColor: theme.palette.background.paper,
-    transition: 'all 235ms ease-in-out',
-    padding: 10,
-}));
+import { AttachmentType } from '@/types/types';
 
 const InputWrapper = styled(Box)(({ theme }) => ({
     backgroundColor: theme.palette.background.search,
     display: 'flex',
+    flexDirection: 'column',
     width: '100%',
-    borderRadius: 500,
+    // borderRadius: hasAttachment ? 12 : 32,
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
@@ -55,7 +44,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     padding: 0,
     '& .MuiInputBase-input': {
         maxHeight: '100px',
-        paddingInline: 16,
+        paddingInline: 17,
+        paddingBlock: 5,
         fontSize: 15,
         overflow: 'hidden',
         transition: theme.transitions.create('width'),
@@ -73,17 +63,39 @@ const Input = (props: InputProps) => {
     const [message, setMessage] = useState<string>('');
     const [caret, setCaret] = useState<number | null>(null);
     const chat = useAppSelector(state => state.chat.chat);
-    // const queryClient = useQueryClient();
-    const errorHandler = useErrorHandler();
+    const [attachments, setAttachments] = useState<AttachmentType[]>([]);
 
     const { anchorEl: attachFileAnchorEl, openMenu: openAttachFile, closeMenu: closeAttachFile } = useMenu();
-
     const { anchorEl: emojiAnchorEl, openMenu: openEmoji, closeMenu: closeEmoji } = useMenu();
 
-    const { modalState, closeModal, openModal } = useModal();
+    console.log({ attachments });
 
     const fileRef = useRef<HTMLInputElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
+    const inputWrapperRef = useRef<HTMLInputElement>(null);
+
+    const adjustBorderRadius = () => {
+        if (!inputRef.current || !inputWrapperRef.current) return;
+
+        const inputHeight = inputRef.current.offsetHeight;
+        const style = inputWrapperRef.current.style;
+        if (style.borderRadius === '20px') return;
+        style.borderRadius = inputHeight > 40 ? '20px' : '32px';
+    };
+
+    const fileHandler = (e: ChangeEvent) => {
+        closeAttachFile();
+        const event = e.target as HTMLInputElement;
+
+        const files = event.files;
+        if (!files?.length) return toast.error('No file selected');
+        const attachments = Object.keys(files).map((key: any) => {
+            const file: AttachmentType = files[key];
+            file.url = URL.createObjectURL(files[key]);
+            return file;
+        });
+        setAttachments(attachments);
+    };
 
     // const { mutate } = useMutation({
     //     mutationFn: async message => {
@@ -133,18 +145,6 @@ const Input = (props: InputProps) => {
     //     mutate(messageObject);
     // };
 
-    const fileHandler = (e: ChangeEvent) => {
-        e.stopPropagation();
-        closeAttachFile();
-        const event = e.target as HTMLInputElement;
-
-        const files = event.files || [];
-        if (!files.length) return toast.error('No file selected');
-        // Object.keys(files).map((key: number) => (files[key] = URL.createObjectURL(files[key])));
-        openModal();
-        // dispatch(setFiles(files));
-    };
-
     const onChangeHandler = (e: ChangeEvent) => {
         const event = e.target as HTMLInputElement;
         setCaret(event.selectionStart);
@@ -181,7 +181,7 @@ const Input = (props: InputProps) => {
 
     return (
         <React.Fragment>
-            <ChatBoxWrapper>
+            <Box p={1.5}>
                 {false && (
                     <Stack
                         direction='row'
@@ -219,40 +219,46 @@ const Input = (props: InputProps) => {
                         </IconButton>
                     </Stack>
                 )}
-                <Stack direction='row'>
+
+                <Stack direction='row' alignItems='center'>
                     <IconButton color='primary' onClick={openAttachFile}>
                         <IoMdAddCircle />
                     </IconButton>
-                    <InputWrapper>
-                        <FormControl fullWidth>
-                            <StyledInputBase
-                                sx={{
-                                    flex: 1,
-                                }}
-                                ref={inputRef}
-                                value={message}
-                                onMouseUp={(e: MouseEvent) => {
-                                    const event = e.target as HTMLInputElement;
-                                    setCaret(event.selectionStart);
-                                }}
-                                onKeyUp={(e: KeyboardEvent) => {
-                                    const event = e.target as HTMLInputElement;
-                                    setCaret(event.selectionStart);
-                                }}
-                                placeholder='Type a message'
-                                onKeyDown={handleKeyDown}
-                                onChange={onChangeHandler}
-                                multiline
-                                maxRows={5}
-                            />
-                        </FormControl>
+                    <InputWrapper ref={inputWrapperRef} borderRadius={attachments.length ? 5 : 8}>
+                        {attachments.length ? <Attachment attachments={attachments} setAttachments={setAttachments} fileRef={fileRef} /> : null}
 
-                        <IconButton color='primary'>
-                            <PiStickerFill />
-                        </IconButton>
-                        <IconButton onClick={openEmoji} color='primary'>
-                            <BsEmojiSmileFill size='20' />
-                        </IconButton>
+                        <Stack direction='row'>
+                            <FormControl fullWidth>
+                                <StyledInputBase
+                                    sx={{
+                                        flex: 1,
+                                    }}
+                                    ref={inputRef}
+                                    value={message}
+                                    onMouseUp={(e: MouseEvent) => {
+                                        const event = e.target as HTMLInputElement;
+                                        setCaret(event.selectionStart);
+                                    }}
+                                    onKeyUp={(e: KeyboardEvent) => {
+                                        adjustBorderRadius();
+                                        const event = e.target as HTMLInputElement;
+                                        setCaret(event.selectionStart);
+                                    }}
+                                    placeholder='Type a message'
+                                    onKeyDown={handleKeyDown}
+                                    onChange={onChangeHandler}
+                                    multiline
+                                    maxRows={5}
+                                />
+                            </FormControl>
+
+                            <IconButton color='primary'>
+                                <PiStickerFill />
+                            </IconButton>
+                            <IconButton onClick={openEmoji} color='primary'>
+                                <BsEmojiSmileFill size='20' />
+                            </IconButton>
+                        </Stack>
                     </InputWrapper>
                     {message?.trim() ? (
                         <IconButton
@@ -267,22 +273,7 @@ const Input = (props: InputProps) => {
                         </IconButton>
                     )}
                 </Stack>
-            </ChatBoxWrapper>
-
-            <Modal
-                open={modalState}
-                onClose={() => {
-                    // dispatch(setFiles({}));
-                    closeModal();
-                }}
-                slotProps={{ backdrop: { invisible: true } }}>
-                <>
-                    <Attachment
-                        // mutate={mutate}
-                        closeModal={closeModal}
-                    />
-                </>
-            </Modal>
+            </Box>
 
             <Menu
                 anchorEl={emojiAnchorEl}
@@ -299,7 +290,6 @@ const Input = (props: InputProps) => {
                 sx={{
                     transform: 'translateY(-20px)',
                     '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
-                        boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
                         border: '1px solid',
                         borderColor: 'common.white',
                         backdropFilter: 'blur(6px)',
@@ -363,7 +353,16 @@ const Input = (props: InputProps) => {
                 </MenuItem>
             </Menu>
 
-            <input type='file' ref={fileRef} style={{ display: 'none' }} onChange={fileHandler} multiple />
+            <input
+                type='file'
+                ref={fileRef}
+                style={{ display: 'none' }}
+                onClick={e => {
+                    if (fileRef.current) fileRef.current.value = '';
+                }}
+                onChange={fileHandler}
+                multiple
+            />
         </React.Fragment>
     );
 };

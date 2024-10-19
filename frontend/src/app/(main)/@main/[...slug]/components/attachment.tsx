@@ -1,20 +1,22 @@
 'use client';
 
-import React, { ChangeEvent, FC, KeyboardEvent, MouseEvent, useState } from 'react';
+import React, { ChangeEvent, Dispatch, FC, KeyboardEvent, MouseEvent, SetStateAction, useState } from 'react';
 import useMenu from '@/hooks/useMenu';
-import { Box, IconButton, Menu, Stack, TextField, Typography } from '@mui/material';
-import Image from '@/components/lib/image';
-import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
+import { Box, Card, IconButton, Menu, Stack, TextField, Typography } from '@mui/material';
 import { getBase64, getFileType, isImage, parseKB } from '@/utils/function';
 import { useAppSelector } from '@/store/hook';
 
 // Icons
 import { IoMdSend, IoMdClose } from 'react-icons/io';
-import { BsEmojiSmileFill } from 'react-icons/bs';
+import { AttachmentType } from '@/types/types';
+import Image from 'next/image';
+import { LuCopyPlus } from 'react-icons/lu';
 
 interface FileHandlerProps {
     mutate?: any;
-    closeModal: Function;
+    attachments: AttachmentType[];
+    setAttachments: React.Dispatch<React.SetStateAction<AttachmentType[]>>;
+    fileRef: React.RefObject<HTMLInputElement>;
 }
 
 export interface File {
@@ -25,245 +27,54 @@ export interface File {
 }
 
 const FileHandler: FC<FileHandlerProps> = props => {
-    const { mutate, closeModal } = props;
-    const contact = useAppSelector(state => state.chat.chat);
-    const [fileMessage, setFileMessage] = useState('');
-    const [caret, setCaret] = useState<number>(0);
-    const [fileIndex, setFileIndex] = useState<number>(0);
-    const [files, setFiles] = useState<File[]>([]);
+    const { attachments, setAttachments, fileRef } = props;
+    console.log(typeof setAttachments);
+    // const [fileMessage, setFileMessage] = useState('');
 
-    const { anchorEl: emojiAnchorEl, openMenu: openEmoji, closeMenu: closeEmoji } = useMenu();
+    // const sendFile = async () => {
+    //     for (let file of files) {
+    //         const data = {
+    //             content: fileMessage,
+    //             customer: contact?._id,
+    //             // attachment: [{ file: await getBase64(file) }],
+    //         };
 
-    const sendFile = async () => {
-        closeModal();
+    //         mutate(data);
+    //     }
+    //     setFiles([]);
+    //     setFileMessage('');
+    // };
 
-        for (let file of files) {
-            const data = {
-                content: fileMessage,
-                customer: contact?._id,
-                // attachment: [{ file: await getBase64(file) }],
-            };
+    function removeAttachment(e: MouseEvent, i: number) {
+        e.stopPropagation();
 
-            mutate(data);
-        }
-        setFiles([]);
-        setFileMessage('');
-    };
+        const f = [...attachments];
+        f.splice(i, 1);
+        setAttachments(f);
+    }
 
-    const onChangeHandler = (e: ChangeEvent) => {
-        const event = e.target as HTMLInputElement;
-        setCaret(event.selectionStart || 0);
-        setFileMessage(event.value);
-    };
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-        const { key } = e;
-        if (key === 'Enter' && fileMessage?.trim()) {
-            sendFile();
-            e.preventDefault();
-        }
-    };
-
-    const emojiPicker = ({ emoji }: EmojiClickData) => {
-        try {
-            const newValue = fileMessage.slice(0, caret) + emoji + fileMessage.slice(caret);
-            setFileMessage(newValue);
-            setCaret(caret + emoji.length);
-        } catch (e) {
-            console.log(e);
-        }
-    };
+    if (attachments.length === 0) return null;
 
     return (
-        <Box
-            sx={{
-                position: 'absolute',
-                left: { xs: 0, sm: 320 },
-                bottom: 16,
-                width: 'min(100%, 670px)',
-                minHeight: '488px',
-                boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
-                border: '1px solid',
-                borderColor: 'common.white',
-                backdropFilter: 'blur(6px)',
-                bgcolor: 'rgba(255, 255, 255, 0.7)',
-                borderRadius: '8px',
-                p: 1.5,
-                textAlign: 'center',
-                display: 'flex',
-                flexDirection: 'column',
-            }}>
-            <Box flexGrow={1} display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
-                {files.length ? (
-                    isImage(files[fileIndex]) ? (
-                        <>
-                            <Image src={files[fileIndex].url} alt='image-file' sx={{ maxHeight: '280px' }} />
-                            <Typography
-                                variant='subtitle2'
-                                fontWeight={500}
-                                color='text.secondary'
-                                textOverflow='ellipsis'
-                                overflow='hidden'
-                                sx={{ textWrap: 'nowrap', mt: 1 }}>
-                                {files[fileIndex]?.name}
-                            </Typography>
-                            <Typography variant='body2' fontWeight={500} textOverflow='ellipsis' overflow='hidden' sx={{ textWrap: 'nowrap', mt: 1 }}>
-                                {parseKB(files[fileIndex]?.size) + ', ' + getFileType(files[fileIndex].name) + ' File'}
-                            </Typography>
-                        </>
-                    ) : (
-                        <>
-                            <Image name='general.png' alt='file-logo' sx={{ height: '100px' }} />
-                            <Typography
-                                variant='subtitle2'
-                                fontWeight={500}
-                                textOverflow='ellipsis'
-                                overflow='hidden'
-                                sx={{ textWrap: 'nowrap', mt: 1 }}>
-                                {files[fileIndex].name}
-                            </Typography>
-                            <Typography variant='body2' fontWeight={500} textOverflow='ellipsis' overflow='hidden' sx={{ textWrap: 'nowrap', mt: 1 }}>
-                                {parseKB(files[fileIndex]?.size) + ', ' + getFileType(files[fileIndex]?.name) + ' File'}
-                            </Typography>
-                        </>
-                    )
-                ) : null}
-            </Box>
-            <Stack direction='row' alignItems='center' justifyContent='center'>
-                {files.length ? (
-                    <Stack direction='row' spacing={1} sx={{ overflowX: 'auto', my: 1 }}>
-                        {Array.from(files).map((file, i) => (
-                            <Box
-                                key={i}
-                                onClick={e => {
-                                    e.preventDefault();
-                                    setFileIndex(i);
-                                }}
-                                sx={{
-                                    position: 'relative',
-                                    borderRadius: '8px',
-                                    border: '3px solid',
-                                    borderColor: i === fileIndex ? 'primary.main' : 'transparent',
-                                    backgroundColor: 'transparent',
-                                    p: 0.2,
-                                    cursor: 'pointer',
-                                    flexShrink: 0,
-                                    '&:hover': {
-                                        '.MuiSvgIcon-root': {
-                                            display: 'block',
-                                        },
-                                        '#overlay': {
-                                            opacity: 1,
-                                        },
-                                    },
-                                }}>
-                                <Box
-                                    id='overlay'
-                                    sx={{
-                                        position: 'absolute',
-                                        top: 0,
-                                        right: 0,
-                                        left: 0,
-                                        bottom: 0,
-                                        backgroundImage: `linear-gradient(45deg, rgba(140,85,250, 0) 0%,rgba(200,215,253, 0) 55%,rgb(154,158,160) 100%)`,
-                                        opacity: 0,
-                                    }}
-                                />
-                                <IoMdClose
-                                    onClick={e => {
-                                        e.stopPropagation();
-                                        const f = Array.from(files);
-                                        f.splice(i, 1);
-                                        const lastIndex = files.length - 1;
-                                        if (lastIndex === 0) {
-                                            closeModal();
-                                            setFiles([]);
-                                        }
-                                        if (fileIndex === lastIndex) setFileIndex(prev => --prev);
-                                        setFiles(f);
-                                    }}
-                                    style={{
-                                        position: 'absolute',
-                                        right: 0,
-                                        top: 0,
-                                        fontSize: 15,
-                                        color: 'white',
-                                        display: 'none',
-                                    }}
-                                />
-                                {isImage(files[fileIndex]) ? (
-                                    <Image src={file.url} alt='Selected image' sx={{ height: 50 }} />
-                                ) : (
-                                    <Image name='general.png' alt='general logo' sx={{ height: 50 }} />
-                                )}
-                            </Box>
-                        ))}
-                    </Stack>
-                ) : null}
-            </Stack>
-            <Stack direction='row' mt={1} justifyContent='space-between' alignItems='center' spacing={2}>
-                <IconButton onClick={openEmoji}>
-                    <BsEmojiSmileFill color='primary' />
-                </IconButton>
-                <TextField
-                    fullWidth
-                    variant='standard'
-                    size='small'
-                    placeholder='Type a message'
-                    value={fileMessage}
-                    onMouseUp={(e: MouseEvent) => {
-                        const event = e.target as HTMLInputElement;
-                        setCaret(event.selectionStart || 0);
-                    }}
-                    onKeyUp={(e: KeyboardEvent) => {
-                        const event = e.target as HTMLInputElement;
-                        setCaret(event.selectionStart || 0);
-                    }}
-                    onKeyDown={handleKeyDown}
-                    onChange={onChangeHandler}
-                    sx={{ mb: 0 }}
-                />
-                <IconButton onClick={sendFile}>
-                    <IoMdSend color='primary' />
-                </IconButton>
-            </Stack>
-            <Menu
-                anchorEl={emojiAnchorEl}
-                open={Boolean(emojiAnchorEl)}
-                onClose={closeEmoji}
-                anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                }}
-                transformOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'right',
-                }}
-                sx={{
-                    transform: 'translateY(-20px)',
-                    '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
-                        boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
-                        border: '1px solid',
-                        borderColor: 'common.white',
-                        backdropFilter: 'blur(6px)',
-                        bgcolor: 'rgba(255, 255, 255, 0.9)',
-                        borderRadius: '8px',
-                        overflowY: 'unset',
-                    },
-                    '& .MuiList-root': {
-                        p: 0,
-                    },
-                }}>
-                <EmojiPicker
-                    emojiVersion='11.0'
-                    open={Boolean(emojiAnchorEl)}
-                    lazyLoadEmojis={true}
-                    autoFocusSearch={false}
-                    onEmojiClick={emojiPicker}
-                    style={{ background: 'transparent', border: 'none' }}
-                />
-            </Menu>
-        </Box>
+        <Stack direction='row' spacing={1} p={2}>
+            <IconButton variant='addAttachment' disableTouchRipple onClick={e => fileRef.current && fileRef.current.click()}>
+                <LuCopyPlus />
+            </IconButton>
+            {attachments.map((file, i) => (
+                <Box key={i} width={48} height={48} position='relative'>
+                    <IconButton variant='removeAttachment' onClick={e => removeAttachment(e, i)}>
+                        <IoMdClose fontWeight={800} size={12} />
+                    </IconButton>
+
+                    {file.type.startsWith('image/') && (
+                        <Image src={file.url || 'general.png'} alt='Selected image' fill objectFit='cover' style={{ borderRadius: 8 }} />
+                    )}
+                    {file.type.startsWith('video/') && (
+                        <video poster={file.url || 'general.png'} style={{ borderRadius: 8, width: 48, height: 48 }} />
+                    )}
+                </Box>
+            ))}
+        </Stack>
     );
 };
 
