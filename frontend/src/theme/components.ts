@@ -7,6 +7,7 @@ const components: Components<Omit<Theme, 'components'>> = {
                 '&::-webkit-scrollbar, & *::-webkit-scrollbar': {
                     backgroundColor: 'transparent',
                     width: '6px',
+                    height: '6px',
                 },
                 '&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb': {
                     borderRadius: 8,

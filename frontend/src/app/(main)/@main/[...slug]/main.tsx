@@ -5,6 +5,7 @@ import { useAppSelector } from '@/store/hook';
 import MuiDrawer from '@mui/material/Drawer';
 import DefaultMessage from '@/components/lib/defaultMessage';
 import Drawer from '../../../../components/drawer/drawer';
+import { Stack } from '@mui/material';
 
 const panelWidth = 380;
 
@@ -12,10 +13,9 @@ const Main = ({ children }: { children: React.ReactNode }) => {
     const { chat, contactPanel } = useAppSelector(state => state.chat);
 
     return chat ? (
-        <Box
+        <Stack
+            overflow='hidden'
             height='100%'
-            display='flex'
-            flexDirection='column'
             sx={{
                 width: contactPanel ? `calc(100% - ${panelWidth}px)` : '100%',
                 mr: contactPanel ? `${panelWidth}px` : 0,
@@ -37,7 +37,7 @@ const Main = ({ children }: { children: React.ReactNode }) => {
                 }}>
                 <Drawer />
             </MuiDrawer>
-        </Box>
+        </Stack>
     ) : (
         <DefaultMessage />
     );

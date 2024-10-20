@@ -32,9 +32,8 @@ import { AttachmentType } from '@/types/types';
 
 const InputWrapper = styled(Box)(({ theme }) => ({
     backgroundColor: theme.palette.background.search,
-    display: 'flex',
-    flexDirection: 'column',
-    width: '100%',
+    flexGrow: 1,
+    overflow: 'auto',
     // borderRadius: hasAttachment ? 12 : 32,
 }));
 
@@ -181,7 +180,7 @@ const Input = (props: InputProps) => {
 
     return (
         <React.Fragment>
-            <Box p={1.5}>
+            <Box px={1} py={1.5}>
                 {false && (
                     <Stack
                         direction='row'

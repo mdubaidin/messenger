@@ -11,6 +11,7 @@ import { IoMdSend, IoMdClose } from 'react-icons/io';
 import { AttachmentType } from '@/types/types';
 import Image from 'next/image';
 import { LuCopyPlus } from 'react-icons/lu';
+import { GrCirclePlay } from 'react-icons/gr';
 
 interface FileHandlerProps {
     mutate?: any;
@@ -56,10 +57,11 @@ const FileHandler: FC<FileHandlerProps> = props => {
     if (attachments.length === 0) return null;
 
     return (
-        <Stack direction='row' spacing={1} p={2}>
-            <IconButton variant='addAttachment' disableTouchRipple onClick={e => fileRef.current && fileRef.current.click()}>
+        <Stack direction='row' flexWrap='nowrap' alignItems='center' justifyContent='flex-start' spacing={1.5} p={2} sx={{ overflowX: 'auto' }}>
+            <IconButton variant='addAttachment' disableTouchRipple sx={{ minWidth: 0 }} onClick={() => fileRef.current && fileRef.current.click()}>
                 <LuCopyPlus />
             </IconButton>
+
             {attachments.map((file, i) => (
                 <Box key={i} width={48} height={48} position='relative'>
                     <IconButton variant='removeAttachment' onClick={e => removeAttachment(e, i)}>
@@ -67,15 +69,28 @@ const FileHandler: FC<FileHandlerProps> = props => {
                     </IconButton>
 
                     {file.type.startsWith('image/') && (
-                        <Image src={file.url || 'general.png'} alt='Selected image' fill objectFit='cover' style={{ borderRadius: 8 }} />
+                        <Image
+                            src={file.url || 'general.png'}
+                            alt='Selected image'
+                            width={48}
+                            height={48}
+                            style={{ borderRadius: 8, objectFit: 'cover' }}
+                        />
                     )}
-                    {file.type.startsWith('video/') && (
-                        <video poster={file.url || 'general.png'} style={{ borderRadius: 8, width: 48, height: 48 }} />
-                    )}
+                    {file.type.startsWith('video/') && <Video src={file.url || 'general.png'} />}
                 </Box>
             ))}
         </Stack>
     );
 };
+
+function Video({ src }: { src: string }) {
+    return (
+        <Box position='relative' width={48} height={48} borderRadius={2} overflow='hidden'>
+            <video width='100%' height='100%' src={src} style={{ objectFit: 'cover' }} />
+            <GrCirclePlay color='white' size={25} style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} />
+        </Box>
+    );
+}
 
 export default FileHandler;

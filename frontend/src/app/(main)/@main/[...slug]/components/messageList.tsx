@@ -358,7 +358,6 @@ const MessageList = () => {
         <Box
             id='bottom'
             sx={{
-                height: 'calc(100% - 188px)',
                 overflowY: 'auto',
                 flexGrow: 1,
                 overflowX: 'hidden',
